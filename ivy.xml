@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ivy-module version="2.0">
+  <info organisation="org.penguindreams" module="GreenOven" />
+  <dependencies>
+    <dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE"/>
+  </dependencies>
+</ivy-module>

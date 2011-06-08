@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<project name="GreenOven" basedir="." default="ear"  xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<!-- Variables -->
+	<property name="build" value="./build" />
+	<property name="dist" value="./dist" />
+	<property name="conf"  value="./conf" />
+	<property name="src"   value="./src" />
+	<property name="lib"   value="./lib" />
+	<property name="web"   value="./web" />
+	<property name="version" value="0.1" />
+	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
+	<property name="servletLib" value="${appServerLocation}/lib" />
+	<property name="deployDir" value="${appServerLocation}/webapps" />
+	<property name="warFile" value="${dist}/${ant.project.name}.war" />
+	<property name="earFile" value="${dist}/${ant.project.name}-${version}.ear" />
+	<property environment="env"/>
+
+	<path id="build.classpath">
+		<fileset dir="${lib}" includes="**/*.jar" />
+		<fileset dir="${servletLib}" includes="**/*.jar" />
+		<fileset dir="${env.SCALA_HOME}/lib" includes="**/*.jar" />
+	</path>
+
+	<!-- Define scala compiler, scaladoc, etc command -->
+	<taskdef resource="scala/tools/ant/antlib.xml">
+	    <classpath>
+	      <pathelement location="${env.SCALA_HOME}/lib/scala-compiler.jar" />
+	      <pathelement location="${env.SCALA_HOME}/lib/scala-library.jar" />
+	    </classpath>
+	</taskdef>
+
+
+	<!-- Targets -->
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+		<mkdir dir="${lib}" />
+	</target>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${build}" />
+		<mkdir dir="${dist}" />
+		<mkdir dir="${lib}" />
+		<ivy:retrieve />		
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}" debug="on" optimize="on" includeantruntime="false">
+			<classpath refid="build.classpath" />
+			<include name="**/*.java"/>
+		</javac>
+		<scalac srcdir="${src}" destdir="${build}" >
+			<include name="**/*.scala"/>
+			<classpath refid="build.classpath" />		  
+		</scalac>
+
+	</target>
+
+	<target name="war" depends="compile">
+		<war destfile="${dist}/${ant.project.name}.war" webxml="${conf}/web.xml">
+			<lib dir="${lib}" />
+			<classes dir="${build}"/>
+			<zipfileset dir="${web}"  />
+		</war>
+	</target>
+
+	<target name="ear" depends="war">
+		<ear destfile="${dist}/${ant.project.name}-${version}.ear" appxml="${conf}/application.xml">
+			<fileset dir="${dist}" includes="*.war" />
+		</ear>
+	</target>
+
+	<target name="deploy" depends="ear">
+		<copy todir="${deployDir}">
+			<fileset dir="${dist}" includes="*.ear" />
+		</copy>
+	</target>
+
+	<!-- distribute release tar.gz -->
+	<target name="dist"  depends="clean">
+		<tar destfile="${ant.project.name}-${version}.tar.bz2" compression="bzip2">
+			<tarfileset dir="." prefix="/${ant.project.name}-${version}" preserveleadingslashes="false">
+				<exclude name=".??*" />
+				<exclude name="*.zip"/>
+			</tarfileset>
+		</tar>
+		<zip destfile="${ant.project.name}-${version}.zip">
+			<zipfileset dir="." prefix="/${ant.project.name}-${version}">
+				<exclude name=".??*"/>
+				<exclude name="*.tar.bz2"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+</project>
