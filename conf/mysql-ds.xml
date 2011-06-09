@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<datasources> 
+    <local-tx-datasource> 
+        <jndi-name>jdbc/SimpleRest</jndi-name> 
+        <connection-url>jdbc:mysql://localhost:3306/PenguinRest</connection-url> 
+        <driver-class>com.mysql.jdbc.Driver</driver-class> 
+        <user-name>restExample</user-name> 
+        <password>rest21Ple</password> 
+    </local-tx-datasource> 
+</datasources> 

@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <project name="GreenOven" basedir="." default="ear"  xmlns:ivy="antlib:org.apache.ivy.ant">
 
+	<property file="global.properties" />
+	
 	<!-- Variables -->
 	<property name="build" value="./build" />
 	<property name="dist" value="./dist" />
@@ -8,12 +10,13 @@
 	<property name="src"   value="./src" />
 	<property name="lib"   value="./lib" />
 	<property name="web"   value="./web" />
-	<property name="version" value="0.1" />
+	<property name="version" value="x" />
 	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
 	<property name="servletLib" value="${appServerLocation}/lib" />
 	<property name="deployDir" value="${appServerLocation}/webapps" />
 	<property name="warFile" value="${dist}/${ant.project.name}.war" />
 	<property name="earFile" value="${dist}/${ant.project.name}-${version}.ear" />
+	
 	<property environment="env"/>
 
 	<path id="build.classpath">
@@ -36,7 +39,9 @@
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
-		<mkdir dir="${lib}" />
+		<delete dir="${lib}" />
+		<delete file="${ant.project.name}-${version}.zip" />
+		<delete file="${ant.project.name}-${version}.tar.bz2" />
 	</target>
 
 	<target name="init">
@@ -62,6 +67,8 @@
 	<target name="war" depends="compile">
 		<war destfile="${dist}/${ant.project.name}.war" webxml="${conf}/web.xml">
 			<lib dir="${lib}" />
+			<lib file="${env.SCALA_HOME}/lib/scala-compiler.jar" />
+			<lib file="${env.SCALA_HOME}/lib/scala-library.jar" />
 			<classes dir="${build}"/>
 			<zipfileset dir="${web}"  />
 		</war>
