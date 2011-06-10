@@ -2,7 +2,15 @@
 <html>
 <body>
 
-<c:out value="${hi}" />
+12<c:out value="${hi}" />34
+
+00${hi}00
+
+<ol>
+<c:forEach var="op" items="${ops}">
+  <li>${op}</li>
+</c:forEach> 
+</ol>
 
 <p>Test</p>
 
