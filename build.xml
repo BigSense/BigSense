@@ -61,7 +61,13 @@
 			<include name="**/*.scala"/>
 			<classpath refid="build.classpath" />		  
 		</scalac>
-
+		<copy todir="${build}" includeEmptyDirs="false">
+			<fileset dir="${src}">
+				<include name="**/*" />
+				<exclude name="*.java"/>
+				<exclude name="*.scala"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="war" depends="compile">

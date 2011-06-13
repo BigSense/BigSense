@@ -7,7 +7,7 @@
 
 	<!-- Actions -->
 
-	<bean id="ActionSensor" class="org.penguindreams.greenstation.action.SensorAction" />
+	<bean id="ActionSensor" name="ActionSensor" class="org.penguindreams.greenstation.action.SensorAction" />
 
 
 </beans>

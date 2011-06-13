@@ -8,13 +8,15 @@ import org.penguindreams.greenstation.action.ActionTrait
 
 class MasterServlet extends HttpServlet {
 
+  val ACTION_PREFIX = "Action"
+  
   override def service(req : HSReq, resp: HSResp) = {    
     var ops = getPath(req)
     
-    /*var action : ActionTrait = MySpring.getObject(ops(0)).asInstanceOf[ActionTrait]
+    var action : ActionTrait = MySpring.getObject(ACTION_PREFIX+ops(0)).asInstanceOf[ActionTrait]
     
-    action.runAction(req.getMethod,ops,null)*/
-    
+    action.runAction(req.getMethod,ops,null)
+    /*
     req.setAttribute("hi","someValue")
     req.setAttribute("ops",ops);   
 
@@ -30,7 +32,7 @@ class MasterServlet extends HttpServlet {
     }
 
     getServletContext().getRequestDispatcher("/test.jsp").forward(req,resp)
-    //resp.getWriter().write("<html><body>123%s</body></html>".format(ops(0)))
+    //resp.getWriter().write("<html><body>123%s</body></html>".format(ops(0)))*/
   }
     
   def getPath(req: HSReq) =

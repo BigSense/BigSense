@@ -11,7 +11,7 @@ object MySpring {
   
   def loadApplicationContent() = { 
     if (context == null) {
-      context = new ClassPathXmlApplicationContext("spring.xml"); 
+      context = new ClassPathXmlApplicationContext("/org/penguindreams/greenstation/spring/spring.xml"); 
     }
   }
     
