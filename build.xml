@@ -57,7 +57,7 @@
 			<classpath refid="build.classpath" />
 			<include name="**/*.java"/>
 		</javac>
-		<scalac srcdir="${src}" destdir="${build}" >
+		<scalac srcdir="${src}" destdir="${build}" deprecation="yes">
 			<include name="**/*.scala"/>
 			<classpath refid="build.classpath" />		  
 		</scalac>
