@@ -1,8 +1,10 @@
 package org.penguindreams.greenstation.format
 import org.penguindreams.greenstation.model.ModelTrait
 
-trait FormatTrait {
+class GreenOvenXMLFormat extends FormatTrait {
 
-  def renderModel(model : ModelTrait)
+  def renderModel(model : ModelTrait) = {
+  
+  }
   
 }
