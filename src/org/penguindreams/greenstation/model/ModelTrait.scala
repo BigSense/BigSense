@@ -1,9 +1,11 @@
-package org.penguindreams.greenstation.model
+package org.penguindreams.greenstation.model {
 
 
-trait ModelTrait {
+	trait ModelTrait {
+	
+	  def setModelData(data : String) 
+	  
+	  
+	}
 
-  def setModelData(data : String) 
-  
-  
 }

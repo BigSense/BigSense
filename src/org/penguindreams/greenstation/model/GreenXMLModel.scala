@@ -1,5 +1,11 @@
-package org.penguindreams.greenstation.model
+package org.penguindreams.greenstation.model {
 
-class GreenXMLModel extends ModelTrait {
+	class GreenXMLModel extends ModelTrait {
+	
+	  
+	  
+	  override def setModelData(data : String) = {}
+	  
+	}
 
 }

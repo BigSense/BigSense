@@ -7,6 +7,9 @@
     <dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" transitive="false"/>
     <dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" transitive="false"/>
     <dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE" transitive="false"/>
+    <dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE" transitive="false"/>
+    <dependency org="cglib" name="cglib" rev="2.2.2" />
+    <dependency org="aopalliance" name="aopalliance" rev="1.0"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1" />
     <dependency org="javax.servlet" name="jstl" rev="1.1.2" />
     <dependency org="taglibs" name="standard" rev="1.1.2" />

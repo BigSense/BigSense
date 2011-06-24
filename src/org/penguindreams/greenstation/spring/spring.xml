@@ -9,5 +9,18 @@
 
 	<bean id="ActionSensor" name="ActionSensor" class="org.penguindreams.greenstation.action.SensorAction" />
 
+	<!-- Format -->
+	
+	<bean id="FormatGO.XML" class="org.penguindreams.greenstation.format.GreenOvenXMLModel" />
+
+    <!-- logging -->
+    <bean name="logger" class="org.penguindreams.greenstation.spring.LoggingInterceptor" />
+    <bean id="loggingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+      <property name="advice" ref="logger" />
+      <property name="pattern" value="org.penguindreams.*" />
+    </bean>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
+
 
 </beans>
