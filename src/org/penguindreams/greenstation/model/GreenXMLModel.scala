@@ -1,10 +1,14 @@
 package org.penguindreams.greenstation.model {
 
-	class GreenXMLModel extends ModelTrait {
-	
+  import scala.xml._
+  
+	class GreenXMLModel extends ModelTrait {  
 	  
-	  
-	  override def setModelData(data : String) = {}
+	  var _xml : Elem
+    
+	  override def setModelData(data : String) = {
+	    _xml = XML.loadString(data)
+	  }
 	  
 	}
 
