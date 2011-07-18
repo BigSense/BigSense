@@ -9,6 +9,7 @@
 	<property name="conf"  value="./conf" />
 	<property name="src"   value="./src" />
 	<property name="lib"   value="./lib" />
+	<property name="libNonFree"   value="./libNonFree" />
 	<property name="web"   value="./web" />
 	<property name="version" value="x" />
 	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
@@ -23,6 +24,7 @@
 		<fileset dir="${lib}" includes="**/*.jar" />
 		<fileset dir="${servletLib}" includes="**/*.jar" />
 		<fileset dir="${env.SCALA_HOME}/lib" includes="**/*.jar" />
+		<fileset dir="${libNonFree}" includes="**/*.jar" />
 	</path>
 
 	<!-- Define scala compiler, scaladoc, etc command -->
