@@ -12,6 +12,7 @@ import java.util.Properties
 import java.io.BufferedReader
 import org.apache.log4j.PropertyConfigurator
 import org.penguindreams.greenstation.format.{FormatTrait => Format}
+import org.penguindreams.greenstation.model.{ModelTrait => Model}
 
 
 
@@ -36,7 +37,14 @@ class MasterServlet extends HttpServlet {
         var ops = getPath(req)
     	var action : Action = Spring.getObject("Action"+ops(0)).asInstanceOf[Action]    
         var format = Spring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]
-    	var aResp : Response = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()))    	
+        
+        var data = req.getParameter("data");
+        var model : Model = null;
+        if(data != null) {
+          model = format.loadModel(req.getParameter("data"));
+        }
+        
+    	var aResp : Response = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),model,format)    	
     }
     catch {
        case e:NoSuchBeanDefinitionException => { 
