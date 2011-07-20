@@ -11,7 +11,7 @@
 
 	<!-- Format -->
 	
-	<bean id="FormatGO.XML" class="org.penguindreams.greenstation.format.GreenOvenXMLModel" />
+	<bean id="FormatGO.XML" class="org.penguindreams.greenstation.format.GreenOvenXMLFormat" />
 
     <!-- logging -->
     <bean name="logger" class="org.penguindreams.greenstation.spring.LoggingInterceptor" />

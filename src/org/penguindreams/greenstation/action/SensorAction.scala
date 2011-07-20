@@ -11,7 +11,7 @@ import org.penguindreams.greenstation.model.ModelTrait
 		    if(args(1) == "data" && method == "POST") {
 		      //add new XML data
 		      if(method == "POST") {
-		        
+		         
 		      }
 		      else if (method == "GET") {
 		        

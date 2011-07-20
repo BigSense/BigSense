@@ -13,6 +13,7 @@ import java.io.BufferedReader
 import org.apache.log4j.PropertyConfigurator
 import org.penguindreams.greenstation.format.{FormatTrait => Format}
 import org.penguindreams.greenstation.model.{ModelTrait => Model}
+import org.penguindreams.greenstation.util.HttpUtil
 
 
 
@@ -36,12 +37,13 @@ class MasterServlet extends HttpServlet {
         loadLogger()
         var ops = getPath(req)
     	var action : Action = Spring.getObject("Action"+ops(0)).asInstanceOf[Action]    
-        var format = Spring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]
-        
-        var data = req.getParameter("data");
+        //var format = Spring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]
+        var format = null 
+        var data = req.getParameter("data")
+        var data = HttpUtil.pullyBody(req)
         var model : Model = null;
         if(data != null) {
-          model = format.loadModel(req.getParameter("data"));
+          //model = format.loadModel(req.getParameter("data"));
         }
         
     	var aResp : Response = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),model,format)    	
