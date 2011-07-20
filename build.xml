@@ -25,7 +25,6 @@
 		<fileset dir="${servletLib}" includes="**/*.jar" />
 		<fileset dir="${env.SCALA_HOME}/lib" includes="**/*.jar" />
 		<fileset dir="${libNonFree}" includes="**/*.jar" />
-		<fileset dir="${build}"><include name="" /></fileset>
 	</path>
 
 	<!-- Define scala compiler, scaladoc, etc command -->

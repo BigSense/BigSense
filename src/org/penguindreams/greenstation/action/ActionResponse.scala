@@ -1,9 +1,10 @@
 package org.penguindreams.greenstation.action {
 
 	class ActionResponse {	
-	  var output = null
-	  var view = null
-	  var formatter = null
+	  var output : String = null
+	  var view : String = null
+	  var formatter : String = null
+	  var status : Integer = null
 	}
 
 }

@@ -14,6 +14,7 @@ import org.apache.log4j.PropertyConfigurator
 import org.penguindreams.greenstation.format.{FormatTrait => Format}
 import org.penguindreams.greenstation.model.{ModelTrait => Model}
 import org.penguindreams.greenstation.util.HttpUtil
+import org.apache.log4j.Logger
 
 
 
@@ -32,33 +33,40 @@ class MasterServlet extends HttpServlet {
   
   override def service(req : HSReq, resp: HSResp) = {    
     
-    try {
+    var log : Logger = Logger.getLogger(this.getClass());
+    try {      
         //main entry point - bootstrapping
         loadLogger()
         var ops = getPath(req)
     	var action : Action = Spring.getObject("Action"+ops(0)).asInstanceOf[Action]    
-        //var format = Spring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]
-        var format = null 
-        var data = req.getParameter("data")
-        var data = HttpUtil.pullyBody(req)
+        var format = Spring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]   
+
+        var data = HttpUtil.pullBody(req)
         var model : Model = null;
         if(data != null) {
-          //model = format.loadModel(req.getParameter("data"));
+          model = format.loadModel(data);
         }
         
     	var aResp : Response = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),model,format)    	
     }
     catch {
-       case e:NoSuchBeanDefinitionException => { 
+       case e:NoSuchBeanDefinitionException => {         
+         log.warn("Invalid incoming request",e)
          req.setAttribute("message","Bad Request")
          resp.setStatus(HSResp.SC_BAD_REQUEST)
          view("error",req,resp)
-       }      
+       }
+       case e:Throwable => {
+         log.error("Internal failure",e)
+         req.setAttribute("message","Internal Server Error")
+         resp.setStatus(HSResp.SC_INTERNAL_SERVER_ERROR)
+         view("error",req,resp)
+       }
     }
 
   }
   
-  def getExtension(req: HSReq) = req.getRequestURI().split(".").tail(1).mkString(".")
+  def getExtension(req: HSReq) = req.getRequestURI().split("\\.").tail(1).mkString(".")
   
   def getPath(req: HSReq) =
     req.getRequestURI()
