@@ -9,8 +9,17 @@ class GreenOvenXMLFormat extends FormatTrait {
   }
   
   def loadModel(data : String) : ModelTrait = {
+    
+    var timestamp : String = null
     var xml : Elem = null
     xml = XML.loadString(data)
+    
+    //var timestamp
+    
+    /*xml match {
+      case <timestamp>{ stamp @ _* }</timestamp> => {timestamp = NodeSeq.fromSeq(stamp)}
+    }*/
+    
     null
   }
   
