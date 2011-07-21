@@ -1,6 +1,7 @@
 package org.penguindreams.greenstation.format
 import org.penguindreams.greenstation.model.ModelTrait
 import scala.xml._
+import org.apache.log4j.Logger
 
 class GreenOvenXMLFormat extends FormatTrait {
 
@@ -14,11 +15,16 @@ class GreenOvenXMLFormat extends FormatTrait {
     var xml : Elem = null
     xml = XML.loadString(data)
     
-    //var timestamp
-    
+    var log : Logger = Logger.getLogger(this.getClass())
     /*xml match {
-      case <timestamp>{ stamp @ _* }</timestamp> => {timestamp = NodeSeq.fromSeq(stamp)}
+      case Elem(prefix, label, attribs, scope, Text(text)) => log.trace("Only text children: "+text)
     }*/
+    
+    var sensors : Seq[Node] = xml \ "GreenData" \ "Sensors"
+    
+    log.trace("SENSORS"+sensors)
+    
+    log.trace("timestamp" + timestamp)
     
     null
   }

@@ -37,6 +37,7 @@ class MasterServlet extends HttpServlet {
     try {      
         //main entry point - bootstrapping
         loadLogger()
+        
         var ops = getPath(req)
     	var action : Action = Spring.getObject("Action"+ops(0)).asInstanceOf[Action]    
         var format = Spring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]   
@@ -44,7 +45,7 @@ class MasterServlet extends HttpServlet {
         var data = HttpUtil.pullBody(req)
         var model : Model = null;
         if(data != null) {
-          model = format.loadModel(data);
+          /*model = */format.loadModel(data);
         }
         
     	var aResp : Response = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),model,format)    	
@@ -66,7 +67,7 @@ class MasterServlet extends HttpServlet {
 
   }
   
-  def getExtension(req: HSReq) = req.getRequestURI().split("\\.").tail(1).mkString(".")
+  def getExtension(req: HSReq) = req.getRequestURI().split("\\.").drop(1).mkString(".")
   
   def getPath(req: HSReq) =
     req.getRequestURI()
