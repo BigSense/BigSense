@@ -9,25 +9,30 @@ class GreenOvenXMLFormat extends FormatTrait {
   
   }
   
-  def loadModel(data : String) : ModelTrait = {
+  def loadModel(data : String) : ModelTrait = { 
     
-    var timestamp : String = null
-    var xml : Elem = null
-    xml = XML.loadString(data)
+    var xml : Elem = XML.loadString(data)
     
     var log : Logger = Logger.getLogger(this.getClass())
-    /*xml match {
-      case Elem(prefix, label, attribs, scope, Text(text)) => log.trace("Only text children: "+text)
-    }*/
-    
+        
     var sensors = xml \\ "Sensors"
+    var timestamp = (xml \\"timestamp").text.trim()
+    var timezone = (xml \\"timestamp" \ "@zone" ).text.trim()
+
+    //for( node <- xml \ "GreenData" \ "timestamp" ) yield log.trace("each"+node.text)
     
-    log.trace("Loop")
-    sensors.foreach( x => log.trace("Hi"+x))
+    var id : String = null
+    var stype : String = null
+    var units : String = null
+    var sdata : String = null
+
     
-    log.trace("SENSORS"+sensors)
-    
-    log.trace("timestamp" + timestamp)
+    for( node <- xml \\"Sensors"\"Sensor") yield {
+      id = (node\"id").text.trim()
+      stype = (node\"type").text.trim()
+      units = (node\"units").text.trim()
+      sdata = (node\"data").text.trim()
+    }
     
     null
   }
