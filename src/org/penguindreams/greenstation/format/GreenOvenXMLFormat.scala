@@ -20,7 +20,10 @@ class GreenOvenXMLFormat extends FormatTrait {
       case Elem(prefix, label, attribs, scope, Text(text)) => log.trace("Only text children: "+text)
     }*/
     
-    var sensors : Seq[Node] = xml \ "GreenData" \ "Sensors"
+    var sensors = xml \\ "Sensors"
+    
+    log.trace("Loop")
+    sensors.foreach( x => log.trace("Hi"+x))
     
     log.trace("SENSORS"+sensors)
     

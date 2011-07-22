@@ -22,7 +22,7 @@
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 
 
-	<!-- Database configuration -->
+	<!-- Database configuration
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
 	   <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 	   <property name="jdbcUrl" value="jdbc:sqlserver://dbserver.example.edu:5555;databaseName=GreenOven" />
@@ -37,5 +37,5 @@
 	   <property name="statementsCacheSize" value="100"/>
 	   <property name="releaseHelperThreads" value="3"/>
 	</bean>
-
+ -->
 </beans>

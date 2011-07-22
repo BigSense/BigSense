@@ -4,7 +4,8 @@ package org.penguindreams.greenstation.action {
 	  var output : String = null
 	  var view : String = null
 	  var formatter : String = null
-	  var status : Integer = null
+	  //TODO: check scala versions/docs
+	  var status : java.lang.Integer = null
 	}
 
 }

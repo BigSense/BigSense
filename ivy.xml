@@ -14,8 +14,8 @@
     <dependency org="javax.servlet" name="jstl" rev="1.1.2" />
     <dependency org="taglibs" name="standard" rev="1.1.2" />
     <dependency org="net.sourceforge.jtds" name="jtds" rev="1.2.4" />
-    <dependency org="com.jolbox" name="bonecp" rev="0.7.1.RELEASE" />
-    <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.1" />
+    <!-- <dependency org="com.jolbox" name="bonecp" rev="0.7.1.RELEASE"/>
+    <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.1" /> -->
     <exclude org="javax.servlet" module="servlet-api" />
     <exclude org="javax.servlet" module="jsp-api" />
     <exclude org="javax.servlet" module="ejb-api" />
