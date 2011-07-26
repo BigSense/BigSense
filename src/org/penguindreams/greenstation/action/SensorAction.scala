@@ -2,10 +2,10 @@ package org.penguindreams.greenstation.action {
 
 	import scala.collection.Map
 import org.penguindreams.greenstation.format.FormatTrait
-import org.penguindreams.greenstation.model.ModelTrait
+import org.penguindreams.greenstation.model.DataModel
   
 	class SensorAction extends ActionTrait {	
-	  def runAction(method: String, args: Array[String], parameters: Map[String,Array[String]], model : ModelTrait, format : FormatTrait): ActionResponse = {
+	  def runAction(method: String, args: Array[String], parameters: Map[String,Array[String]], model : List[DataModel], format : FormatTrait): ActionResponse = {
 	    
 	    var resp = new ActionResponse()
 	    

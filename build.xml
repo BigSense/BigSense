@@ -9,9 +9,9 @@
 	<property name="conf"  value="./conf" />
 	<property name="src"   value="./src" />
 	<property name="lib"   value="./lib" />
-	<property name="libNonFree"   value="./libNonFree" />
 	<property name="web"   value="./web" />
 	<property name="version" value="x" />
+	<property name="springFile" value="${build}/org/penguindreams/greenstation/spring/spring.xml" />
 	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
 	<property name="servletLib" value="${appServerLocation}/lib" />
 	<property name="deployDir" value="${appServerLocation}/webapps" />
@@ -24,7 +24,6 @@
 		<fileset dir="${lib}" includes="**/*.jar" />
 		<fileset dir="${servletLib}" includes="**/*.jar" />
 		<fileset dir="${env.SCALA_HOME}/lib" includes="**/*.jar" />
-		<fileset dir="${libNonFree}" includes="**/*.jar" />
 	</path>
 
 	<!-- Define scala compiler, scaladoc, etc command -->
@@ -72,7 +71,13 @@
 		</copy>
 	</target>
 
-	<target name="war" depends="compile">
+	<target name="configure" depends="compile">
+		<replace file="${springFile}" token="connectionString" value="${connectionString}"/>
+		<replace file="${springFile}" token="dbUser" value="${dbUser}"/>
+		<replace file="${springFile}" token="dbPass" value="${dbPass}"/>
+	</target>
+	
+	<target name="war" depends="configure">
 		<war destfile="${dist}/${ant.project.name}.war" webxml="${conf}/web.xml">
 			<lib dir="${lib}" />
 			<lib file="${env.SCALA_HOME}/lib/scala-compiler.jar" />

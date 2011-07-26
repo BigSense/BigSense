@@ -1,40 +1,47 @@
 package org.penguindreams.greenstation.format
-import org.penguindreams.greenstation.model.ModelTrait
 import scala.xml._
 import org.apache.log4j.Logger
+import org.penguindreams.greenstation.model.DataModel
+import org.penguindreams.greenstation.spring.MySpring
+import org.penguindreams.greenstation.model.SensorModel
+import scala.collection.mutable.ListBuffer
 
 class GreenOvenXMLFormat extends FormatTrait {
 
-  def renderModel(model : ModelTrait) = {
+  def renderModels(model : List[DataModel]) = {
   
   }
   
-  def loadModel(data : String) : ModelTrait = { 
+  def loadModels(data : String) : List[DataModel] = { 
     
     var xml : Elem = XML.loadString(data)
     
     var log : Logger = Logger.getLogger(this.getClass())
         
-    var sensors = xml \\ "Sensors"
-    var timestamp = (xml \\"timestamp").text.trim()
-    var timezone = (xml \\"timestamp" \ "@zone" ).text.trim()
-
-    //for( node <- xml \ "GreenData" \ "timestamp" ) yield log.trace("each"+node.text)
+    var models = new ListBuffer[DataModel]
     
-    var id : String = null
-    var stype : String = null
-    var units : String = null
-    var sdata : String = null
-
-    
-    for( node <- xml \\"Sensors"\"Sensor") yield {
-      id = (node\"id").text.trim()
-      stype = (node\"type").text.trim()
-      units = (node\"units").text.trim()
-      sdata = (node\"data").text.trim()
-    }
-    
-    null
+    for( pack <- xml \\ "package") yield {
+        
+    	var model = new DataModel()
+        
+	    var sensors = pack \\ "sensors"
+	    model.timestamp = (pack \\"timestamp").text.trim()
+	    model.timezone = (pack \\"timestamp" \ "@zone" ).text.trim()
+	       	    
+	    var sbList = new ListBuffer[SensorModel]()
+	    
+	    for( node <- sensors \"sensor") yield {
+	      var sensorData = new SensorModel()
+	      sensorData.uniqueId = (node\"id").text.trim()
+	      sensorData.stype = (node\"type").text.trim()
+	      sensorData.units = (node\"units").text.trim()
+	      sensorData.data = (node\"data").text.trim()
+	      sbList += sensorData
+	    } 
+    	model.sensors = sbList.toList
+    	models += model
+    } 
+    models.toList
   }
   
 }

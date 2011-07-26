@@ -1,8 +1,8 @@
 package org.penguindreams.greenstation.format
-import org.penguindreams.greenstation.model.ModelTrait
+import org.penguindreams.greenstation.model.DataModel
 
 trait FormatTrait {
 
-  def renderModel(model : ModelTrait)
-  def loadModel(data: String) : ModelTrait
+  def renderModels(model : List[DataModel])
+  def loadModels(data: String) : List[DataModel]
 }
