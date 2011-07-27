@@ -8,9 +8,11 @@ import org.penguindreams.greenstation.model.DataModel
 class DatabaseHandler {
 
   private var ds : DataSource = null
+  private var commands : Properties = null
   
   def DatabaseHandler() {
     this.ds = MySpring.getObject("mainDataSource").asInstanceOf[DataSource]
+    Properties
     getClass().getResource("mssql.commands");
   }
   
@@ -20,9 +22,14 @@ class DatabaseHandler {
   }
   
   def loadData(sets : List[DataModel]) {
-    sets.foreach( s => {
+    //TOOD: Start Transaction
+    sets.foreach( set => {
+      runQuery("getRelayId",set.uniqueId)
       
-    })
+      set.sensors.foreach( sensor => {
+        
+      })
+    })    
   }
   
   
