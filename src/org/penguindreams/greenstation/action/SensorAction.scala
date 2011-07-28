@@ -13,6 +13,7 @@ import org.penguindreams.greenstation.model.DataModel
 		    if(args(1) == "data" && method == "POST") {
 		      //add new XML data
 		      if(method == "POST") {
+		        this.dbHandler.loadData(model)
 		        resp.status = 201 
 		      }
 		      else if (method == "GET") {

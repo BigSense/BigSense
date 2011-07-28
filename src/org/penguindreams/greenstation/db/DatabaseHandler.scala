@@ -6,12 +6,12 @@ import java.sql.Connection
 import org.penguindreams.greenstation.model.DataModel
 import org.penguindreams.greenstation.util.Properties
 import java.sql.PreparedStatement
-import java.util.Properties
+import scala.collection.mutable.ListBuffer
 
 class DatabaseHandler {
 
   private var ds : DataSource = null
-  private var commands : Properties = null
+  private var commands : Map[String,String] = null
   
   private var sqlCommands : Map[String,String] = null
   
@@ -22,7 +22,10 @@ class DatabaseHandler {
 
   }
   
-  def runQuery(qName : String, args : String*) {
+  def runQuery(qName : String, args : String*) : DBResult = {
+    
+    var retval = new DBResult()
+    
     var conn : Connection = ds.getConnection()
     var stmt : PreparedStatement = conn.prepareStatement(sqlCommands(qName))
     var x = 1
@@ -30,9 +33,24 @@ class DatabaseHandler {
     var ret  = stmt.executeQuery()
     var meta = ret.getMetaData()
     
+    var keys = stmt.getGeneratedKeys()
+    var keybuf = new ListBuffer[Any]();
+    while(keys.next()) {
+      keybuf += keys.getObject(0)
+    }
+    retval.generatedKeys = keybuf.toList
+    
+    var retbuf = new ListBuffer()
     while(ret.next) {
       
     }
+    
+    //cleanup
+    ret.close()
+    stmt.close()
+    conn.close()
+    retval
+    
   }
   
   def loadData(sets : List[DataModel]) {

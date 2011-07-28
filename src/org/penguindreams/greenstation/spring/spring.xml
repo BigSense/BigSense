@@ -7,7 +7,9 @@
 
 	<!-- Actions -->
 
-	<bean id="ActionSensor" name="ActionSensor" class="org.penguindreams.greenstation.action.SensorAction" />
+	<bean id="ActionSensor" name="ActionSensor" class="org.penguindreams.greenstation.action.SensorAction">
+		<property name="dbHandler" ref="databaseHandler" />
+	</bean>
 
 	<!-- Formats -->
 	
@@ -22,6 +24,10 @@
     </bean>
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
 
+	<!-- Database Handler -->
+	<bean id="databaseHandler" class="org.penguindreams.greenstation.db.DatabaseHandler">
+		<property name="ds" ref="mainDataSource" />
+	</bean>
 
 	<!-- Database configuration -->
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
