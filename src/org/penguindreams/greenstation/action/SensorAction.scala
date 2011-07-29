@@ -9,11 +9,11 @@ import org.penguindreams.greenstation.db.DatabaseHandlerTrait
   
 	class SensorAction extends ActionTrait {	
 	  
-	  @BeanProperty var dbHandler : DatabaseHandlerTrait = null
-	  
 	  def runAction(method: String, args: Array[String], parameters: Map[String,Array[String]], model : List[DataModel], format : FormatTrait): ActionResponse = {
 	    
 	    var resp = new ActionResponse()
+	    
+	    this.dbHandler.loadData(model)
 	    
 	    if(args.length > 1) {
 		    if(args(1) == "data" && method == "POST") {

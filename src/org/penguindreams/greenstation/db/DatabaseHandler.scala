@@ -8,6 +8,7 @@ import org.penguindreams.greenstation.util.Properties
 import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
 import scala.reflect.BeanProperty
+import org.apache.log4j.Logger
 
 class DatabaseHandler extends DatabaseHandlerTrait {
 
@@ -52,14 +53,15 @@ class DatabaseHandler extends DatabaseHandlerTrait {
   }
   
   def loadData(sets : List[DataModel]) {
+    
     //TOOD: Start Transaction
-    sets.foreach( set => {
+    /*sets.foreach( set => {
       runQuery("getRelayId",set.uniqueId)
       
       set.sensors.foreach( sensor => {
         
       })
-    })    
+    })*/    
   }
   
   

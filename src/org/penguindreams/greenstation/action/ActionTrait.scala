@@ -9,8 +9,9 @@ import org.penguindreams.greenstation.db.DatabaseHandlerTrait
   
 	trait ActionTrait {
 	  
-	  def runAction(method: String, args : Array[String], parameters : Map[String,Array[String]], models : List[DataModel], format : Format) : ActionResponse
-	  
+  	  @BeanProperty var dbHandler : DatabaseHandlerTrait = null
+  
+	  def runAction(method: String, args : Array[String], parameters : Map[String,Array[String]], models : List[DataModel], format : Format) : ActionResponse	  
 
 	}
 }
