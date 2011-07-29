@@ -7,19 +7,17 @@ import org.penguindreams.greenstation.model.DataModel
 import org.penguindreams.greenstation.util.Properties
 import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
+import scala.reflect.BeanProperty
 
-class DatabaseHandler {
+class DatabaseHandler extends DatabaseHandlerTrait {
 
-  private var ds : DataSource = null
-  private var commands : Map[String,String] = null
+  @BeanProperty 
+  var ds : DataSource = _
   
-  private var sqlCommands : Map[String,String] = null
+  private var sqlCommands : Map[String,String] = _
   
-  def DatabaseHandler() {
-    this.ds = MySpring.getObject("mainDataSource").asInstanceOf[DataSource]
-    
+  def DatabaseHandler() {    
     this.sqlCommands = Properties.loadFile(  getClass().getResource("mssql.commands").getFile() )
-
   }
   
   def runQuery(qName : String, args : String*) : DBResult = {

@@ -16,13 +16,14 @@
 	<bean id="FormatGO.XML" class="org.penguindreams.greenstation.format.GreenOvenXMLFormat" />
 
 
-    <!-- logging -->
+    <!-- logging  -->
     <bean name="logger" class="org.penguindreams.greenstation.spring.LoggingInterceptor" />
     <bean id="loggingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
       <property name="advice" ref="logger" />
-      <property name="pattern" value="org.penguindreams.*" />
+      <property name="pattern" value="org.penguindreams.greenstation.[^db].*" />
     </bean>
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
 
 	<!-- Database Handler -->
 	<bean id="databaseHandler" class="org.penguindreams.greenstation.db.DatabaseHandler">

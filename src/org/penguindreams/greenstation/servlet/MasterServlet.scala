@@ -2,10 +2,10 @@ package org.penguindreams.greenstation.servlet
 
 import javax.servlet.http.{HttpServlet,
   HttpServletRequest => HSReq, HttpServletResponse => HSResp}
-import org.penguindreams.greenstation.spring.{MySpring => Spring}
-import org.penguindreams.greenstation.action.{ActionTrait => Action}
+import org.penguindreams.greenstation.spring.MySpring
+import org.penguindreams.greenstation.action.ActionTrait
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
-import org.penguindreams.greenstation.action.{ActionResponse => Response}
+import org.penguindreams.greenstation.action.ActionResponse
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.Map
 import java.util.Properties
@@ -39,8 +39,8 @@ class MasterServlet extends HttpServlet {
         loadLogger()
         
         var ops = getPath(req)
-    	var action : Action = Spring.getObject("Action"+ops(0)).asInstanceOf[Action]    
-        var format = Spring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]   
+    	var action : ActionTrait = MySpring.getObject("Action"+ops(0)).asInstanceOf[ActionTrait]    
+        var format = MySpring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]   
 
         var data = HttpUtil.pullBody(req)
         var models : List[DataModel] = null;
@@ -48,7 +48,7 @@ class MasterServlet extends HttpServlet {
           models = format.loadModels(data);
         }
         
-    	var aResp : Response = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),models,format)    	
+    	var aResp : ActionResponse = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),models,format)    	
     }
     catch {
        case e:NoSuchBeanDefinitionException => {         
