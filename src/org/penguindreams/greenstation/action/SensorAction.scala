@@ -6,6 +6,7 @@ import org.penguindreams.greenstation.model.DataModel
 import scala.reflect.BeanProperty
 import org.penguindreams.greenstation.db.DatabaseHandler
 import org.penguindreams.greenstation.db.DatabaseHandlerTrait
+import javax.servlet.http.HttpServletResponse
   
 	class SensorAction extends ActionTrait {	
 	  
@@ -13,30 +14,25 @@ import org.penguindreams.greenstation.db.DatabaseHandlerTrait
 	    
 	    var resp = new ActionResponse()
 	    
-	    this.dbHandler.loadData(model)
 	    
-	    if(args.length > 1) {
-		    if(args(1) == "data" && method == "POST") {
-		      //add new XML data
-		      if(method == "POST") {
+	    method match {
+	      case "POST" => {
+	        if(args.length > 1) {
+	          resp.status = HttpServletResponse.SC_BAD_REQUEST
+	          resp.output = "Invalid argument %s".format(args(2))
+	        }
+	        else {
 		        this.dbHandler.loadData(model)
-		        resp.status = 201 
-		      }
-		      else if (method == "GET") {
-		        
-		      }
-		      else {
-		        
-		      }
-		    }
-		    else {
-		      
-		    }
-	    }
-	    else {
-	      
+		        resp.status = HttpServletResponse.SC_CREATED
+	        }
+	      }
+	      case "GET" => {}
+	      case "PUT" => {}
+	      case "DELETE" => {}
+	      case _ => {}
 	    }
 	    
+	    //TODO remove
 	    resp
 	  }
 	}

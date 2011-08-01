@@ -24,17 +24,18 @@ class GreenOvenXMLFormat extends FormatTrait {
         
     	var model = new DataModel()
         
-	    var sensors = pack \\ "sensors"
-	    model.timestamp = (pack \\"timestamp").text.trim()
-	    model.timezone = (pack \\"timestamp" \ "@zone" ).text.trim()
+	    var sensors = pack \ "sensors"
+	    model.timestamp = (pack \"@timestamp").text.trim()
+	    model.timezone = (pack \"@timezone"  ).text.trim()
+	    model.uniqueId = (pack \"@id"  ).text.trim()
 	       	    
 	    var sbList = new ListBuffer[SensorModel]()
 	    
 	    for( node <- sensors \"sensor") yield {
 	      var sensorData = new SensorModel()
-	      sensorData.uniqueId = (node\"id").text.trim()
-	      sensorData.stype = (node\"type").text.trim()
-	      sensorData.units = (node\"units").text.trim()
+	      sensorData.uniqueId = (node\"@id").text.trim()
+	      sensorData.stype = (node\"@type").text.trim()
+	      sensorData.units = (node\"@units").text.trim()
 	      sensorData.data = (node\"data").text.trim()
 	      sbList += sensorData
 	    } 

@@ -11,7 +11,7 @@ import scala.collection.Map
 import java.util.Properties
 import java.io.BufferedReader
 import org.apache.log4j.PropertyConfigurator
-import org.penguindreams.greenstation.format.{FormatTrait => Format}
+import org.penguindreams.greenstation.format.FormatTrait
 import org.penguindreams.greenstation.util.HttpUtil
 import org.apache.log4j.Logger
 import org.penguindreams.greenstation.model.DataModel
@@ -40,7 +40,7 @@ class MasterServlet extends HttpServlet {
         
         var ops = getPath(req)
     	var action : ActionTrait = MySpring.getObject("Action"+ops(0)).asInstanceOf[ActionTrait]    
-        var format = MySpring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[Format]   
+        var format = MySpring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[FormatTrait]   
 
         var data = HttpUtil.pullBody(req)
         var models : List[DataModel] = null;
@@ -48,7 +48,19 @@ class MasterServlet extends HttpServlet {
           models = format.loadModels(data);
         }
         
-    	var aResp : ActionResponse = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),models,format)    	
+    	var aResp : ActionResponse = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),models,format)
+    	
+    	//Headers
+    	resp.setStatus(aResp.status)
+    	
+    	//Body
+    	if(aResp.view != null) {
+    	  view(aResp.view,req,resp) 
+    	}
+    	else {
+    	  resp.getOutputStream().print(aResp.output)
+    	}
+    	
     }
     catch {
        case e:NoSuchBeanDefinitionException => {         
@@ -72,5 +84,6 @@ class MasterServlet extends HttpServlet {
   def getPath(req: HSReq) =
     req.getRequestURI()
      .substring( req.getContextPath().length() + req.getServletPath().length() )
+     .split("\\.")(0)
      .stripPrefix("/").stripSuffix("/").split("/")
 }

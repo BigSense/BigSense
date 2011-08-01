@@ -9,6 +9,7 @@ import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
 import scala.reflect.BeanProperty
 import org.apache.log4j.Logger
+import java.sql.ResultSet
 
 class DatabaseHandler extends DatabaseHandlerTrait {
 
@@ -29,7 +30,7 @@ class DatabaseHandler extends DatabaseHandlerTrait {
     var stmt : PreparedStatement = conn.prepareStatement(sqlCommands(qName))
     var x = 1
     args.foreach( a => { stmt.setObject(x,a); x += 1 })
-    var ret  = stmt.executeQuery()
+    var ret : ResultSet = stmt.executeQuery()
     var meta = ret.getMetaData()
     
     var keys = stmt.getGeneratedKeys()
@@ -55,13 +56,13 @@ class DatabaseHandler extends DatabaseHandlerTrait {
   def loadData(sets : List[DataModel]) {
     
     //TOOD: Start Transaction
-    /*sets.foreach( set => {
+    sets.foreach( set => {
       runQuery("getRelayId",set.uniqueId)
       
       set.sensors.foreach( sensor => {
         
       })
-    })*/    
+    })    
   }
   
   
