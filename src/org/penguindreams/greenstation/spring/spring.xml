@@ -32,7 +32,7 @@
 
 	<!-- Database configuration -->
 	<bean id="mainDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-	   <property name="driverClass" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+	   <property name="driverClass" value="net.sourceforge.jtds.jdbc.Driver" />
 	   <property name="jdbcUrl" value="connectionString" />
 	   <property name="username" value="dbUser"/>
 	   <property name="password" value="dbPass"/>
