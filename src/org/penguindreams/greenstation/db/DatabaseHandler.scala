@@ -11,6 +11,7 @@ import scala.reflect.BeanProperty
 import org.apache.log4j.Logger
 import java.sql.ResultSet
 import java.sql.Date
+import java.sql.Statement
 
 class DatabaseHandler extends DatabaseHandlerTrait {
 
@@ -26,7 +27,7 @@ class DatabaseHandler extends DatabaseHandlerTrait {
     var retval = new DBResult()
     
     //prepare statement
-    var stmt : PreparedStatement = conn.prepareStatement(sqlCommands(qName))
+    var stmt : PreparedStatement = conn.prepareStatement(sqlCommands(qName),Statement.RETURN_GENERATED_KEYS)
     var x = 1
     args.foreach( a => { 
       a.asInstanceOf[AnyRef] match {
@@ -39,11 +40,11 @@ class DatabaseHandler extends DatabaseHandlerTrait {
     })
     
     //run statement
-    if(sqlCommands(qName).toLowerCase().startsWith("select")) {
-      stmt.execute()
+    if( sqlCommands(qName).toLowerCase().startsWith("inert")) {
+      stmt.executeUpdate();
     }
     else {
-    	stmt.executeUpdate()
+      stmt.execute()
     }
     
     //get auto-insert keys
@@ -88,9 +89,10 @@ class DatabaseHandler extends DatabaseHandlerTrait {
   def loadData(sets : List[DataModel]) {
     
     val log = Logger.getLogger(this.getClass())
-    
+
     //Start Transaction
     var conn : Connection = ds.getConnection()
+
     conn.setAutoCommit(false)
     
     sets.foreach( set => {
@@ -121,7 +123,7 @@ class DatabaseHandler extends DatabaseHandlerTrait {
          runQuery(conn,"addSensorData",packageId,sensor.data)
       })
     })
-    
+
     conn.commit()
     conn.close()
   }

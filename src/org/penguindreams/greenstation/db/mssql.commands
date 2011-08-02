@@ -3,7 +3,7 @@ getRelayId = SELECT * FROM relays WHERE unique_id=?
 
 registerRelay = INSERT INTO relays(unique_id) VALUES(?)
 
-getSensorRecord = SELECT * FROM sensors WHERE relay_id=? AND sensor_id=?
+getSensorRecord = SELECT * FROM sensors WHERE relay_id=? AND unique_id=?
 
 addSensorRecord = INSERT INTO sensors(unique_id,relay_id,sensor_type,units) \
   VALUES(?,?,( SELECT id FROM sensor_types WHERE name=? ),?)
