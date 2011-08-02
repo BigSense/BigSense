@@ -10,7 +10,7 @@ import scala.collection.mutable.ListBuffer
 import scala.reflect.BeanProperty
 import org.apache.log4j.Logger
 import java.sql.ResultSet
-import java.util.Date
+import java.sql.Date
 
 class DatabaseHandler extends DatabaseHandlerTrait {
 
@@ -21,79 +21,109 @@ class DatabaseHandler extends DatabaseHandlerTrait {
   
   private var sqlCommands : Map[String,String] = _
   
-  def runQuery(qName : String, args : String*) : DBResult = {
+  def runQuery(conn : Connection, qName : String, args : Any*) : DBResult = {
     
     var retval = new DBResult()
     
-    var conn : Connection = ds.getConnection()
+    //prepare statement
     var stmt : PreparedStatement = conn.prepareStatement(sqlCommands(qName))
     var x = 1
-    args.foreach( a => { stmt.setObject(x,a); x += 1 })
-    
-    stmt.execute()
-    var ret : ResultSet = stmt.getResultSet()
-      
-    var meta = ret.getMetaData()
-    
-    var keys = stmt.getGeneratedKeys()
-    var keybuf = new ListBuffer[Any]();
-    while(keys.next()) {
-      keybuf += keys.getObject(0)
-    }
-    retval.generatedKeys = keybuf.toList
-    
-    var retbuf = new ListBuffer[Map[String,Any]]()
-    while(ret.next) {
-      val rMap = scala.collection.mutable.Map[String,Any]()
-
-      for(i <- 1 to meta.getColumnCount()) {
-        rMap += ( meta.getColumnName(i) -> ret.getObject(i))
+    args.foreach( a => { 
+      a.asInstanceOf[AnyRef] match {
+        case s: Integer => { stmt.setInt(x,s) }
+        case s: String => { stmt.setString(x,s) }
+        case s: Date => { stmt.setDate(x,s) }
+        case s => { stmt.setObject(x,s) }
       }
-      retbuf += Map(rMap.toSeq: _*)
+      x += 1 
+    })
+    
+    //run statement
+    if(sqlCommands(qName).toLowerCase().startsWith("select")) {
+      stmt.execute()
+    }
+    else {
+    	stmt.executeUpdate()
     }
     
-    Logger.getLogger(this.getClass()).trace("Results: " + retbuf.toList)
+    //get auto-insert keys
+	var keys = stmt.getGeneratedKeys()
+	if(keys != null) {
+	    var keybuf = new ListBuffer[Any]();
+	    while(keys.next()) {
+	      Logger.getLogger(this.getClass()).trace("Key: " +keys.getInt(1))
+	      keybuf += keys.getInt(1)
+	    }
+	    retval.generatedKeys = keybuf.toList
+	    Logger.getLogger(this.getClass()).trace("Keys: " + keybuf.toList)
+	}
     
-    retval.results = retbuf.toList
+    //pull results
+    var ret : ResultSet = stmt.getResultSet()
+    if(ret != null) {
+	      
+	    var meta = ret.getMetaData()
+	        
+	    var retbuf = new ListBuffer[Map[String,Any]]()
+	    while(ret.next) {
+	      val rMap = scala.collection.mutable.Map[String,Any]()
+	
+	      for(i <- 1 to meta.getColumnCount()) {
+	        rMap += ( meta.getColumnName(i) -> ret.getObject(i))
+	      }
+	      retbuf += Map(rMap.toSeq: _*)
+	    }
+	    
+	    Logger.getLogger(this.getClass()).trace("Results: " + retbuf.toList)
+	    
+	    retval.results = retbuf.toList
+	    ret.close()
+    }
+    
     //cleanup
-    ret.close()
     stmt.close()
-    conn.close()
     retval
-    
   }
   
   def loadData(sets : List[DataModel]) {
     
     val log = Logger.getLogger(this.getClass())
-    //TOOD: Start Transaction
-    log.trace("Start TRansaction")
+    
+    //Start Transaction
+    var conn : Connection = ds.getConnection()
+    conn.setAutoCommit(false)
+    
     sets.foreach( set => {
-      val rid : DBResult = runQuery("getRelayId",set.uniqueId)
+      val rid : DBResult = runQuery(conn,"getRelayId",set.uniqueId)
       
-      var relayId : String = null
+      var relayId : java.lang.Integer = null
       if(rid.results.length == 0) {
-        relayId = runQuery("registerRelay",set.uniqueId).generatedKeys(0).asInstanceOf[String]
+        relayId = runQuery(conn,"registerRelay",set.uniqueId).generatedKeys(0).asInstanceOf[Int]
       }
       else {
-        relayId = rid.results(0).get("id").toString();
+        relayId = rid.results(0)("id").toString().toInt;
       }
       
-      val packageId = runQuery("addDataPackage","2011-01-01 01:01:00.00".toString(),relayId).generatedKeys(0).asInstanceOf[String]
+      val packageId = runQuery(conn,"addDataPackage",new Date(math.round(set.timestamp.toDouble)),relayId)
+         .generatedKeys(0)
+         .asInstanceOf[Int]
       
       set.sensors.foreach( sensor => {
-         var sensorId : String = null
-         val sid : DBResult = runQuery("getSensorRecord",relayId,sensor.uniqueId)
+         var sensorId : java.lang.Integer = null
+         val sid : DBResult = runQuery(conn,"getSensorRecord",relayId,sensor.uniqueId)
          if(sid.results.length == 0) {
-           sensorId = runQuery("addSensorRecord",sensor.uniqueId,relayId,sensor.stype,sensor.units).generatedKeys(0).asInstanceOf[String]
+           sensorId = runQuery(conn,"addSensorRecord",sensor.uniqueId,relayId,sensor.stype,sensor.units).generatedKeys(0).toString().toInt
          }
          else {
-           sensorId = sid.results(0).get("id").toString();
+           sensorId = sid.results(0)("id").toString().toInt;
          }
          
-         runQuery("addSensorData",packageId,sensor.data)
+         runQuery(conn,"addSensorData",packageId,sensor.data)
       })
-    })    
+    })
+    
+    conn.commit()
+    conn.close()
   }
   
   

@@ -3,7 +3,7 @@
   <display-name>GreenOvenEAR</display-name>
   <module>
     <web>
-      <web-uri>GreenOven.war</web-uri>
+      <web-uri>greenoven.war</web-uri>
       <context-root>greenoven</context-root>
     </web>
   </module>

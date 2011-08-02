@@ -15,7 +15,7 @@
 	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
 	<property name="servletLib" value="${appServerLocation}/lib" />
 	<property name="deployDir" value="${appServerLocation}/webapps" />
-	<property name="warFile" value="${dist}/${ant.project.name}.war" />
+	<property name="warFile" value="${dist}/greenoven.war" />
 	<property name="earFile" value="${dist}/${ant.project.name}-${version}.ear" />
 	
 	<property environment="env"/>
@@ -78,7 +78,7 @@
 	</target>
 	
 	<target name="war" depends="configure">
-		<war destfile="${dist}/${ant.project.name}.war" webxml="${conf}/web.xml">
+		<war destfile="${warFile}" webxml="${conf}/web.xml">
 			<lib dir="${lib}" />
 			<lib file="${env.SCALA_HOME}/lib/scala-compiler.jar" />
 			<lib file="${env.SCALA_HOME}/lib/scala-library.jar" />
@@ -88,14 +88,14 @@
 	</target>
 
 	<target name="ear" depends="war">
-		<ear destfile="${dist}/${ant.project.name}-${version}.ear" appxml="${conf}/application.xml">
+		<ear destfile="${earFile}" appxml="${conf}/application.xml">
 			<fileset dir="${dist}" includes="*.war" />
 		</ear>
 	</target>
 
 	<target name="deploy" depends="ear">
 		<copy todir="${deployDir}">
-			<fileset dir="${dist}" includes="*.ear" />
+			<fileset dir="${dist}" includes="*.${deployFile}" />
 		</copy>
 	</target>
 
