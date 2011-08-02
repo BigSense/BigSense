@@ -40,23 +40,16 @@ class DatabaseHandler extends DatabaseHandlerTrait {
     })
     
     //run statement
-    if( sqlCommands(qName).toLowerCase().startsWith("inert")) {
-      stmt.executeUpdate();
-    }
-    else {
-      stmt.execute()
-    }
+    stmt.execute()
     
     //get auto-insert keys
 	var keys = stmt.getGeneratedKeys()
 	if(keys != null) {
 	    var keybuf = new ListBuffer[Any]();
 	    while(keys.next()) {
-	      Logger.getLogger(this.getClass()).trace("Key: " +keys.getInt(1))
 	      keybuf += keys.getInt(1)
 	    }
 	    retval.generatedKeys = keybuf.toList
-	    Logger.getLogger(this.getClass()).trace("Keys: " + keybuf.toList)
 	}
     
     //pull results
@@ -75,8 +68,6 @@ class DatabaseHandler extends DatabaseHandlerTrait {
 	      retbuf += Map(rMap.toSeq: _*)
 	    }
 	    
-	    Logger.getLogger(this.getClass()).trace("Results: " + retbuf.toList)
-	    
 	    retval.results = retbuf.toList
 	    ret.close()
     }
@@ -86,46 +77,69 @@ class DatabaseHandler extends DatabaseHandlerTrait {
     retval
   }
   
-  def loadData(sets : List[DataModel]) {
+  def loadDataPackage(id: Int) : List[DataModel] = {
+    
+    null
+  }
+  
+  def loadData(sets : List[DataModel]) : List[Int] = {
     
     val log = Logger.getLogger(this.getClass())
+    var generatedIds : ListBuffer[Int] = new ListBuffer()
 
-    //Start Transaction
-    var conn : Connection = ds.getConnection()
-
-    conn.setAutoCommit(false)
-    
-    sets.foreach( set => {
-      val rid : DBResult = runQuery(conn,"getRelayId",set.uniqueId)
-      
-      var relayId : java.lang.Integer = null
-      if(rid.results.length == 0) {
-        relayId = runQuery(conn,"registerRelay",set.uniqueId).generatedKeys(0).asInstanceOf[Int]
+    var conn : Connection = null
+    try {
+	    //Start Transaction
+	    conn = ds.getConnection()
+	
+	    conn.setAutoCommit(false)
+	    
+	    sets.foreach( set => {
+	      val rid : DBResult = runQuery(conn,"getRelayId",set.uniqueId)
+	      
+	      var relayId : java.lang.Integer = null
+	      if(rid.results.length == 0) {
+	        relayId = runQuery(conn,"registerRelay",set.uniqueId).generatedKeys(0).asInstanceOf[Int]
+	      }
+	      else {
+	        relayId = rid.results(0)("id").toString().toInt;
+	      }
+	      
+	      val packageId = runQuery(conn,"addDataPackage",new Date(math.round(set.timestamp.toDouble)),relayId)
+	         .generatedKeys(0)
+	         .asInstanceOf[Int]
+	      generatedIds += packageId //We will pull data in GET via packageId      
+	      
+	      set.sensors.foreach( sensor => {
+	         var sensorId : java.lang.Integer = null
+	         val sid : DBResult = runQuery(conn,"getSensorRecord",relayId,sensor.uniqueId)
+	         if(sid.results.length == 0) {
+	           sensorId = runQuery(conn,"addSensorRecord",sensor.uniqueId,relayId,sensor.stype,sensor.units).generatedKeys(0).toString().toInt
+	         }
+	         else {
+	           sensorId = sid.results(0)("id").toString().toInt;
+	         }
+	         
+	         runQuery(conn,"addSensorData",packageId,sensor.data)
+	      })
+	    })
+	
+	    conn.commit()
+	    generatedIds.toList
+    }
+    catch {
+      case e:Exception => {
+        try {
+          log.error("Database Error",e)
+          conn.rollback()
+        }
+        catch { case e:Exception => { log.warn("Could not Rollback Transaction",e)} }
+        throw new DatabaseException("Error creating models. Rolling back changes: %s".format(e.getMessage()) );
       }
-      else {
-        relayId = rid.results(0)("id").toString().toInt;
-      }
-      
-      val packageId = runQuery(conn,"addDataPackage",new Date(math.round(set.timestamp.toDouble)),relayId)
-         .generatedKeys(0)
-         .asInstanceOf[Int]
-      
-      set.sensors.foreach( sensor => {
-         var sensorId : java.lang.Integer = null
-         val sid : DBResult = runQuery(conn,"getSensorRecord",relayId,sensor.uniqueId)
-         if(sid.results.length == 0) {
-           sensorId = runQuery(conn,"addSensorRecord",sensor.uniqueId,relayId,sensor.stype,sensor.units).generatedKeys(0).toString().toInt
-         }
-         else {
-           sensorId = sid.results(0)("id").toString().toInt;
-         }
-         
-         runQuery(conn,"addSensorData",packageId,sensor.data)
-      })
-    })
-
-    conn.commit()
-    conn.close()
+    }
+    finally {
+    	try { conn.close() } catch { case e:Exception => {log.warn("Error Closing DB Connection",e)} }
+    }
   }
   
   

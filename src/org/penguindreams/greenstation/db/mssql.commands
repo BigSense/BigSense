@@ -11,3 +11,13 @@ addSensorRecord = INSERT INTO sensors(unique_id,relay_id,sensor_type,units) \
 addDataPackage = INSERT INTO data_package (rtime,relay_id) VALUES(?,?)
 
 addSensorData = INSERT INTO sensor_data(package_id,data) VALUES (?,?)
+
+readPackages = SELECT pck.id AS pack_id,pck.rtime, rel.unique_id AS relay_uid, dat.data, snsr.units, \
+  typ.name AS sensor_type, snsr.unique_id AS sensor_uid \
+  FROM data_package pck \
+  LEFT JOIN relays rel ON rel.id=relay_id \
+  LEFT JOIN sensor_data dat ON dat.package_id=pck.id \
+  LEFT JOIN sensors snsr ON snsr.relay_id=rel.id \
+  LEFT JOIN sensor_types typ ON typ.id=snsr.sensor_type
+  
+readPackage = 

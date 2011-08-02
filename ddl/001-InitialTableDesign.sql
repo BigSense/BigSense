@@ -7,6 +7,7 @@ CREATE TABLE sensor_types (
   id BIGINT PRIMARY KEY,
   name VARCHAR(20)
 )
+INSERT INTO sensor_types (id,name) VALUES(1,'Temperature')
 
 CREATE TABLE sensors (
   id BIGINT IDENTITY(1,1) PRIMARY KEY,

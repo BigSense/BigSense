@@ -15,6 +15,7 @@ import org.penguindreams.greenstation.format.FormatTrait
 import org.penguindreams.greenstation.util.HttpUtil
 import org.apache.log4j.Logger
 import org.penguindreams.greenstation.model.DataModel
+import org.penguindreams.greenstation.db.DatabaseException
 
 
 
@@ -63,18 +64,22 @@ class MasterServlet extends HttpServlet {
     	
     }
     catch {
+       case e:DatabaseException => {
+         log.error("Database Error",e)
+         req.setAttribute("message",e.getMessage())
+         resp.setStatus(HSResp.SC_INTERNAL_SERVER_ERROR)
+       }
        case e:NoSuchBeanDefinitionException => {         
-         log.warn("Invalid incoming request",e)
+         log.warn("Invalid Incoming Request",e)
          req.setAttribute("message","Bad Request")
          resp.setStatus(HSResp.SC_BAD_REQUEST)
-         view("error",req,resp)
        }
        case e:Throwable => {
-         log.error("Internal failure",e)
+         log.error("Internal Failure",e)
          req.setAttribute("message","Internal Server Error")
          resp.setStatus(HSResp.SC_INTERNAL_SERVER_ERROR)
-         view("error",req,resp)
        }
+       view("error",req,resp)
     }
 
   }

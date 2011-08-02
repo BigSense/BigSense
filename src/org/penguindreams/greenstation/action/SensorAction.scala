@@ -26,13 +26,23 @@ import javax.servlet.http.HttpServletResponse
 		        resp.status = HttpServletResponse.SC_CREATED
 	        }
 	      }
-	      case "GET" => {}
-	      case "PUT" => {}
-	      case "DELETE" => {}
-	      case _ => {}
+	      case "GET" => {
+	        
+	      }
+	      case "PUT" => { 
+	        resp.status = HttpServletResponse.SC_NOT_IMPLEMENTED
+	        resp.output = "Updating Sensor Data via PUT Not Implemented"
+	      }
+	      case "DELETE" => {
+	        resp.status = HttpServletResponse.SC_NOT_IMPLEMENTED
+	        resp.output = "Deleting Sensor Data Not Implemented"
+	      }
+	      case _ => {
+	        resp.status = HttpServletResponse.SC_METHOD_NOT_ALLOWED
+	        resp.output = "Unknown Request Type"
+	      }
 	    }
 	    
-	    //TODO remove
 	    resp
 	  }
 	}

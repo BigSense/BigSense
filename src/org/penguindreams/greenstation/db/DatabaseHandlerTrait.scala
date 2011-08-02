@@ -5,5 +5,5 @@ import java.sql.Connection
 trait DatabaseHandlerTrait {
 
   def runQuery(conn: Connection, qName : String, args : Any*) : DBResult
-  def loadData(sets : List[DataModel])
+  def loadData(sets : List[DataModel]) : List[Int]
 }
