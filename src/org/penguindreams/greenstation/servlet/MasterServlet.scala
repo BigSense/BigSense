@@ -53,6 +53,14 @@ class MasterServlet extends HttpServlet {
     	
     	//Headers
     	resp.setStatus(aResp.status)
+    	for( loc <- aResp.newLocations ) yield {
+    		resp.addHeader("Location",
+    		    if(req.isSecure()) "https" else "http" + "://" + 
+    		    req.getServerName + 
+    		    (if (req.getServerPort() != 80) ':' + req.getServerPort() else "")  +
+    		    req.getContextPath() + 
+    		    req.getServletPath() + '/'+ ops(0) + '/' + loc + '.' + getExtension(req))
+    	}
     	
     	//Body
     	if(aResp.view != null) {

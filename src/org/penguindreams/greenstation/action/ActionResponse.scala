@@ -5,6 +5,7 @@ package org.penguindreams.greenstation.action {
 	  var view : String = null
 	  //TODO: check scala versions/docs
 	  var status : java.lang.Integer = null
+	  var newLocations : List[Int] = null
 	}
 
 }

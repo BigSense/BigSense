@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse
 	          resp.output = "Invalid argument %s".format(args(2))
 	        }
 	        else {
-		        this.dbHandler.loadData(model)
+		        resp.newLocations = this.dbHandler.loadData(model)
 		        resp.status = HttpServletResponse.SC_CREATED
 	        }
 	      }

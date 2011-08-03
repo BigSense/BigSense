@@ -1,5 +1,6 @@
 package org.penguindreams.greenstation.util
 import org.apache.log4j.Logger
+import net.jmatrix.eproperties.EProperties
 
 
 /**
@@ -18,7 +19,7 @@ object Properties
         try
             {
             val file = new java.io.FileInputStream(fname)
-            val props = new java.util.Properties
+            val props = new EProperties
             props.load(file)
             file.close
             val iter = props.entrySet.iterator

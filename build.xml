@@ -9,6 +9,7 @@
 	<property name="conf"  value="./conf" />
 	<property name="src"   value="./src" />
 	<property name="lib"   value="./lib" />
+	<property name="libext"   value="./libext" />
 	<property name="web"   value="./web" />
 	<property name="version" value="x" />
 	<property name="springFile" value="${build}/org/penguindreams/greenstation/spring/spring.xml" />
@@ -22,6 +23,7 @@
 
 	<path id="build.classpath">
 		<fileset dir="${lib}" includes="**/*.jar" />
+		<fileset dir="${libext}" includes="**/*.jar" />
 		<fileset dir="${servletLib}" includes="**/*.jar" />
 		<fileset dir="${env.SCALA_HOME}/lib" includes="**/*.jar" />
 	</path>
@@ -80,6 +82,7 @@
 	<target name="war" depends="configure">
 		<war destfile="${warFile}" webxml="${conf}/web.xml">
 			<lib dir="${lib}" />
+			<lib dir="${libext}" />
 			<lib file="${env.SCALA_HOME}/lib/scala-compiler.jar" />
 			<lib file="${env.SCALA_HOME}/lib/scala-library.jar" />
 			<classes dir="${build}"/>
