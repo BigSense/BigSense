@@ -16,6 +16,7 @@ import org.penguindreams.greenstation.util.HttpUtil
 import org.apache.log4j.Logger
 import org.penguindreams.greenstation.model.DataModel
 import org.penguindreams.greenstation.db.DatabaseException
+import org.penguindreams.greenstation.action.ActionRequest
 
 
 
@@ -49,7 +50,13 @@ class MasterServlet extends HttpServlet {
           models = format.loadModels(data);
         }
         
-    	var aResp : ActionResponse = action.runAction(req.getMethod,ops,mapAsScalaMap(req.getParameterMap()),models,format)
+        var aReq = new ActionRequest()
+        aReq.method = req.getMethod()
+        aReq.args = ops
+        aReq.parameters = mapAsScalaMap(req.getParameterMap()).toMap
+        aReq.models = models
+        aReq.format = format
+    	var aResp : ActionResponse = action.runAction(aReq)
     	
     	//Headers
     	resp.setStatus(aResp.status)
@@ -57,7 +64,7 @@ class MasterServlet extends HttpServlet {
     		resp.addHeader("Location",
     		    if(req.isSecure()) "https" else "http" + "://" + 
     		    req.getServerName + 
-    		    (if (req.getServerPort() != 80) ':' + req.getServerPort() else "")  +
+    		    (if (req.getServerPort != 80) ":%s".format(req.getServerPort()) else "")  +
     		    req.getContextPath() + 
     		    req.getServletPath() + '/'+ ops(0) + '/' + loc + '.' + getExtension(req))
     	}

@@ -5,24 +5,24 @@ import org.penguindreams.greenstation.format.FormatTrait
 import org.penguindreams.greenstation.model.DataModel
 import scala.reflect.BeanProperty
 import org.penguindreams.greenstation.db.DatabaseHandler
-import org.penguindreams.greenstation.db.DatabaseHandlerTrait
+import org.penguindreams.greenstation.db.DataHandlerTrait
 import javax.servlet.http.HttpServletResponse
   
 	class SensorAction extends ActionTrait {	
 	  
-	  def runAction(method: String, args: Array[String], parameters: Map[String,Array[String]], model : List[DataModel], format : FormatTrait): ActionResponse = {
+	  def runAction(aReq : ActionRequest): ActionResponse = {
 	    
 	    var resp = new ActionResponse()
 	    
 	    
-	    method match {
+	    aReq.method match {
 	      case "POST" => {
-	        if(args.length > 1) {
+	        if(aReq.args.length > 1) {
 	          resp.status = HttpServletResponse.SC_BAD_REQUEST
-	          resp.output = "Invalid argument %s".format(args(2))
+	          resp.output = "Invalid argument %s".format(aReq.args(2))
 	        }
 	        else {
-		        resp.newLocations = this.dbHandler.loadData(model)
+		        resp.newLocations = this.dbHandler.loadData(aReq.models)
 		        resp.status = HttpServletResponse.SC_CREATED
 	        }
 	      }

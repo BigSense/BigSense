@@ -7,7 +7,7 @@ class DataModel {
   var uniqueId : String = null
   var sensors : List[SensorModel] = List() 
   
-  override def toString() : String = "Relay ID: %s\nTimestamp: %s\nTimezone: %s\n Sensors:\n%s\n".format(
+  override def toString() : String = "[Relay ID: %s, Timestamp: %s, Timezone: %s, Sensors: %s]".format(
       uniqueId,timestamp,timezone,sensors)
   
 }

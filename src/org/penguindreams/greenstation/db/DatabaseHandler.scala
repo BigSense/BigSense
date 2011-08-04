@@ -13,7 +13,7 @@ import java.sql.ResultSet
 import java.sql.Date
 import java.sql.Statement
 
-class DatabaseHandler extends DatabaseHandlerTrait {
+class DatabaseHandler extends DataHandlerTrait {
 
   this.sqlCommands = Properties.loadFile(  getClass().getResource("mssql.commands").getFile() )
   

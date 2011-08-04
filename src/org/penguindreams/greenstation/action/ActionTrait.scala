@@ -5,13 +5,13 @@ import org.penguindreams.greenstation.format.{FormatTrait => Format}
 import org.penguindreams.greenstation.model.DataModel
 import org.penguindreams.greenstation.db.DatabaseHandler
 import scala.reflect.BeanProperty
-import org.penguindreams.greenstation.db.DatabaseHandlerTrait
+import org.penguindreams.greenstation.db.DataHandlerTrait
   
 	trait ActionTrait {
 	  
-  	  @BeanProperty var dbHandler : DatabaseHandlerTrait = null
+  	  @BeanProperty var dbHandler : DataHandlerTrait = null
   
-	  def runAction(method: String, args : Array[String], parameters : Map[String,Array[String]], models : List[DataModel], format : Format) : ActionResponse	  
+	  def runAction(aReq : ActionRequest) : ActionResponse	  
 
 	}
 }
