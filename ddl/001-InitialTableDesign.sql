@@ -8,6 +8,7 @@ CREATE TABLE sensor_types (
   name VARCHAR(20)
 )
 INSERT INTO sensor_types (id,name) VALUES(1,'Temperature')
+INSERT INTO sensor_types (id,name) VALUES(2,'Counter')
 
 CREATE TABLE sensors (
   id BIGINT IDENTITY(1,1) PRIMARY KEY,
