@@ -8,4 +8,5 @@ class DataEventHandler extends DataHandlerTrait {
   
   def loadData(sets: List[DataModel]): List[Int] = { null }
 
+  def retrieveData(ids : List[Int]): List[DataModel] = { null }
 }

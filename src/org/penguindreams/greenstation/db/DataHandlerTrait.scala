@@ -6,4 +6,6 @@ trait DataHandlerTrait {
 
   //def runQuery(conn: Connection, qName : String, args : Any*) : DBResult
   def loadData(sets : List[DataModel]) : List[Int]
+  
+  def retrieveData(ids : List[Int]): List[DataModel]
 }

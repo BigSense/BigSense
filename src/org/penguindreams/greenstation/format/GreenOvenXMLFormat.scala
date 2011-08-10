@@ -8,9 +8,20 @@ import scala.collection.mutable.ListBuffer
 
 class GreenOvenXMLFormat extends FormatTrait {
 
-  def renderModels(model : List[DataModel]) = {
-  
+  def renderModels(model : List[DataModel]) = {      
+      <GreenData>{
+	      for( pack <- model) {
+	        <package id={pack.uniqueId} timestamp={pack.timestamp} timezone={pack.timezone}>
+        <sensors>{
+	          for( sensor <- pack.sensors) {
+	            <sensor id={sensor.uniqueId} type={sensor.stype} units={sensor.units}>
+            <data>{sensor.data}</data></sensor>
+	          }
+	        }</sensors></package>
+	      }
+      }</GreenData>
   }
+
   
   def loadModels(data : String) : List[DataModel] = { 
     

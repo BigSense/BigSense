@@ -77,8 +77,19 @@ class DatabaseHandler extends DataHandlerTrait {
     retval
   }
   
-  def loadDataPackage(id: Int) : List[DataModel] = {
-    
+  def retrieveData(ids : List[Int]): List[DataModel] = {
+    val conn : Connection = ds.getConnection()
+    var retlist = new ListBuffer[DataModel]
+    try {
+	    ids.foreach( id => {
+	      var rmodel : DataModel = new DataModel()
+	      val ret : DBResult = runQuery(conn,"readPackage",id)
+	     
+	    })
+    }
+    finally {
+    	try { conn.close() } catch { case e:Exception => {Logger.getLogger(this.getClass()).warn("Error Closing DB Connection",e)} }
+    }
     null
   }
   
