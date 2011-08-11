@@ -10,7 +10,9 @@ import scala.collection.mutable.ListBuffer
 import scala.reflect.BeanProperty
 import org.apache.log4j.Logger
 import java.sql.ResultSet
+import java.sql.Time
 import java.sql.Date
+import java.sql.Timestamp
 import java.sql.Statement
 
 class DatabaseHandler extends DataHandlerTrait {
@@ -34,6 +36,8 @@ class DatabaseHandler extends DataHandlerTrait {
         case s: Integer => { stmt.setInt(x,s) }
         case s: String => { stmt.setString(x,s) }
         case s: Date => { stmt.setDate(x,s) }
+        case s: Time => { stmt.setTime(x,s) }
+        case s: Timestamp => { stmt.setTimestamp(x,s) }
         case s => { stmt.setObject(x,s) }
       }
       x += 1 
@@ -116,7 +120,7 @@ class DatabaseHandler extends DataHandlerTrait {
 	        relayId = rid.results(0)("id").toString().toInt;
 	      }
 	      
-	      val packageId = runQuery(conn,"addDataPackage",new Date(math.round(set.timestamp.toDouble)),relayId)
+	      val packageId = runQuery(conn,"addDataPackage",new Timestamp(set.timestamp.toLong),relayId)
 	         .generatedKeys(0)
 	         .asInstanceOf[Int]
 	      generatedIds += packageId //We will pull data in GET via packageId      
