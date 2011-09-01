@@ -1,6 +1,7 @@
 CREATE TABLE relays (
   id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  unique_id VARCHAR(20)
+  unique_id VARCHAR(36),
+  public_key VARCHAR(500)
 )
 
 CREATE TABLE sensor_types (
@@ -43,7 +44,8 @@ CREATE TABLE relay_meta_data (
   relay_id BIGINT,
   meta_data_type_id BIGINT,
   val VARCHAR(255),
-  CONSTRAINT fk_relay_meta_data_type_id FOREIGN KEY ( meta_data_type_id ) REFERENCES meta_data_types(id)
+  CONSTRAINT fk_relay_meta_data_type_id FOREIGN KEY ( meta_data_type_id ) REFERENCES meta_data_types(id),
+  CONSTRAINT fk_relay_meta_data_relays_id FOREIGN KEY ( relay_id ) REFERENCES relays(id)  
 )
 
 CREATE TABLE sensor_meta_data (
@@ -51,4 +53,5 @@ CREATE TABLE sensor_meta_data (
   meta_data_type_id BIGINT,
   val VARCHAR(255),
   CONSTRAINT fk_sensor_meta_data_type_id FOREIGN KEY ( meta_data_type_id ) REFERENCES meta_data_types(id),
+  CONSTRAINT fk_sensor_meta_data_sensors_id FOREIGN KEY ( sensor_id ) REFERENCES sensors(id)
 )
