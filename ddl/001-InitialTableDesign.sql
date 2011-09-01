@@ -25,7 +25,9 @@ CREATE TABLE data_package (
   id BIGINT IDENTITY(1,1) PRIMARY KEY,
   rtime DATETIME,
   relay_id BIGINT,
-  CONSTRAINT fk_package_relay_id FOREIGN KEY ( relay_id ) REFERENCES relays(id)
+  sensor_id BIGINT,
+  CONSTRAINT fk_package_relay_id FOREIGN KEY ( relay_id ) REFERENCES relays(id),
+  CONSTRAINT fk_package_sensor_id FOREIGN KEY ( sensor_id ) REFERENCES sensors(id)
 )
 
 CREATE TABLE sensor_data (
@@ -55,3 +57,6 @@ CREATE TABLE sensor_meta_data (
   CONSTRAINT fk_sensor_meta_data_type_id FOREIGN KEY ( meta_data_type_id ) REFERENCES meta_data_types(id),
   CONSTRAINT fk_sensor_meta_data_sensors_id FOREIGN KEY ( sensor_id ) REFERENCES sensors(id)
 )
+
+
+
