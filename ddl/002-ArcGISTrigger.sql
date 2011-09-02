@@ -1,5 +1,5 @@
-CREATE TRIGGER [dbo].[transferToArcGIS]
-   ON  [dbo].[GreenOven].[sensor_data]
+ALTER TRIGGER transferToArcGIS
+   ON  GreenOven.dbo.sensor_data
    AFTER INSERT
 AS 
 BEGIN
@@ -7,17 +7,34 @@ BEGIN
 	SET NOCOUNT ON;
 	
   --Incomming Data
+  DECLARE @dataID AS BIGINT
+  DECLARE @packID AS BIGINT
+  DECLARE @sensorID AS VARCHAR(20)
   SET @dataID = (SELECT id FROM INSERTED)
   SET @packID = (SELECT package_id FROM INSERTED)
   SET @sensorID = (SELECT sensor_id FROM INSERTED)
   
-  --Joined Infomration
-  SELECT  pck.rtime,  rel.unique_id AS relay_uid,  dat.data, snsr.units, 
-  typ.name AS sensor_type, snsr.unique_id AS sensor_uid, dat.id AS data_id, pck.id AS package_id
-  FROM data_package pck 
-  LEFT JOIN relays rel ON rel.id=relay_id 
-  LEFT JOIN sensor_data dat ON dat.package_id=pck.id 
-  LEFT JOIN sensors snsr ON snsr.relay_id=rel.id 
-  LEFT JOIN sensor_types typ ON typ.id=snsr.sensor_type
-  WHERE pck.id=@packID AND dat.id=@dataID AND dat.sensor_id=@dataID
+  --variables
+  DECLARE @packTime AS DATETIME
+  DECLARE @relay AS CHAR(36)
+  DECLARE @sensor CHAR(20)
+  DECLARE @sensor_type CHAR(20)
+  DECLARE @sensor_data CHAR(50)
+  DECLARE @sensor_units CHAR(20)
   
+  
+  --Joined Infomration
+  SELECT  @packTime = pck.rtime,  @relay = rel.unique_id,  @sensor_data = dat.data, 
+    @sensor_units = snsr.units, @sensor_type = typ.name, @sensor = snsr.unique_id
+    FROM GreenOven.dbo.data_package pck 
+    LEFT JOIN GreenOven.dbo.relays rel ON rel.id=relay_id 
+    LEFT JOIN GreenOven.dbo.sensor_data dat ON dat.package_id=pck.id 
+    LEFT JOIN GreenOven.dbo.sensors snsr ON snsr.relay_id=rel.id 
+    LEFT JOIN GreenOven.dbo.sensor_types typ ON typ.id=snsr.sensor_type
+    WHERE pck.id=@packID AND dat.id=@dataID AND dat.sensor_id=@sensorID
+  
+  INSERT INTO SpatialData.dbo.CGC_DATA(relay,package_id,datetime,sensor,sensor_type,sensor_data,sensor_units)
+    VALUES(@relay,@packID,@packTime,@sensor,@sensor_type,@sensor_data,@sensor_units)
+    
+END
+GO

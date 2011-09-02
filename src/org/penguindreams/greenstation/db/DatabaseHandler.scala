@@ -135,7 +135,7 @@ class DatabaseHandler extends DataHandlerTrait {
 	           sensorId = sid.results(0)("id").toString().toInt;
 	         }
 	         
-	         runQuery(conn,"addSensorData",packageId,sensor.data)
+	         runQuery(conn,"addSensorData",packageId,sensorId,sensor.data)
 	      })
 	    })
 	
