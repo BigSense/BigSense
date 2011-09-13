@@ -10,13 +10,14 @@ CREATE TABLE sensor_types (
 )
 INSERT INTO sensor_types (id,name) VALUES(1,'Temperature')
 INSERT INTO sensor_types (id,name) VALUES(2,'Counter')
+INSERT INTO sensor_types (id,name) VALUES(3,'FlowRate')
 
 CREATE TABLE sensors (
   id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  unique_id VARCHAR(20),
+  unique_id VARCHAR(50),
   relay_id BIGINT,
   sensor_type BIGINT,
-  units VARCHAR(6),
+  units VARCHAR(20),
   CONSTRAINT fk_sensors_relay_id FOREIGN KEY ( relay_id ) REFERENCES relays(id),
   CONSTRAINT fk_sensors_type_id FOREIGN KEY  ( sensor_type ) REFERENCES sensor_types(id) 
 )
