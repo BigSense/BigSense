@@ -4,16 +4,27 @@
   xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
   id="WebApp_ID" version="2.5">
-  <display-name>GreenOven</display-name>
+  <display-name>BigSense</display-name>
    
   <servlet>
   	<servlet-name>MasterServlet</servlet-name>
-  	<servlet-class>org.penguindreams.greenstation.servlet.MasterServlet</servlet-class>
+  	<servlet-class>org.bigsense.servlet.MasterServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
 	<servlet-name>MasterServlet</servlet-name> 
 	<url-pattern>/api/*</url-pattern>
   </servlet-mapping>	
-	
+
+  <listener>
+    <listener-class>org.bigsense.servlet.InitLoggingListener</listener-class>
+  </listener>
+
+
+  <listener>
+    <listener-class>org.bigsense.servlet.DBUpdateListener</listener-class>
+  </listener>
+
+	 
+	 
 </web-app>

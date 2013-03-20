@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ivy-module version="2.0">
-  <info organisation="org.penguindreams" module="GreenOven" />
+  <info organisation="org.bigsense" module="BigSense" />
   <dependencies>
     <dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" transitive="false" />  
     <dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE" transitive="false"/>
@@ -11,15 +11,24 @@
     <dependency org="cglib" name="cglib" rev="2.2.2" />
     <dependency org="aopalliance" name="aopalliance" rev="1.0"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1" />    
+    <dependency org="commons-codec" name="commons-codec" rev="1.6" />
     <dependency org="javax.servlet" name="jstl" rev="1.1.2" />
     <dependency org="taglibs" name="standard" rev="1.1.2" />
     <dependency org="net.sourceforge.jtds" name="jtds" rev="1.2.4" />
     <dependency org="com.jolbox" name="bonecp" rev="0.7.1.RELEASE"/>
     <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.1" /> 
     <dependency org="spy" name="spymemcached" rev="2.7.1" />
+    <dependency org="org.scalaj" name="scalaj-collection_2.9.1" rev="1.2" />
+    <dependency org="bouncycastle" name="bcprov-jdk15" rev="140"/>
+    <!-- Dropbox Dependencies -->
+    <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.2.1"/>
+    <dependency org="org.apache.httpcomponents" name="httpmime" rev="4.2.1"/>
+    <dependency org="com.googlecode.json-simple" name="json-simple" rev="1.1.1"/>
+    <!-- End Dropbox -->
+    <dependency org="mysql" name="mysql-connector-java" rev="5.1.24"/>
+    <exclude org="org.scala-lang" module="scala-library" />
     <exclude org="javax.servlet" module="servlet-api" />
     <exclude org="javax.servlet" module="jsp-api" />
     <exclude org="javax.servlet" module="ejb-api" />
-    
   </dependencies>
 </ivy-module>

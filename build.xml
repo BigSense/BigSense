@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<project name="GreenOven" basedir="." default="ear"  xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="BigSense" basedir="." default="ear"  xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<property file="global.properties" />
-	
+
 	<!-- Variables -->
 	<property name="build" value="./build" />
 	<property name="dist" value="./dist" />
@@ -12,12 +12,15 @@
 	<property name="libext"   value="./libext" />
 	<property name="web"   value="./web" />
 	<property name="version" value="x" />
-	<property name="springFile" value="${build}/org/penguindreams/greenstation/spring/spring.xml" />
+	<property name="doc" value="./doc" />
+	<property name="dbms" value="mssql" />
+	<property name="springFile" value="${build}/org/bigsense/spring/spring.xml" />
 	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
 	<property name="servletLib" value="${appServerLocation}/lib" />
 	<property name="deployDir" value="${appServerLocation}/webapps" />
-	<property name="warFile" value="${dist}/greenoven.war" />
+	<property name="warFile" value="${dist}/bigsense.war" />
 	<property name="earFile" value="${dist}/${ant.project.name}-${version}.ear" />
+    <property name="dbDriver" value="net.sourceforge.jtds.jdbc.Driver" />
 	
 	<property environment="env"/>
 
@@ -35,14 +38,14 @@
 	      <pathelement location="${env.SCALA_HOME}/lib/scala-library.jar" />
 	    </classpath>
 	</taskdef>
-
-
+	
 	<!-- Targets -->
 
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
 		<delete dir="${lib}" />
+		<delete dir="${doc}" />
 		<delete file="${ant.project.name}-${version}.zip" />
 		<delete file="${ant.project.name}-${version}.tar.bz2" />
 	</target>
@@ -52,23 +55,43 @@
 		<mkdir dir="${build}" />
 		<mkdir dir="${dist}" />
 		<mkdir dir="${lib}" />
+		<mkdir dir="${doc}" />
 		<ivy:retrieve />		
+	</target>
+	
+	<target name="doc" depends="init">
+	    <scaladoc
+	      srcdir="${src}"
+	      destdir="${doc}"
+	      deprecation="yes" unchecked="yes"
+
+	      doctitle="&lt;div&gt; BigSense Framework Documentation &lt;/div&gt;"
+	      classpathref="build.classpath">
+	        <include name="**/*.scala"   />
+	    	<include name="**/*.java"   />
+	    </scaladoc>
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${src}" destdir="${build}" debug="on" optimize="on" includeantruntime="false">
-			<classpath refid="build.classpath" />
+		<javac srcdir="${src}" destdir="${build}" deprecation="yes">
 			<include name="**/*.java"/>
+			<classpath refid="build.classpath" />		  
 		</javac>
 		<scalac srcdir="${src}" destdir="${build}" deprecation="yes">
 			<include name="**/*.scala"/>
+			<include name="**/*.java"/>
 			<classpath refid="build.classpath" />		  
 		</scalac>
 		<copy todir="${build}" includeEmptyDirs="false">
 			<fileset dir="${src}">
 				<include name="**/*" />
-				<exclude name="*.java"/>
-				<exclude name="*.scala"/>
+				<exclude name="**/*.java"/>
+				<exclude name="**/*.scala"/>
+			</fileset>
+		</copy>
+		<copy todir="${build}/org/bigsense/db/ddl" includeEmptyDirs="false">
+			<fileset dir="ddl">
+				<include name="**/*.sql" />
 			</fileset>
 		</copy>
 	</target>
@@ -77,6 +100,12 @@
 		<replace file="${springFile}" token="connectionString" value="${connectionString}"/>
 		<replace file="${springFile}" token="dbUser" value="${dbUser}"/>
 		<replace file="${springFile}" token="dbPass" value="${dbPass}"/>
+		<replace file="${springFile}" token="dboUser" value="${dboUser}"/>
+		<replace file="${springFile}" token="dboPass" value="${dboPass}"/>
+		<replace file="${springFile}" token="dbms" value="${dbms}" />
+        <replace file="${springFile}" token="dbDriver" value="${dbDriver}" />
+		<replace file="${springFile}" token="environment" value="${environment}" />
+		<replace file="${springFile}" token="securityManager" value="${securityManager}" />
 	</target>
 	
 	<target name="war" depends="configure">
