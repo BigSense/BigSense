@@ -132,7 +132,7 @@ trait DataHandlerTrait {
 		     val rMap = scala.collection.mutable.Map[String,Any]()
 			
 		     for(i <- 1 to meta.getColumnCount()) {
-		       rMap += ( meta.getColumnName(i) -> ret.getObject(i))
+		       rMap += ( meta.getColumnLabel(i) -> ret.getObject(i))
 		     }
 
 		     //conversion

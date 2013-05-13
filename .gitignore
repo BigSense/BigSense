@@ -1,0 +1,13 @@
+.idea
+BigSense.iml
+.classpath
+.project
+.scala_dependencies
+bin/
+build/
+dist/
+env/*.properties
+lib/
+.pydevproject
+.settings/
+web/js/jquery.tablesorter.theme.blue/.svn/

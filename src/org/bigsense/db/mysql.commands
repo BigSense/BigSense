@@ -52,7 +52,7 @@ aggregationForInterval = "SELECT
       MAX(sns.units) AS sensor_units
       FROM sensor_data dat
        LEFT OUTER JOIN (
-         SELECT *,dateadd(MINUTE, datediff(MINUTE, 0, rtime) / ? * ?, 0) as interval
+         SELECT *, 0 + interval (timestampdiff(MINUTE, 0, rtime) / ? * ?) minute as interval
          FROM data_package 
        ) AS pak ON dat.package_id = pak.id
        LEFT OUTER JOIN relays rel ON pak.relay_id = rel.id
@@ -76,14 +76,14 @@ listRelays = SELECT unique_id,public_key FROM relays
 
 listSensors = "SELECT sen.unique_id AS SensorID , r.unique_id AS RelayID, 
    sen.units AS Units, t.name AS SensorType,
-   l.location.Lat AS Latitude, l.location.Long as Longitude 
+   X(l.location) AS Latitude, Y(l.location) as Longitude
    FROM sensors sen
    LEFT JOIN sensor_types t ON t.id = sen.sensor_type
    LEFT JOIN relays r ON r.id = sen.relay_id
    LEFT JOIN sensor_locations l ON l.sensor_unique_id=LEFT(sen.unique_id,16)" 
 
 sensorAliveStatus = "SELECT rly.unique_id AS relay_id, lpr.last_report_time, 
-  DATEDIFF(MINUTE,lpr.last_report_time,NOW()) AS time_since_last_report,
+  TIMESTAMPDIFF(MINUTE,lpr.last_report_time,NOW()) AS time_since_last_report,
    sns.unique_id AS sensor_unique_id,
    typ.name AS sensor_type FROM
    (SELECT sensor_id, MAX(rtime) as last_report_time FROM data_package pak

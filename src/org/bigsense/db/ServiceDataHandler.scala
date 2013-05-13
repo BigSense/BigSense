@@ -174,8 +174,17 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
       val results = runQuery(req).results
       results.length match {
         case 1 => {
-          val clob = results(0)("data_keys_pem").asInstanceOf[Clob]         
-          Some(clob.getSubString(1,clob.length().asInstanceOf[Int]))
+          results(0)("data_keys_pem") match {
+            //MS SQL returns TEXT fields as CLOBs
+            case clob:Clob => {
+              Some(clob.getSubString(1,clob.length().asInstanceOf[Int]))
+            }
+            //MySQL returns TEXT fields as Strings
+            case str:String => {
+              Some(str)
+            }
+          }
+
         }
         case 0 => { None }
         case _ => { throw new DatabaseException("Multiple Results For Unique ID") }
@@ -227,31 +236,32 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     var ret = new ListBuffer[DataModel]
     var prev : Long = -1;
     if( results.results.length > 0) {
+      //log.debug("#### Result Head:%s".format(results.results.head))
       prev = results.results.head("package_id").asInstanceOf[Long]
     }
     var dmodel : DataModel = new DataModel()
-	for( row <- results.results) {
-	  if( row("package_id").asInstanceOf[Long] != prev) {
-	    ret.append(dmodel)
-	    dmodel = new DataModel()
-	    log.debug("Changing Model from relay %s to %s".format(prev,row("package_id").asInstanceOf[Long]))
+	  for( row <- results.results) {
+	    if( row("package_id").asInstanceOf[Long] != prev) {
+	      ret.append(dmodel)
+	      dmodel = new DataModel()
+	      log.debug("Changing Model from relay %s to %s".format(prev,row("package_id").asInstanceOf[Long]))
+	    }
+	    prev = row("package_id").asInstanceOf[Long]
+	  
+	    dmodel.timestamp = row("time").asInstanceOf[Timestamp].getTime().toString()
+	    dmodel.uniqueId  = row("relay").toString()
+	  
+	    var sensorListBuf = new ListBuffer[SensorModel]
+	    for( senrow <- results.results) {
+	      var smodel : SensorModel = new SensorModel()
+	      smodel.uniqueId = senrow("sensor").toString()
+	      smodel.units = senrow("sensor_units").toString()
+	      smodel.stype = senrow("sensor_type").toString()
+	      smodel.data = senrow("sensor_data").toString()
+	      sensorListBuf.append(smodel)
+	    }
+	    dmodel.sensors = sensorListBuf.toList
 	  }
-	  prev = row("package_id").asInstanceOf[Long]	  
-	  
-	  dmodel.timestamp = row("time").asInstanceOf[Timestamp].getTime().toString()
-	  dmodel.uniqueId  = row("relay").toString()
-	  
-	  var sensorListBuf = new ListBuffer[SensorModel]
-	  for( senrow <- results.results) {
-	    var smodel : SensorModel = new SensorModel()
-	    smodel.uniqueId = senrow("sensor").toString()
-	    smodel.units = senrow("sensor_units").toString()
-	    smodel.stype = senrow("sensor_type").toString()
-	    smodel.data = senrow("sensor_data").toString()
-	    sensorListBuf.append(smodel)
-	  }     
-	  dmodel.sensors = sensorListBuf.toList      
-	}
     ret.append(dmodel)
     ret.toList
   }
