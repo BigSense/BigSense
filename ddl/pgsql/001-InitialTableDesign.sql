@@ -1,5 +1,5 @@
 CREATE TABLE relays (
-  id BIGINT auto_increment PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   unique_id VARCHAR(36),
   public_key VARCHAR(500)
 );
@@ -15,7 +15,7 @@ INSERT INTO sensor_types (id,name) VALUES(3,'Volume');
 INSERT INTO sensor_types (id,name) VALUES(4,'WindSpeed');
 
 CREATE TABLE sensors (
-  id BIGINT auto_increment PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   unique_id VARCHAR(50),
   relay_id BIGINT,
   sensor_type BIGINT,
@@ -25,14 +25,14 @@ CREATE TABLE sensors (
 );
 
 CREATE TABLE data_package (
-  id BIGINT auto_increment PRIMARY KEY,
-  rtime DATETIME,
+  id SERIAL PRIMARY KEY,
+  rtime TIMESTAMP,
   relay_id BIGINT,
   CONSTRAINT fk_package_relay_id FOREIGN KEY ( relay_id ) REFERENCES relays(id)
 );
 
 CREATE TABLE sensor_data (
-  id BIGINT auto_increment PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   package_id BIGINT,
   sensor_id BIGINT,
   data VARCHAR(50),
@@ -41,7 +41,7 @@ CREATE TABLE sensor_data (
 );
 
 CREATE TABLE meta_data_types (
-  id BIGINT auto_increment PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   name VARCHAR(100)
 );
 

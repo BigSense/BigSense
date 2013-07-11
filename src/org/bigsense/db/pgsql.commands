@@ -1,0 +1,120 @@
+# BigSense
+# author Sumit Khanna <sumit@penguindreams.org>
+
+
+getRelayId = SELECT * FROM relays WHERE unique_id=?
+
+registerRelay = INSERT INTO relays(unique_id) VALUES(?)
+
+getSensorRecord = SELECT * FROM sensors WHERE relay_id=? AND unique_id=?
+
+addSensorRecord = "INSERT INTO sensors(unique_id,relay_id,sensor_type,units)
+  VALUES(?,?,( SELECT id FROM sensor_types WHERE name=? ),?)"
+
+addDataPackage = INSERT INTO data_package (rtime,relay_id) VALUES(?,?)
+
+addSensorData = INSERT INTO sensor_data(package_id,sensor_id,data) VALUES (?,?,?)
+
+readPackages = "SELECT 'UTC' AS timezone, pak.id AS package_id, rel.unique_id AS relay, sns.unique_id AS sensor, pak.rtime AS time,
+       sns.units AS sensor_units, typ.name AS sensor_type, dat.data AS sensor_data
+       FROM sensor_data dat
+       LEFT OUTER JOIN data_package pak ON dat.package_id = pak.id
+       LEFT OUTER JOIN relays rel ON pak.relay_id = rel.id
+       LEFT OUTER JOIN sensors sns ON dat.sensor_id = sns.id
+       LEFT OUTER JOIN sensor_types typ ON sns.sensor_type = typ.id"
+
+listImages = "SELECT 'UTC' AS timezone, si.id AS image_id, si.image AS image, pak.id AS package_id, pak.rtime AS time, rel.unique_id AS relay,
+    sns.unique_id AS sensor, sns.units AS sensor_units, typ.name AS sensor_type, dat.data AS sensor_data,
+    CONCAT( ? , 'Image/Pull/' , RTRIM(si.id) , '.jpeg') AS photo_url
+    FROM sensor_images si
+    LEFT OUTER JOIN data_package  pak ON si.package_id = pak.id
+    LEFT OUTER JOIN relays rel ON pak.relay_id = rel.id
+    LEFT OUTER JOIN sensors sns ON sns.id = si.sensor_id
+    LEFT OUTER JOIN sensor_types typ ON typ.id = sns.sensor_type
+	LEFT OUTER JOIN sensor_data dat ON (dat.sensor_id=si.sensor_id AND dat.package_id=si.package_id)"
+
+addImage = "INSERT INTO sensor_images(package_id,sensor_id,image) VALUES(?,?,?)"
+
+pullImage = "SELECT si.image AS image FROM sensor_images si WHERE si.id = ?"
+
+addError = "INSERT INTO sensor_errors(package_id,error) VALUES(?,?)"
+
+pemForRelay = "SELECT data_keys_pem FROM sites s
+  LEFT JOIN site_relays sr ON s.id=sr.site_id
+  WHERE sr.relay_unique_id = ?"
+
+aggregationForInterval = "SELECT
+      'UTC' AS timezone,
+      rel.unique_id AS relay,
+      sns.unique_id AS sensor,
+      pak.interval AS time,
+      ${compoundFormula} AS sensor_data,
+      MAX(sns.units) AS sensor_units
+      FROM sensor_data dat
+       LEFT OUTER JOIN (
+         SELECT *, 0 + interval (timestampdiff(MINUTE, 0, rtime) / ? * ?) minute as interval
+         FROM data_package
+       ) AS pak ON dat.package_id = pak.id
+       LEFT OUTER JOIN relays rel ON pak.relay_id = rel.id
+       LEFT OUTER JOIN sensors sns ON dat.sensor_id = sns.id
+       LEFT OUTER JOIN sensor_types typ ON sns.sensor_type = typ.id"
+
+totalDataForInterval={
+  compoundFormula = MAX(dat.data) - MIN(dat.data)
+  sql = ${aggregationForInterval}
+}
+
+averageDataForInterval={
+  compoundFormula = AVG(dat.data)
+  sql = ${aggregationForInterval}
+}
+
+
+readPackage = ${readPackages} WHERE pak.id=?
+
+listRelays = SELECT unique_id,public_key FROM relays
+
+listSensors = "SELECT sen.unique_id AS SensorID , r.unique_id AS RelayID,
+   sen.units AS Units, t.name AS SensorType,
+   X(l.location) AS Latitude, Y(l.location) as Longitude
+   FROM sensors sen
+   LEFT JOIN sensor_types t ON t.id = sen.sensor_type
+   LEFT JOIN relays r ON r.id = sen.relay_id
+   LEFT JOIN sensor_locations l ON l.sensor_unique_id=LEFT(sen.unique_id,16)"
+
+sensorAliveStatus = "SELECT rly.unique_id AS relay_id, lpr.last_report_time,
+  TIMESTAMPDIFF(MINUTE,lpr.last_report_time,NOW()) AS time_since_last_report,
+   sns.unique_id AS sensor_unique_id,
+   typ.name AS sensor_type FROM
+   (SELECT sensor_id, MAX(rtime) as last_report_time FROM data_package pak
+    INNER JOIN sensor_data dat ON pak.id=dat.package_id
+    GROUP BY sensor_id) lpr
+    INNER JOIN sensors sns ON lpr.sensor_id = sns.id
+    INNER JOIN sensor_types typ ON sns.sensor_type = typ.id
+    INNER JOIN relays rly ON rly.id=sns.relay_id
+    ORDER BY relay_id,sensor_unique_id"
+
+
+orderByPackDesc = " ORDER BY pak.id DESC "
+orderByAggregation = " ORDER BY time, relay, sensor "
+
+#Web Service Parameter Constraints
+constraintRelayID = " rel.unique_id=? "
+constraintSensorType = " typ.name=? "
+constraintSensorID = " sns.unique_id=? "
+
+#Internal Constraints
+constraintPackTimeAbove = " pak.rtime > ? "
+constraintPackTimeBelow = " pak.rtime < ? "
+constraintPackageIDAbove = " pak.id > ? "
+constraintPackageIDBelow = " pak.id < ? "
+constraintIntervalAbove = " pak.interval > ? "
+constraintIntervalBelow = " pak.interval < ? "
+constraintNumericData =  isnumeric(dat.data) = ?
+
+groupAggregation = " GROUP BY rel.unique_id,sns.unique_id, pak.interval "
+
+
+#Schema/DDL control
+currentDDLVersion = "SELECT max(version) AS version FROM ddl_info"
+updateDDLVersion = "INSERT INTO ddl_info(version,installed) VALUES(?,now())"

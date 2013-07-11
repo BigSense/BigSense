@@ -1,11 +1,15 @@
-CREATE USER db_bigsense_ddl CREATEDB WITH PASSWORD 'insertpassowrd';
-CREATE USER db_bigsense WITH PASSWORD 'inserpassword'
+CREATE USER db_bigsense_ddl CREATEDB PASSWORD 'insertpassowrd';
+CREATE USER db_bigsense PASSWORD 'inserpassword';
 
-CREATE DATABASE BigSennse
+CREATE DATABASE bigsense
   WITH OWNER = db_bigsense_ddl
-       ENCODING = 'UTF8'
+       ENCODING = 'UTF8';
 
-GRANT SELECT, UPDATE, INSERT ON DATABASE BigSense TO db_bigsense;
 
-USE BigSense;
-CREATE TABLE ddl_info( id INT auto_increment PRIMARY KEY, version INT, installed TIMESTAMP );
+GRANT ALL PRIVILEGES ON DATABASE bigsense to db_bigsense;
+
+
+\connect bigsense;
+
+CREATE EXTENSION postgis;
+CREATE TABLE ddl_info( id SERIAL, version INT, installed TIMESTAMP );

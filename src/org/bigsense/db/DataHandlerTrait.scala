@@ -85,7 +85,13 @@ trait DataHandlerTrait {
    
     //prepare statement
     log.debug("SQL Statement: %s".format(consBuilder.toString()))
-    using( req.conn.prepareStatement(consBuilder.toString(),Statement.RETURN_GENERATED_KEYS) ) { stmt => 
+
+    /* PostgreSQL drivers are shit. If you use RETURN_GENERATED_KEYS, it adds RETURING
+       to the end of every statement! This is a fix (hack) as this bug as existed since 2010
+     */
+    val keys = if (consBuilder.toString().toUpperCase().startsWith("INSERT"))  Statement.RETURN_GENERATED_KEYS else Statement.NO_GENERATED_KEYS
+
+    using( req.conn.prepareStatement(consBuilder.toString(),keys) ) { stmt =>
 	    
 	    //row limit
 	    if(req.maxRows > 0) { stmt.setMaxRows(req.maxRows) }
