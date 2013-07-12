@@ -1,9 +1,11 @@
-CREATE EXTENSION postgis;
 
 CREATE TABLE sensor_locations (
     sensor_unique_id VARCHAR(50) PRIMARY KEY,
     location geography(POINT)
 );
+
+GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_locations TO db_bigsense;
+
 
 INSERT INTO sensor_locations VALUES('BB0008017D091010',ST_GeographyFromText('POINT(39.13024889 -84.49841278)'));
 INSERT INTO sensor_locations VALUES('BC0000000F968F1D',ST_GeographyFromText('POINT(39.13024889 -84.49841278)'));
