@@ -23,10 +23,12 @@ object TimeHelper {
     date
   }
   
-  def timestampToDate(unixTimeStamp: String) : String = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-      .format(new java.sql.Date(unixTimeStamp.toLong * 1000))
+  //def timestampToDate(unixTimeStamp: String) : String = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+  //    .format(new java.sql.Date(unixTimeStamp.toLong * 1000))
 
-  
+  def timestampToDate(unixTimeStamp: String) : java.sql.Date = new java.sql.Date(unixTimeStamp.toLong * 1000)
+
+
   def timestampToSQLString(stamp : Long) : String = {
 	  var sdf : SimpleDateFormat = new SimpleDateFormat()
       sdf.setTimeZone(new SimpleTimeZone(0, "UTC"));

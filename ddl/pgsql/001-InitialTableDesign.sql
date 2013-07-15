@@ -35,7 +35,7 @@ GRANT USAGE ON SEQUENCE sensors_id_seq TO db_bigsense;
 
 CREATE TABLE data_package (
   id SERIAL PRIMARY KEY,
-  rtime TIMESTAMP,
+  rtime TIMESTAMP WITHOUT TIME ZONE,
   relay_id BIGINT,
   CONSTRAINT fk_package_relay_id FOREIGN KEY ( relay_id ) REFERENCES relays(id)
 );
