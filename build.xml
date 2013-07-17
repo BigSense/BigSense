@@ -21,6 +21,9 @@
 	<property name="warFile" value="${dist}/bigsense.war" />
 	<property name="earFile" value="${dist}/${ant.project.name}-${version}.ear" />
     <property name="dbDriver" value="net.sourceforge.jtds.jdbc.Driver" />
+    <property name="dbPoolMaxPerPart" value="30"  />
+    <property name="dbPoolMinPerPart" value="10"  />
+    <property name="dbPoolPartitions" value="3"  />
 	
 	<property environment="env"/>
 
@@ -106,6 +109,10 @@
         <replace file="${springFile}" token="dbDriver" value="${dbDriver}" />
 		<replace file="${springFile}" token="environment" value="${environment}" />
 		<replace file="${springFile}" token="securityManager" value="${securityManager}" />
+
+        <replace file="${springFile}" token="dbPoolMaxPerPart" value="30"  />
+        <replace file="${springFile}" token="dbPoolMinPerPart" value="10"  />
+        <replace file="${springFile}" token="dbPoolPartitions" value="3"  />
 	</target>
 	
 	<target name="war" depends="configure">

@@ -19,8 +19,8 @@ class ImageAction extends ActionTrait {
 				    }
 				    case "TimestampRange" => {
 				        		
-				        var start :String = TimeHelper.timestampToDate(aReq.args(3))
-				        var end   :String = TimeHelper.timestampToDate(aReq.args(4))
+				        var start  = TimeHelper.timestampToDate(aReq.args(3))
+				        var end    = TimeHelper.timestampToDate(aReq.args(4))
 				        
 				        resp.output = aReq.format.renderModels( dbHandler.retrieveImageInfoRange(start,end,aReq.parameters) )
 				        resp.status = HttpServletResponse.SC_OK

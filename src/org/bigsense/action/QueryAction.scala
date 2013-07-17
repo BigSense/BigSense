@@ -21,8 +21,8 @@ class QueryAction extends ActionTrait {
 		    }
 		    case "TimestampRange" => {
 		        		
-		        var start :String = TimeHelper.timestampToDate(aReq.args(2))
-		        var end   :String = TimeHelper.timestampToDate(aReq.args(3))
+		        var start  = TimeHelper.timestampToDate(aReq.args(2))
+		        var end    = TimeHelper.timestampToDate(aReq.args(3))
 		        
 		        resp.output = aReq.format.renderModels( dbHandler.retrieveDateRange(start,end,aReq.parameters) )
 		        resp.status = HttpServletResponse.SC_OK

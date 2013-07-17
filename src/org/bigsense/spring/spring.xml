@@ -123,9 +123,9 @@
 	   <property name="jdbcUrl" value="connectionString" />
 	   <property name="idleConnectionTestPeriod" value="60"/>
 	   <property name="idleMaxAge" value="240"/>
-	   <property name="maxConnectionsPerPartition" value="30"/>
-	   <property name="minConnectionsPerPartition" value="10"/>
-	   <property name="partitionCount" value="3"/>
+	   <property name="maxConnectionsPerPartition" value="dbPoolMaxPerPart"/>
+	   <property name="minConnectionsPerPartition" value="dbPoolMinPerPart"/>
+	   <property name="partitionCount" value="dbPoolPartitions"/>
 	   <property name="acquireIncrement" value="5"/>
 	   <property name="statementsCacheSize" value="100"/>
 	   <property name="releaseHelperThreads" value="3"/>

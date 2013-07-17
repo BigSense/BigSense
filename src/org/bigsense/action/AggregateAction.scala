@@ -14,6 +14,7 @@ class AggregateAction extends ActionTrait {
           
           var start : String = ""
           var end : String = ""
+
 	      aReq.args(2) match {
 		    case "TimestampRange" => {		        		
 		        start = TimeHelper.timestampToDate(aReq.args(3))

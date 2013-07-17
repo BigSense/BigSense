@@ -9,7 +9,7 @@ object TimeHelper {
   def convertDateArgument(date : String, parameters : Map[String,Array[String]] ) : String = {
      
     val df1 : SimpleDateFormat = new SimpleDateFormat()
-	df1.applyPattern("yyyyMMdd");
+	  df1.applyPattern("yyyyMMdd");
     df1.setTimeZone(TimeZone.getTimeZone("UTC"))
 
     val df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")  
@@ -23,10 +23,10 @@ object TimeHelper {
     date
   }
   
-  //def timestampToDate(unixTimeStamp: String) : String = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-  //    .format(new java.sql.Date(unixTimeStamp.toLong * 1000))
+  def timestampToDate(unixTimeStamp: String) : String = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+      .format(new java.sql.Date(unixTimeStamp.toLong * 1000))
 
-  def timestampToDate(unixTimeStamp: String) : java.sql.Date = new java.sql.Date(unixTimeStamp.toLong * 1000)
+  //def timestampToDate(unixTimeStamp: String) : java.sql.Date = new java.sql.Date(unixTimeStamp.toLong * 1000)
 
 
   def timestampToSQLString(stamp : Long) : String = {
