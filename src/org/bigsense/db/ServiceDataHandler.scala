@@ -30,9 +30,8 @@ import net.jmatrix.eproperties.EProperties
 import java.awt.Image
 import java.io.ByteArrayInputStream
 import org.apache.commons.codec.binary.Base64
-import org.bigsense.util.WebAppInfo
+import org.bigsense.util.{Numbers, WebAppInfo, TimeHelper}
 import java.sql.Blob
-import org.bigsense.util.TimeHelper
 import java.sql.Clob
 
 class ServiceDataHandler extends ServiceDataHandlerTrait {
@@ -82,7 +81,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     ret
    }
   
-  def retrieveLatestSensorData(limit : Int, constraints: Map[String,Array[String]]) : List[FlatModel] = {
+  def retrieveLatestSensorData(limit : Int, constraints: Map[String,Array[Any]]) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = standardFlatHeaders 
@@ -96,7 +95,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     List(model)
   }
   
-  def retrieveDateRange(start : String, end : String, constraints: Map[String,Array[String]]) : List[FlatModel] = {
+  def retrieveDateRange(start : java.sql.Date, end : java.sql.Date, constraints: Map[String,Array[Any]]) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = standardFlatHeaders
@@ -114,7 +113,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     List(model)
   }
   
-  def retrieveLatestImageInfo(limit : Int, constraints : Map[String,Array[String]]) : List[FlatModel] = {
+  def retrieveLatestImageInfo(limit : Int, constraints : Map[String,Array[Any]]) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn =>
       model.headers = imageFlatHeaders
@@ -131,7 +130,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     List(model)
   }
   
-  def retrieveImageInfoRange(start: String, end: String, constraints : Map[String,Array[String]] ) : List[FlatModel] = {
+  def retrieveImageInfoRange(start: java.sql.Date, end: java.sql.Date, constraints : Map[String,Array[Any]] ) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = imageFlatHeaders
@@ -205,7 +204,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     retlist.toList
   }
   
-  def aggregate(start: String, end : String, stepping : String, aggType : AggregateType, constraints : Map[String,Array[String]]) : List[FlatModel] = {
+  def aggregate(start: java.sql.Date, end : java.sql.Date, stepping : String, aggType : AggregateType, constraints : Map[String,Array[Any]]) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn => 
       model.headers = List("TimeZone","RelayID","SensorID","Interval","Total","Units")
@@ -237,16 +236,17 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     var prev : Long = -1;
     if( results.results.length > 0) {
       //log.debug("#### Result Head:%s".format(results.results.head))
-      prev = results.results.head("package_id").asInstanceOf[Long]
+      prev = Numbers.toLong(results.results.head("package_id"))
     }
     var dmodel : DataModel = new DataModel()
 	  for( row <- results.results) {
-	    if( row("package_id").asInstanceOf[Long] != prev) {
+      //TODO: Should these three really be Ints instead of Longs? Why did this break anyway?
+	    if( Numbers.toLong(row("package_id")) != prev) {
 	      ret.append(dmodel)
 	      dmodel = new DataModel()
 	      log.debug("Changing Model from relay %s to %s".format(prev,row("package_id").asInstanceOf[Long]))
 	    }
-	    prev = row("package_id").asInstanceOf[Long]
+	    prev = Numbers.toLong(row("package_id"))
 	  
 	    dmodel.timestamp = row("time").asInstanceOf[Timestamp].getTime().toString()
 	    dmodel.uniqueId  = row("relay").toString()
@@ -297,7 +297,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		      req = new DBRequest(conn,"addDataPackage")
 		      
 		      
-		      req.args = List(TimeHelper.timestampToSQLString(set.timestamp.toLong),relayId)
+		      req.args = List(TimeHelper.timestampToDate(set.timestamp),relayId)
 		      val packageId = runQuery(req)
 		         .generatedKeys(0)
 		         .asInstanceOf[Int]

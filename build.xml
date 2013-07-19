@@ -110,9 +110,9 @@
 		<replace file="${springFile}" token="environment" value="${environment}" />
 		<replace file="${springFile}" token="securityManager" value="${securityManager}" />
 
-        <replace file="${springFile}" token="dbPoolMaxPerPart" value="30"  />
-        <replace file="${springFile}" token="dbPoolMinPerPart" value="10"  />
-        <replace file="${springFile}" token="dbPoolPartitions" value="3"  />
+        <replace file="${springFile}" token="dbPoolMaxPerPart" value="${dbPoolMaxPerPart}"  />
+        <replace file="${springFile}" token="dbPoolMinPerPart" value="${dbPoolMinPerPart}"  />
+        <replace file="${springFile}" token="dbPoolPartitions" value="${dbPoolPartitions}"  />
 	</target>
 	
 	<target name="war" depends="configure">

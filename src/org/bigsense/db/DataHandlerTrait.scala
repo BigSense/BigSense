@@ -146,7 +146,7 @@ trait DataHandlerTrait {
 			   if(converters.contains(para)) {
 			     for( a <- arg) {
 			      log.debug("Running Converstion %s=%s".format(para,a)) 
-			      converters(para).convertRow(rMap,a)
+			      converters(para).convertRow(rMap,a.toString)
 			     }
 			   }
 			 }

@@ -11,11 +11,11 @@ trait ServiceDataHandlerTrait extends DataHandlerTrait {
   
   def retrieveData(ids : List[Int]): List[DataModel]
   
-  def retrieveDateRange(start: String, end : String, constraints : Map[String,Array[String]]) : List[FlatModel]
+  def retrieveDateRange(start: java.sql.Date, end : java.sql.Date, constraints : Map[String,Array[Any]]) : List[FlatModel]
   
-  def retrieveLatestImageInfo(limit : Int, constraints : Map[String,Array[String]]) : List[FlatModel]
+  def retrieveLatestImageInfo(limit : Int, constraints : Map[String,Array[Any]]) : List[FlatModel]
   
-  def retrieveImageInfoRange(start: String, end: String, constraints : Map[String,Array[String]] ) : List[FlatModel]
+  def retrieveImageInfoRange(start: java.sql.Date, end: java.sql.Date, constraints : Map[String,Array[Any]] ) : List[FlatModel]
   
   def retrieveImage(id : Int) : Option[Array[Byte]]
   
@@ -23,11 +23,11 @@ trait ServiceDataHandlerTrait extends DataHandlerTrait {
   
   def listSensors() : List[FlatModel]
   
-  def retrieveLatestSensorData(limit : Int, constraints: Map[String,Array[String]]) : List[FlatModel]
+  def retrieveLatestSensorData(limit : Int, constraints: Map[String,Array[Any]]) : List[FlatModel]
   
   def sensorAliveStatus() : FlatModel
   
-  def aggregate(start: String, end : String, stepping : String, aggType : AggregateType, constraints : Map[String,Array[String]]) : List[FlatModel]
+  def aggregate(start: java.sql.Date, end : java.sql.Date, stepping : String, aggType : AggregateType, constraints : Map[String,Array[Any]]) : List[FlatModel]
   
   def retrievePemForRelay(relayId : String) : Option[String]
   

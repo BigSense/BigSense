@@ -69,7 +69,7 @@ class MasterServlet extends HttpServlet {
         }
 
         //parameters
-        aReq.parameters = mapAsScalaMap(req.getParameterMap().asInstanceOf[java.util.Map[String,Array[String]]]).toMap
+        aReq.parameters = mapAsScalaMap(req.getParameterMap().asInstanceOf[java.util.Map[String,Array[Any]]]).toMap
         
         
         //Action

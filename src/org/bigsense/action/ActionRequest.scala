@@ -19,7 +19,7 @@ class ActionRequest {
 
   var method: String = "INVALID"
   var args : Array[String] = Array()
-  var parameters : Map[String,Array[String]] = Map()
+  var parameters : Map[String,Array[Any]] = Map()
   var models : List[DataModel] = List()
   var data : String = _
   var format : FormatTrait = _
