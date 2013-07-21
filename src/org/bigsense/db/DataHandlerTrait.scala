@@ -6,11 +6,6 @@
  * @author Sumit Khanna <sumit@penguindreams.org>
  */
 package org.bigsense.db
-import org.bigsense.model.DataModel
-import org.bigsense.model.RelayModel
-import java.sql.Connection
-import org.bigsense.model.FlatModel
-import java.awt.Image
 import scala.reflect.BeanProperty
 import net.jmatrix.eproperties.EProperties
 import org.apache.log4j.Logger
@@ -97,7 +92,8 @@ trait DataHandlerTrait {
 	    if(req.maxRows > 0) { stmt.setMaxRows(req.maxRows) }
 	        
 	    var x = 1
-	    paramList.foreach( a => { 
+	    paramList.foreach( a => {
+        log.debug("Parameter %s: %s".format(x,a))
 	      a.asInstanceOf[AnyRef] match {
 	        case s: Integer => { stmt.setInt(x,s) }
 	        case s: String => { stmt.setString(x,s) }
@@ -107,7 +103,6 @@ trait DataHandlerTrait {
 	        case s: ByteArrayInputStream => { stmt.setBinaryStream(x,s,s.asInstanceOf[ByteArrayInputStream].available()) }
 	        case s => { stmt.setObject(x,s) }
 	      }
-	      log.debug("Parameter %s: %s".format(x,a))
 	      x += 1 
 	    })
 	    
