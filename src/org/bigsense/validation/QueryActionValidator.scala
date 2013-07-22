@@ -24,7 +24,7 @@ class QueryActionValidator extends ValidatorTrait {
     	      if(aReq.args.length != 4) {
     	        return Some(new ValidationError("TimestampRange Requires 2 Arguments",BAD_REQUEST)) 
     	      } else {
-    	        if(!checkInt(aReq.args(2)) || !checkInt(aReq.args(3))) {
+    	        if(!checkLong(aReq.args(2)) || !checkLong(aReq.args(3))) {
     	          return Some(new ValidationError("Invalid Timestamp(s)",BAD_REQUEST))
     	        }
     	      }

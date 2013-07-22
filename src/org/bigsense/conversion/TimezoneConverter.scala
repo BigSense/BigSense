@@ -17,11 +17,11 @@ class TimezoneConverter extends ConverterTrait {
 	  	// http://www.coderanch.com/t/328797/java/java/TimeZone-Conversion
 	  	
 	  	var  df1 : DateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-		df1.setTimeZone(TimeZone.getTimeZone(zone))
+		  df1.setTimeZone(TimeZone.getTimeZone(zone))
 		
-		var dt : Date = df1.parse(time)
+		  var dt : Date = df1.parse(time)
 	  	
-		var  df2 : DateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+		  var  df2 : DateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
 	  	df2.setTimeZone(TimeZone.getTimeZone(arg))
 	  	
 	  	row("timezone") = arg

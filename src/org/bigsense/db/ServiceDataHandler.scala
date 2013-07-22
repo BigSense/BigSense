@@ -7,17 +7,10 @@
  */
 package org.bigsense.db
 
-import javax.sql.DataSource
-import org.bigsense.spring.MySpring
-import java.sql.Connection
+
 import org.bigsense.model.DataModel
-import java.sql.PreparedStatement
 import scala.collection.mutable.ListBuffer
-import scala.reflect.BeanProperty
 import org.apache.log4j.Logger
-import java.sql.ResultSet
-import java.sql.Time
-import java.sql.Date
 import java.sql.Timestamp
 import java.sql.Statement
 import org.bigsense.model.SensorModel
@@ -95,7 +88,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     List(model)
   }
   
-  def retrieveDateRange(start : java.sql.Date, end : java.sql.Date, constraints: Map[String,Array[Any]]) : List[FlatModel] = {
+  def retrieveDateRange(start : java.sql.Timestamp, end : java.sql.Timestamp, constraints: Map[String,Array[Any]]) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = standardFlatHeaders
@@ -130,7 +123,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     List(model)
   }
   
-  def retrieveImageInfoRange(start: java.sql.Date, end: java.sql.Date, constraints : Map[String,Array[Any]] ) : List[FlatModel] = {
+  def retrieveImageInfoRange(start: java.sql.Timestamp, end: java.sql.Timestamp, constraints : Map[String,Array[Any]] ) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = imageFlatHeaders
@@ -204,7 +197,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     retlist.toList
   }
   
-  def aggregate(start: java.sql.Date, end : java.sql.Date, stepping : String, aggType : AggregateType, constraints : Map[String,Array[Any]]) : List[FlatModel] = {
+  def aggregate(start: java.sql.Timestamp, end : java.sql.Timestamp, stepping : String, aggType : AggregateType, constraints : Map[String,Array[Any]]) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn => 
       model.headers = List("TimeZone","RelayID","SensorID","Interval","Total","Units")

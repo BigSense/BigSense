@@ -22,7 +22,7 @@ class AggregateActionValidator extends ValidatorTrait {
         
         aReq.args(2) match {
 		  case "TimestampRange" => {
-	        if(!checkInt(aReq.args(3)) || !checkInt(aReq.args(4))) {
+	        if(!checkLong(aReq.args(3)) || !checkLong(aReq.args(4))) {
 	          return Some(new ValidationError("Invalid Timestamp(s)",BAD_REQUEST))
 	        }		    
 		  }

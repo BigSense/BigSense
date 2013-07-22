@@ -23,7 +23,7 @@ object TimeHelper {
     date
   }*/
 
-  def convertDateArgument(date : String, parameters : Map[String,Array[Any]] ) : java.sql.Date = {
+  def convertDateArgument(date : String, parameters : Map[String,Array[Any]] ) : java.sql.Timestamp = {
 
     val df1 : SimpleDateFormat = new SimpleDateFormat()
     df1.applyPattern("yyyyMMdd");
@@ -59,7 +59,8 @@ object TimeHelper {
         Integer.parseInt(date.substring(6,8))
       )
     }
-    new java.sql.Date(cal.getTimeInMillis())
+
+    new java.sql.Timestamp(cal.getTimeInMillis())
   }
 
 
@@ -67,7 +68,7 @@ object TimeHelper {
   //def timestampToDate(unixTimeStamp: String) : String = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
   //    .format(new java.sql.Date(unixTimeStamp.toLong * 1000))
 
-  def timestampToDate(unixTimeStamp: String) : java.sql.Date = new java.sql.Date(unixTimeStamp.toLong)
+  def timestampToDate(unixTimeStamp: String) : java.sql.Timestamp = new java.sql.Timestamp(unixTimeStamp.toLong)
 
 
   def timestampToSQLString(stamp : Long) : String = {

@@ -17,6 +17,7 @@ import java.sql.Date
 import java.sql.Time
 import java.sql.Timestamp
 import java.io.ByteArrayInputStream
+import java.util.{TimeZone, Calendar}
 
 
 trait DataHandlerTrait {
@@ -97,9 +98,9 @@ trait DataHandlerTrait {
 	      a.asInstanceOf[AnyRef] match {
 	        case s: Integer => { stmt.setInt(x,s) }
 	        case s: String => { stmt.setString(x,s) }
-	        case s: Date => { stmt.setDate(x,s) }
+	        case s: Date => { stmt.setDate(x,s,Calendar.getInstance(TimeZone.getTimeZone("UTC"))) }
 	        case s: Time => { stmt.setTime(x,s) }
-	        case s: Timestamp => { stmt.setTimestamp(x,s) }
+	        case s: Timestamp => { stmt.setTimestamp(x,s, Calendar.getInstance(TimeZone.getTimeZone("UTC"))) }
 	        case s: ByteArrayInputStream => { stmt.setBinaryStream(x,s,s.asInstanceOf[ByteArrayInputStream].available()) }
 	        case s => { stmt.setObject(x,s) }
 	      }

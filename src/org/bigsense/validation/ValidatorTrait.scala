@@ -18,7 +18,17 @@ trait ValidatorTrait {
       case e:NumberFormatException => return false
     }
   }
-  
+
+  protected def checkLong(obj : Any) : Boolean = {
+    try {
+      obj.toString().toLong
+      return true
+    }
+    catch {
+      case e:NumberFormatException => return false
+    }
+  }
+
   protected def checkDate(obj : String) : Boolean = {
     
     var sdf : SimpleDateFormat = new SimpleDateFormat()

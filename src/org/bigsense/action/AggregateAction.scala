@@ -12,8 +12,8 @@ class AggregateAction extends ActionTrait {
       aReq.method match {
         case "GET" => {
           
-          var start = new java.sql.Date(1)
-          var end = new java.sql.Date(1)
+          var start = new java.sql.Timestamp(1)
+          var end = new java.sql.Timestamp(1)
 
 	      aReq.args(2) match {
 		    case "TimestampRange" => {		        		
