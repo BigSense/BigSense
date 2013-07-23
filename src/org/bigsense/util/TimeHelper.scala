@@ -43,7 +43,7 @@ object TimeHelper {
 
       cal.set(
         Integer.parseInt(parts(0)),
-        Integer.parseInt(parts(1)),
+        Integer.parseInt(parts(1)) -1,
         Integer.parseInt(parts(2)),
         Integer.parseInt(parts(3)),
         Integer.parseInt(parts(4)),
@@ -52,12 +52,16 @@ object TimeHelper {
 
     }
     else {
+
       cal.set(
         //yyyyMMdd
         Integer.parseInt( date.substring(0,4)) ,
-        Integer.parseInt(date.substring(4,6)) ,
-        Integer.parseInt(date.substring(6,8))
+        Integer.parseInt(date.substring(4,6)) -1 ,
+        Integer.parseInt(date.substring(6,8)) ,
+        0,0,0
       )
+
+      Logger.getLogger(TimeHelper.getClass()).info("Calendar" + cal.toString())
     }
 
     new java.sql.Timestamp(cal.getTimeInMillis())
