@@ -74,9 +74,9 @@ readPackage = ${readPackages} WHERE pak.id=?
 
 listRelays = SELECT unique_id,public_key FROM relays
 
-listSensors = "SELECT sen.unique_id AS SensorID , r.unique_id AS RelayID, 
-   sen.units AS Units, t.name AS SensorType,
-   X(l.location) AS Latitude, Y(l.location) as Longitude
+listSensors = "SELECT sen.unique_id AS sensor_id , r.unique_id AS relay_id,
+   sen.units AS units, t.name sensor_type,
+   X(l.location) AS latitude, Y(l.location) as longitude
    FROM sensors sen
    LEFT JOIN sensor_types t ON t.id = sen.sensor_type
    LEFT JOIN relays r ON r.id = sen.relay_id
