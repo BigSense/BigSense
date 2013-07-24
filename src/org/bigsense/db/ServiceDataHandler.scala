@@ -210,7 +210,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
       htemp("SensorType") = Array(aggType.sensorType)
       htemp("IntervalAbove") = Array(start)
       htemp("IntervalBelow") = Array(end)
-      htemp("NumericData") = Array("1")
+      htemp("NumericData") = Array(true)
       req.constraints = htemp.toMap
       
       req.group = Some("groupAggregation")

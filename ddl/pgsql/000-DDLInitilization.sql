@@ -17,3 +17,13 @@ CREATE TABLE ddl_info( id SERIAL, version INT, installed TIMESTAMP );
 GRANT SELECT,INSERT,UPDATE,DELETE ON ddl_info TO db_bigsense_ddl;
 GRANT USAGE ON SEQUENCE ddl_info_id_seq TO db_bigsense_ddl;
 
+CREATE OR REPLACE FUNCTION isnumeric(text) RETURNS BOOLEAN AS $$
+DECLARE x NUMERIC;
+BEGIN
+    x = $1::NUMERIC;
+    RETURN TRUE;
+EXCEPTION WHEN others THEN
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
