@@ -76,12 +76,11 @@
 	</target>
 
 	<target name="compile" depends="init">
-        <!--
+
 		<javac srcdir="${src}" destdir="${build}" deprecation="yes" includeantruntime="false">
 			<include name="**/*.java"/>
 			<classpath refid="build.classpath" />		  
 		</javac>
-		-->
 		<scalac srcdir="${src}" destdir="${build}" deprecation="yes">
 			<include name="**/*.scala"/>
 			<include name="**/*.java"/>
