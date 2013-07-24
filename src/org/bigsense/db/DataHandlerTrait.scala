@@ -30,6 +30,13 @@ trait DataHandlerTrait {
 
   @BeanProperty
   var sqlCommands : EProperties = _
+
+  @BeanProperty
+  var dbDialect : String = _
+
+  val DB_MSSQL = "mssql"
+  val DB_MYSQL = "mysql"
+  val DB_PGSQL = "pgsql"
   
   protected var log = Logger.getLogger(getClass())
 
@@ -83,9 +90,13 @@ trait DataHandlerTrait {
     log.debug("SQL Statement: %s".format(consBuilder.toString()))
 
     /* PostgreSQL drivers are shit. If you use RETURN_GENERATED_KEYS, it adds RETURING
-       to the end of every statement! This is a fix (hack) as this bug as existed since 2010
+       to the end of every statement! Meanwhile, certain MySQL SELECT statements need RETURN_GENERATED_KEYS.
+       This is a fix (hack) as this bug as existed since 2010
      */
-    val keys = if (consBuilder.toString().toUpperCase().startsWith("INSERT"))  Statement.RETURN_GENERATED_KEYS else Statement.NO_GENERATED_KEYS
+    var keys = Statement.RETURN_GENERATED_KEYS
+    if(dbDialect == DB_PGSQL) {
+      keys = if (consBuilder.toString().toUpperCase().startsWith("INSERT"))  Statement.RETURN_GENERATED_KEYS else Statement.NO_GENERATED_KEYS
+    }
 
     using( req.conn.prepareStatement(consBuilder.toString(),keys) ) { stmt =>
 	    

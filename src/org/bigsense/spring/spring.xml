@@ -104,6 +104,7 @@
 	    		<constructor-arg name="sqlCommandFile" value="/org/bigsense/db/dbms.commands"/>
 			</bean>
 		</property>
+        <property name="dbDialect" value="dbms" />
 		<property name="converters" ref="convertersAsScalaMap" />
 	</bean>
 	
