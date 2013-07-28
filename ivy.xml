@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ivy-module version="2.0">
-  <info organisation="org.bigsense" module="BigSense" />
+  <info organisation="io.bigsense" module="BigSense" />
   <dependencies>
     <dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" transitive="false" />  
     <dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE" transitive="false"/>

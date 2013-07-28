@@ -14,7 +14,7 @@
 	<property name="version" value="x" />
 	<property name="doc" value="./doc" />
 	<property name="dbms" value="mssql" />
-	<property name="springFile" value="${build}/org/bigsense/spring/spring.xml" />
+	<property name="springFile" value="${build}/io/bigsense/spring/spring.xml" />
 	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
 	<property name="servletLib" value="${appServerLocation}/lib" />
 	<property name="deployDir" value="${appServerLocation}/webapps" />
@@ -93,7 +93,7 @@
 				<exclude name="**/*.scala"/>
 			</fileset>
 		</copy>
-		<copy todir="${build}/org/bigsense/db/ddl" includeEmptyDirs="false">
+		<copy todir="${build}/io/bigsense/db/ddl" includeEmptyDirs="false">
 			<fileset dir="ddl">
 				<include name="**/*.sql" />
 			</fileset>

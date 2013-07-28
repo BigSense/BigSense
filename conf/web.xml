@@ -8,7 +8,7 @@
    
   <servlet>
   	<servlet-name>MasterServlet</servlet-name>
-  	<servlet-class>org.bigsense.servlet.MasterServlet</servlet-class>
+  	<servlet-class>io.bigsense.servlet.MasterServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -17,12 +17,12 @@
   </servlet-mapping>	
 
   <listener>
-    <listener-class>org.bigsense.servlet.InitLoggingListener</listener-class>
+    <listener-class>io.bigsense.servlet.InitLoggingListener</listener-class>
   </listener>
 
 
   <listener>
-    <listener-class>org.bigsense.servlet.DBUpdateListener</listener-class>
+    <listener-class>io.bigsense.servlet.DBUpdateListener</listener-class>
   </listener>
 
 	 

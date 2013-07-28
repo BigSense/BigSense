@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- Actions -->
+
+	<bean id="BaseAction" name="BaseAction" class="io.bigsense.action.ActionTrait" abstract="true">
+		<property name="dbHandler" ref="serviceDataHandler" />
+	</bean>
+
+	<bean id="ActionSensor" name="ActionSensor" class="io.bigsense.action.SensorAction" parent="BaseAction">
+		<property name="validator" ref="SensorActionValidator" />	
+	</bean>
+	
+	<bean id="ActionQuery" name="ActionQuery" class="io.bigsense.action.QueryAction" parent="BaseAction">
+		<property name="validator" ref="QueryActionValidator" />
+	</bean>
+	
+	<bean id="ActionStatus" name="ActionStatus" class="io.bigsense.action.StatusAction" parent="BaseAction">
+		<property name="validator" ref="StatusActionValidator" />
+	</bean>
+
+	<bean id="ActionAggregate" name="ActionAggregate" class="io.bigsense.action.AggregateAction" parent="BaseAction">
+		<property name="validator" ref="AggregateActionValidator" />
+	</bean>
+	
+	<bean id="ActionImage" name="ActionImage" class="io.bigsense.action.ImageAction" parent="BaseAction">
+		<property name="validator" ref="ImageActionValidator" />
+	</bean>
+
+	<bean id="ActionReport" name="ActionReport" class="io.bigsense.action.ReportAction" parent="BaseAction">
+		<property name="validator" ref="StatusActionValidator" />
+		<property name="converters" ref="convertersAsScalaMap" />
+	</bean>
+	
+	<!-- Security -->
+	<bean id="SecurityManager" name="SecurityManager" parent="securityManager" />
+		
+	<bean id="SignatureSecurityManager" name="SignatureSecurityManager" class="io.bigsense.security.SignatureSecurityManageer">
+		<property name="dbHandler" ref="serviceDataHandler" />
+	</bean>	
+	<bean id="DisabledSecurityManager" name="DisabledSecurityManager" class="io.bigsense.security.DisabledSecurityManager" />
+	
+	<!-- Processors --> 
+	<bean id="BaseProcessor" name ="BaseProcessor" class="io.bigsense.processor.ProcessorTrait" abstract="true">
+		<property name="dbHandler" ref="serviceDataHandler" />
+	</bean>
+	
+	<bean id="CounterProcessor" name="ProcessorCounter" class="io.bigsense.processor.CounterProcessor" parent="BaseProcessor" />
+	<bean id="ImageProcessor" name="ProcessorImage" class="io.bigsense.processor.ImageProcessor" parent="BaseProcessor" />
+	
+	
+	<!-- Smart Vision Analyzers -->
+	<bean id="AnalyzerWaterLevel" name="AnalyzerWaterLevel" class="io.bigsense.smartvision.WaterLevelAnalyzer" />
+	
+	<!--  Validators -->
+	
+	<bean id="QueryActionValidator" name="QueryActionValidator" class="io.bigsense.validation.QueryActionValidator" />
+	<bean id="AggregateActionValidator" name="AggregateActionValidator" class="io.bigsense.validation.AggregateActionValidator" />
+	<bean id="SensorActionValidator" name="SensorActionValidator" class="io.bigsense.validation.SensorActionValidator" />
+	<bean id="StatusActionValidator" name="StatusActionValidator" class="io.bigsense.validation.StatusActionValidator"/>
+	<bean id="ImageActionValidator" name="ImageActionValidator" class="io.bigsense.validation.ImageActionValidator"/>
+	
+	<!--  Convertors -->
+	<bean id="convertersAsScalaMap" class="scala.collection.JavaConversions" factory-method="mapAsScalaMap">
+		<constructor-arg ref="converters"/>
+	</bean>
+	
+	<util:map id="converters">
+	  	<entry key="Units">
+	  		<bean class="io.bigsense.conversion.UnitsConverter" />
+	  	</entry>
+	  	<entry key="Timezone">
+	  		<bean class="io.bigsense.conversion.TimezoneConverter" />
+	  	</entry>
+	</util:map>
+
+
+	<!-- Formats -->
+	
+	<bean id="FormatAGRA.XML" class="io.bigsense.format.AgraDataXMLFormat" />
+	<bean id="FormatTXT" class="io.bigsense.format.TabDelimitedFormat" />
+	<bean id="FormatCSV" class="io.bigsense.format.CSVFormat" />
+	<bean id="FormatFLAT.XML" class="io.bigsense.format.FlatXMLFormat" />
+	<bean id="FormatTABLE.HTML" class="io.bigsense.format.TableHTMLFormat" />
+
+
+    <!-- logging  -->
+    <bean name="logger" class="io.bigsense.spring.LoggingInterceptor" />
+    <bean id="loggingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+      <property name="advice" ref="logger" />
+      <property name="pattern" value="io.bigsense.*" />
+    </bean>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
+
+	<!-- Database Handlers -->
+	<bean id="baseDataHandler" class="io.bigsense.db.DataHandlerTrait" abstract="true">
+		<property name="sqlCommands">
+			<bean id="sqlCommands" class="io.bigsense.util.SQLProperties">
+	    		<constructor-arg name="sqlCommandFile" value="/io/bigsense/db/dbms.commands"/>
+			</bean>
+		</property>
+        <property name="dbDialect" value="dbms" />
+		<property name="converters" ref="convertersAsScalaMap" />
+	</bean>
+	
+	<bean id="serviceDataHandler" parent="baseDataHandler" class="io.bigsense.db.ServiceDataHandler">
+		<property name="ds" ref="serviceDataSource" />
+	</bean>
+
+	<bean id="dboDataHandler" parent="baseDataHandler" class="io.bigsense.db.DBOHandler">
+		<property name="ds" ref="dboDataSource" />
+		<property name="ddlResource" value="/io/bigsense/db/ddl/dbms" />
+		<property name="env" value="environment" />
+	</bean>
+ 
+	<!-- Database configurations -->
+	<bean id="baseDataSource" abstract="true" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+	   <property name="driverClass" value="dbDriver" />
+	   <property name="jdbcUrl" value="connectionString" />
+	   <property name="idleConnectionTestPeriod" value="60"/>
+	   <property name="idleMaxAge" value="240"/>
+	   <property name="maxConnectionsPerPartition" value="dbPoolMaxPerPart"/>
+	   <property name="minConnectionsPerPartition" value="dbPoolMinPerPart"/>
+	   <property name="partitionCount" value="dbPoolPartitions"/>
+	   <property name="acquireIncrement" value="5"/>
+	   <property name="statementsCacheSize" value="100"/>
+	   <property name="releaseHelperThreads" value="3"/>
+	</bean>
+	
+	<bean id="serviceDataSource" parent="baseDataSource" >
+	   <property name="username" value="dbUser"/>
+	   <property name="password" value="dbPass"/>
+	</bean>
+	
+	<bean id="dboDataSource" parent="baseDataSource" >
+	   <property name="username" value="dboUser"/>
+	   <property name="password" value="dboPass"/>	
+	</bean>
+ 
+</beans>
