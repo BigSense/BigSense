@@ -8,16 +8,15 @@
 	<property name="dist" value="./dist" />
 	<property name="conf"  value="./conf" />
 	<property name="src"   value="./src" />
-	<property name="lib"   value="./lib" />
+    <property name="lib" value="./lib/default" />
+    <property name="lib-build" value="./lib/build" />
 	<property name="libext"   value="./libext" />
 	<property name="web"   value="./web" />
 	<property name="version" value="x" />
 	<property name="doc" value="./doc" />
 	<property name="dbms" value="mssql" />
 	<property name="springFile" value="${build}/io/bigsense/spring/spring.xml" />
-	<property name="appServerLocation" value="/Apps/apache-tomcat-7.0.14" />
-	<property name="servletLib" value="${appServerLocation}/lib" />
-	<property name="deployDir" value="${appServerLocation}/webapps" />
+	<property name="deployDir" value="/var/lib/tomcat-7/webapps" />
 	<property name="warFile" value="${dist}/bigsense.war" />
 	<property name="earFile" value="${dist}/${ant.project.name}-${version}.ear" />
     <property name="dbDriver" value="net.sourceforge.jtds.jdbc.Driver" />
@@ -27,12 +26,15 @@
 	
 	<property environment="env"/>
 
-	<path id="build.classpath">
+	<path id="webapp.classpath">
 		<fileset dir="${lib}" includes="**/*.jar" />
 		<fileset dir="${libext}" includes="**/*.jar" />
-		<fileset dir="${servletLib}" includes="**/*.jar" />
 		<fileset dir="${env.SCALA_HOME}/lib" includes="**/*.jar" />
 	</path>
+
+    <path id="build.classpath">
+        <fileset dir="${lib-build}" includes="**/*.jar" />
+    </path>
 
 	<!-- Define scala compiler, scaladoc, etc command -->
 	<taskdef resource="scala/tools/ant/antlib.xml">
@@ -47,7 +49,7 @@
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
-		<delete dir="${lib}" />
+		<delete dir="./lib" />
 		<delete dir="${doc}" />
 		<delete file="${ant.project.name}-${version}.zip" />
 		<delete file="${ant.project.name}-${version}.tar.bz2" />
@@ -57,9 +59,9 @@
 		<tstamp />
 		<mkdir dir="${build}" />
 		<mkdir dir="${dist}" />
-		<mkdir dir="${lib}" />
-		<mkdir dir="${doc}" />
-		<ivy:retrieve />		
+        <mkdir dir="${doc}" />
+        <ivy:retrieve conf="default" pattern="lib/[conf]/[artifact](-[classifier]).[ext]" />
+        <ivy:retrieve conf="build" pattern="lib/[conf]/[artifact](-[classifier]).[ext]" />
 	</target>
 	
 	<target name="doc" depends="init">
@@ -79,12 +81,14 @@
 
 		<javac srcdir="${src}" destdir="${build}" deprecation="yes" includeantruntime="false">
 			<include name="**/*.java"/>
-			<classpath refid="build.classpath" />		  
+			<classpath refid="build.classpath" />
+            <classpath refid="webapp.classpath" />
 		</javac>
 		<scalac srcdir="${src}" destdir="${build}" deprecation="yes">
 			<include name="**/*.scala"/>
 			<include name="**/*.java"/>
-			<classpath refid="build.classpath" />		  
+            <classpath refid="build.classpath" />
+            <classpath refid="webapp.classpath" />
 		</scalac>
 		<copy todir="${build}" includeEmptyDirs="false">
 			<fileset dir="${src}">
