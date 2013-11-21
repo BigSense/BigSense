@@ -1,0 +1,3 @@
+#!/bin/sh
+
+scala -cp "lib/default/*jar:build" io.bigsense.util.BulkBZip2DataLoader ~/Dropbox/GLS_Paper/sensor-data.tar.bz2

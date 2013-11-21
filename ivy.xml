@@ -8,6 +8,9 @@
   </configurations>
 
   <dependencies>
+
+
+    <!-- runtime dependencies -->
     <dependency org="org.springframework" name="spring-beans" rev="3.0.5.RELEASE" transitive="false" conf="default->default" />
     <dependency org="org.springframework" name="spring-context" rev="3.0.5.RELEASE" transitive="false" conf="default->default" />
     <dependency org="org.springframework" name="spring-core" rev="3.0.5.RELEASE" transitive="false" conf="default->default" />
@@ -30,7 +33,12 @@
     <dependency org="mysql" name="mysql-connector-java" rev="5.1.24" conf="default->default"/>
 
 
-    <!-- build dependencies -->
+    <!--bulk loader only (TODO: independent configuration and build) -->
+    <dependency org="org.apache.commons" name="commons-compress" rev="1.6" conf="default->default"/>
+
+
+
+      <!-- build dependencies -->
     <dependency org="org.apache.tomcat" name="servlet-api" rev="6.0.37" conf="build->default" />
 
 
