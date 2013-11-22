@@ -8,7 +8,7 @@ import io.bigsense.spring.MySpring
 import org.apache.commons.compress.utils.IOUtils
 import io.bigsense.format.{FormatTrait, AgraDataXMLFormat}
 import scala.collection.mutable.ListBuffer
-import io.bigsense.model.ModelTrait
+import io.bigsense.model.{DataModel, ModelTrait}
 import io.bigsense.db.ServiceDataHandlerTrait
 
 
@@ -38,12 +38,12 @@ object BulkBZip2DataLoader {
 
         val xmlfile = new ByteArrayOutputStream()
         IOUtils.copy(bzin,xmlfile)
-        models.append( loader.loadModels(new String(xmlfile.toByteArray())) )
+        models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
 
         chunks = chunks + 1
-        if( chunks % PACKAGE_CHUNK_SIZE) {
+        if( chunks % PACKAGE_CHUNK_SIZE == 0) {
           System.out.println("Sending batch of %d to database".format(PACKAGE_CHUNK_SIZE))
-          db.loadData(models.toList)
+          db.loadData(models.toList.asInstanceOf[List[DataModel]])
           models.clear()
         }
       }
