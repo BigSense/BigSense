@@ -33,24 +33,24 @@ object BulkBZip2DataLoader {
     val models = new ListBuffer[ModelTrait]()
     var chunks = 0
 
-    while( (entry = bzin.getNextEntry().asInstanceOf[TarArchiveEntry]) != null  ) {
-      if(entry.isFile()) {
+    Stream.continually(bzin.getNextEntry().asInstanceOf[TarArchiveEntry]).takeWhile(_ != null) foreach {
+      entry => {
+        if(entry.isFile()) {
 
-        val xmlfile = new ByteArrayOutputStream()
-        IOUtils.copy(bzin,xmlfile)
-        models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
+          val xmlfile = new ByteArrayOutputStream()
+          IOUtils.copy(bzin,xmlfile)
+          models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
 
-        chunks = chunks + 1
-        if( chunks % PACKAGE_CHUNK_SIZE == 0) {
-          System.out.println("Sending batch of %d to database".format(PACKAGE_CHUNK_SIZE))
-          db.loadData(models.toList.asInstanceOf[List[DataModel]])
-          models.clear()
+          chunks = chunks + 1
+          if( chunks % PACKAGE_CHUNK_SIZE == 0) {
+            System.out.println("Sending batch of %d to database".format(PACKAGE_CHUNK_SIZE))
+            db.loadData(models.toList.asInstanceOf[List[DataModel]])
+            models.clear()
+          }
         }
       }
-
     }
-
+    System.out.println("Finished Processing File");
 
   }
-
 }
