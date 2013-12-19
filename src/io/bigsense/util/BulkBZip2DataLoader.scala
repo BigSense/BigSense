@@ -29,17 +29,18 @@ object BulkBZip2DataLoader {
     val db     = MySpring.getObject("serviceDataHandler").asInstanceOf[ServiceDataHandlerTrait]
 
     val bzin = new TarArchiveInputStream(new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(args(0)))))
-    var entry : TarArchiveEntry = null;
     val models = new ListBuffer[ModelTrait]()
     var chunks = 0
 
-    Stream.continually(bzin.getNextEntry().asInstanceOf[TarArchiveEntry]).takeWhile(_ != null) foreach {
+    Stream.continually(bzin.getNextEntry()).takeWhile(_ != null) foreach {
       entry => {
-        if(entry.isFile()) {
+        if(entry.asInstanceOf[TarArchiveEntry].isFile()) {
 
           val xmlfile = new ByteArrayOutputStream()
           IOUtils.copy(bzin,xmlfile)
+          //val models = new ListBuffer[ModelTrait]()
           models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
+          System.out.println(String.format("Processing Entry %s",entry.getName));
 
           chunks = chunks + 1
           if( chunks % PACKAGE_CHUNK_SIZE == 0) {
@@ -50,7 +51,25 @@ object BulkBZip2DataLoader {
         }
       }
     }
-    System.out.println("Finished Processing File");
+
+    /*while( (entry = bzin.getNextEntry().asInstanceOf[TarArchiveEntry]) != null  ) {
+      if(entry.isFile()) {
+
+        val xmlfile = new ByteArrayOutputStream()
+        IOUtils.copy(bzin,xmlfile)
+        models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
+
+        chunks = chunks + 1
+        if( chunks % PACKAGE_CHUNK_SIZE == 0) {
+          System.out.println("Sending batch of %d to database".format(PACKAGE_CHUNK_SIZE))
+          db.loadData(models.toList.asInstanceOf[List[DataModel]])
+          models.clear()
+        }
+      }
+
+    } */
+
 
   }
+
 }

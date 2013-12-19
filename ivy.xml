@@ -30,7 +30,7 @@
     <dependency org="org.scalaj" name="scalaj-collection_2.9.1" rev="1.2" conf="default->default" />
     <dependency org="bouncycastle" name="bcprov-jdk15" rev="140" conf="default->default" />
     <dependency org="postgresql" name="postgresql" rev="9.1-901.jdbc4" conf="default->default" />
-    <dependency org="mysql" name="mysql-connector-java" rev="5.1.24" conf="default->default"/>
+    <dependency org="mysql" name="mysql-connector-java" rev="5.1.27" conf="default->default"/>
 
 
     <!--bulk loader only (TODO: independent configuration and build) -->
