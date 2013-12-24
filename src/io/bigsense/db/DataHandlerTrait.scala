@@ -22,9 +22,9 @@ import java.util.{TimeZone, Calendar}
 
 trait DataHandlerTrait {
 
-  @BeanProperty 
+  @BeanProperty
   var ds : DataSource = _
-    
+
   @BeanProperty
   var converters : scala.collection.mutable.Map[String,ConverterTrait] = _
 
@@ -37,11 +37,11 @@ trait DataHandlerTrait {
   val DB_MSSQL = "mssql"
   val DB_MYSQL = "mysql"
   val DB_PGSQL = "pgsql"
-  
+
   protected var log = Logger.getLogger(getClass())
 
-    //Taken From: http://zcox.wordpress.com/2009/08/17/simple-jdbc-queries-in-scala/
-   protected def using[Closeable <: {def close(): Unit}, B](closeable: Closeable)(getB: Closeable => B): B =
+  //Taken From: http://zcox.wordpress.com/2009/08/17/simple-jdbc-queries-in-scala/
+  protected def using[Closeable <: {def close(): Unit}, B](closeable: Closeable)(getB: Closeable => B): B =
     try {
       getB(closeable)
     } finally {
@@ -180,13 +180,13 @@ trait DataHandlerTrait {
               }
 
               retval.results = retbuf.toList
+              ret.close()
             }
-            ret.close()
         }
         log.debug("Result Pull Complete")
     }
     retval
   }
-  
-  
+
+
 }
