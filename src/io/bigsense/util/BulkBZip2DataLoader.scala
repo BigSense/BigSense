@@ -39,8 +39,9 @@ object BulkBZip2DataLoader {
           val xmlfile = new ByteArrayOutputStream()
           IOUtils.copy(bzin,xmlfile)
           //val models = new ListBuffer[ModelTrait]()
-          models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
           System.out.println(String.format("Processing Entry %s",entry.getName));
+          models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
+          xmlfile.close()
 
           chunks = chunks + 1
           if( chunks % PACKAGE_CHUNK_SIZE == 0) {

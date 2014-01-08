@@ -45,7 +45,7 @@ trait DataHandlerTrait {
     try {
       getB(closeable)
     } finally {
-      try { closeable.close() } catch { case e:Exception => {} }
+      try { closeable.close() } catch { case e:Exception => {  } }
     }
 
 
@@ -140,13 +140,14 @@ trait DataHandlerTrait {
         log.debug("Statement Executed")
 
         //get auto-insert keys
-        val keys = stmt.getGeneratedKeys()
-        if (keys != null) {
-          var keybuf = new ListBuffer[Any]();
-          while (keys.next()) {
-            keybuf += keys.getInt(1)
+        using(stmt.getGeneratedKeys()) { keys =>
+          if (keys != null) {
+            var keybuf = new ListBuffer[Any]();
+            while (keys.next()) {
+              keybuf += keys.getInt(1)
+            }
+            retval.generatedKeys = keybuf.toList
           }
-          retval.generatedKeys = keybuf.toList
         }
 
         //pull results
@@ -180,7 +181,6 @@ trait DataHandlerTrait {
               }
 
               retval.results = retbuf.toList
-              ret.close()
             }
         }
         log.debug("Result Pull Complete")

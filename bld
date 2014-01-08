@@ -1,3 +1,3 @@
 #!/bin/sh
 
-JAVA_OPTS="-XX:MaxPermSize=512m -Xmx16384m" scala -cp "lib/default/*:libext/*:build" io.bigsense.util.BulkBZip2DataLoader $@
+JAVA_OPTS="-XX:MaxPermSize=512m -Xmx2048m" scala -cp "lib/default/*:libext/*:build" io.bigsense.util.BulkBZip2DataLoader $@
