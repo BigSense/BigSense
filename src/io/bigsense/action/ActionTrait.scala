@@ -7,21 +7,20 @@
  */
 package io.bigsense.action {
 
-import scala.collection.Map
-import io.bigsense.format.{FormatTrait => Format}
-import io.bigsense.model.DataModel
-import io.bigsense.db.ServiceDataHandlerTrait
 import scala.reflect.BeanProperty
-import io.bigsense.db.DataHandlerTrait
+import io.bigsense.db.ServiceDataHandlerTrait
 import io.bigsense.validation.ValidatorTrait
-  
-	trait ActionTrait {
-	  
-  	  @BeanProperty var dbHandler : ServiceDataHandlerTrait = _
+//import com.escalatesoft.subcut.inject.Injectable
+
+trait ActionTrait  {
+
+    @BeanProperty var dbHandler : ServiceDataHandlerTrait = _
+    //val dbHandler = inject[ServiceDataHandlerTrait]
   	  
-  	  @BeanProperty var validator : ValidatorTrait = _
+    @BeanProperty var validator : ValidatorTrait = _
+    //qval validator = inject[ValidatorTrait]
   
-	  def runAction(aReq : ActionRequest) : ActionResponse	  
+    def runAction(aReq : ActionRequest) : ActionResponse
 
 	}
 }

@@ -26,7 +26,7 @@ class ActionRequest {
   var signature : Option[String] = None
   
   override def toString() : String =  {
-    var out : StringBuilder = new StringBuilder("Action Request:\n")
+    val out : StringBuilder = new StringBuilder("Action Request:\n")
     out.append("\tMethod: %s\n".format(method))
     out.append("\tFormat: %s\n".format(format))
     out.append("\tData: %s\n".format(data))

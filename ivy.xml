@@ -31,6 +31,7 @@
     <dependency org="bouncycastle" name="bcprov-jdk15" rev="140" conf="default->default" />
     <dependency org="postgresql" name="postgresql" rev="9.1-901.jdbc4" conf="default->default" />
     <dependency org="mysql" name="mysql-connector-java" rev="5.1.27" conf="default->default"/>
+    <dependency org="com.escalatesoft.subcut" name="subcut_2.9.2" rev="2.0" conf="default->default" />
 
 
     <!--bulk loader only (TODO: independent configuration and build) -->

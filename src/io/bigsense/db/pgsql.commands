@@ -47,8 +47,8 @@ aggregationForInterval = "SELECT
       'UTC' AS timezone,
       rel.unique_id AS relay,
       sns.unique_id AS sensor,
-      intervals.end_time AS time,
-      AVG(CAST(dat.data AS FLOAT)) AS sensor_data,
+      intervals.start_time AS time,
+      ${compoundFormula} AS sensor_data,
       MAX(sns.units) AS sensor_units
       FROM sensor_data dat
        LEFT OUTER JOIN data_package pak ON dat.package_id = pak.id
@@ -120,11 +120,11 @@ constraintPackTimeAbove = " pak.rtime > ? "
 constraintPackTimeBelow = " pak.rtime < ? "
 constraintPackageIDAbove = " pak.id > ? "
 constraintPackageIDBelow = " pak.id < ? "
-constraintIntervalAbove = " intervals.end_time > ? "
-constraintIntervalBelow = " intervals.end_time < ? "
+constraintIntervalAbove = " intervals.start_time > ? "
+constraintIntervalBelow = " intervals.start_time < ? "
 constraintNumericData =  " isnumeric(dat.data) = ? "
 
-groupAggregation = " GROUP BY rel.unique_id,sns.unique_id, intervals.end_time "
+groupAggregation = " GROUP BY rel.unique_id,sns.unique_id, intervals.start_time "
 
 
 #Schema/DDL control
