@@ -47,12 +47,12 @@ aggregationForInterval = "SELECT
       'UTC' AS timezone,
       rel.unique_id AS relay,
       sns.unique_id AS sensor,  
-      pak.interval AS time,      
+      pak.ival AS time,
       ${compoundFormula} AS sensor_data,
       MAX(sns.units) AS sensor_units
       FROM sensor_data dat
        LEFT OUTER JOIN (
-         SELECT *, 0 + interval (timestampdiff(MINUTE, 0, rtime) / ? * ?) minute as interval
+         SELECT *,from_unixtime(FLOOR(unix_timestamp(rtime) / (60*?)) * 60 * ?) as ival
          FROM data_package 
        ) AS pak ON dat.package_id = pak.id
        LEFT OUTER JOIN relays rel ON pak.relay_id = rel.id
@@ -108,11 +108,11 @@ constraintPackTimeAbove = " pak.rtime > ? "
 constraintPackTimeBelow = " pak.rtime < ? "
 constraintPackageIDAbove = " pak.id > ? "
 constraintPackageIDBelow = " pak.id < ? "
-constraintIntervalAbove = " pak.interval > ? "
-constraintIntervalBelow = " pak.interval < ? "
-constraintNumericData =  isnumeric(dat.data) = ? 
+constraintIntervalAbove = " pak.ival > ? "
+constraintIntervalBelow = " pak.ival < ? "
+constraintNumericData =  " isnumeric(dat.data) = ? "
 
-groupAggregation = " GROUP BY rel.unique_id,sns.unique_id, pak.interval "
+groupAggregation = " GROUP BY rel.unique_id,sns.unique_id, pak.ival "
 
 
 #Schema/DDL control
