@@ -26,7 +26,7 @@ CREATE TABLE sensors (
 
 CREATE TABLE data_package (
   id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  rtime DATETIMEOFFSET,
+  rtime DATETIME,
   relay_id BIGINT,
   CONSTRAINT fk_package_relay_id FOREIGN KEY ( relay_id ) REFERENCES relays(id),
 );
