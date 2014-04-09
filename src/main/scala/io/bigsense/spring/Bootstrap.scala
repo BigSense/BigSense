@@ -1,4 +1,4 @@
-import com.escalatesoft.subcut.inject.NewBindingModule
+//import com.escalatesoft.subcut.inject.NewBindingModule
 
 package io.bigsense.spring {
 

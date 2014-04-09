@@ -1,9 +1,15 @@
+import _root_.sbt.Keys._
+import com.typesafe.sbt.SbtNativePackager.packageArchetype
+import com.typesafe.sbt.SbtNativePackager.Universal
+import NativePackagerKeys._
+
 name := "BigSense"
 
 version := "0.1"
 
 scalaVersion := "2.10.3"
 
+resolvers += "couchbase" at "http://files.couchbase.com/maven2/"
 
 libraryDependencies ++= Seq(
    //runtime dependencies

@@ -11,3 +11,4 @@ lib/
 .pydevproject
 .settings/
 web/js/jquery.tablesorter.theme.blue/.svn/
+target/
