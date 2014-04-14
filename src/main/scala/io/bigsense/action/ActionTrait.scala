@@ -20,7 +20,7 @@ trait ActionTrait  {
     @BeanProperty var validator : ValidatorTrait = _
     //qval validator = inject[ValidatorTrait]
   
-    def runAction(aReq : ActionRequest) : ActionResponse
+    def runAction(aReq : ActionRequest) : Response
 
 	}
 }

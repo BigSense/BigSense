@@ -10,27 +10,21 @@ package io.bigsense.servlet
 import javax.servlet.http.{HttpServlet,
   HttpServletRequest => HSReq, HttpServletResponse => HSResp}
 import io.bigsense.spring.MySpring
-import io.bigsense.action.ActionTrait
+import io.bigsense.action._
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
-import io.bigsense.action.ActionResponse
 import scala.collection.JavaConversions.mapAsScalaMap
-import scala.collection.Map
-import java.util.Properties
-import java.io.BufferedReader
-import org.apache.log4j.PropertyConfigurator
 import io.bigsense.format.FormatTrait
 import io.bigsense.util.HttpUtil
 import org.apache.log4j.Logger
 import io.bigsense.model.DataModel
 import io.bigsense.db.DatabaseException
-import io.bigsense.action.ActionRequest
-import io.bigsense.model.ModelTrait
 import io.bigsense.validation.ValidationError
 import io.bigsense.format.UnsupportedFormatException
 import io.bigsense.format.NoFormat
 import io.bigsense.util.WebAppInfo
 import io.bigsense.security.SecurityManagerTrait
 import io.bigsense.security.SecurityManagerException
+import scala.Some
 
 
 class MasterServlet extends HttpServlet {
@@ -42,7 +36,7 @@ class MasterServlet extends HttpServlet {
   
   override def service(req : HSReq, resp: HSResp) = {    
     
-    var log : Logger = Logger.getLogger(this.getClass());
+    val log : Logger = Logger.getLogger(this.getClass());
     try {      
         //main entry point - bootstrapping
         
@@ -51,10 +45,10 @@ class MasterServlet extends HttpServlet {
 	    		    req.getServerName + 
 	    		    (if (req.getServerPort != 80) ":%s".format(req.getServerPort()) else "")  +
 	    		    req.getContextPath() 
-	    WebAppInfo.servletPath = WebAppInfo.contextPath + req.getServletPath()		  
+	      WebAppInfo.servletPath = WebAppInfo.contextPath + req.getServletPath()
         
         //construct request object
-        var aReq = new ActionRequest()        
+        val aReq = new ActionRequest()
         aReq.method = req.getMethod()
         aReq.args = getPath(req)
         
@@ -73,17 +67,17 @@ class MasterServlet extends HttpServlet {
         
         
         //Action
-    	var action : ActionTrait = MySpring.getObject("Action"+aReq.args(0)).asInstanceOf[ActionTrait]
+    	  val action : ActionTrait = MySpring.getObject("Action"+aReq.args(0)).asInstanceOf[ActionTrait]
         
         //Format isn't required, for everything. NoFormat indicates none was specified.         
         //TODO: Add "unknown format" and differentitate between the two
         aReq.format = {
-    	  try {
-            MySpring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[FormatTrait]
-    	  }
-    	  catch {
-    		case e:NoSuchBeanDefinitionException => { new NoFormat() }
-    	  }
+          try {
+              MySpring.getObject("Format"+getExtension(req).toUpperCase).asInstanceOf[FormatTrait]
+          }
+          catch {
+            case e:NoSuchBeanDefinitionException => { new NoFormat() }
+          }
         }
     	
 
@@ -99,7 +93,7 @@ class MasterServlet extends HttpServlet {
         
         
         //Security manager
-        var security : SecurityManagerTrait = MySpring.getObject("SecurityManager").asInstanceOf[SecurityManagerTrait]
+        val security : SecurityManagerTrait = MySpring.getObject("SecurityManager").asInstanceOf[SecurityManagerTrait]
         if(!security.securityFilter(aReq)) {
           throw new SecurityManagerException("Could not verify Signature")
         }
@@ -119,35 +113,31 @@ class MasterServlet extends HttpServlet {
         ) {}
         else {          
         	//run action
-	    	var aResp : ActionResponse = action.runAction(aReq)
-	    	
-	    	//Headers
-	    	resp.setStatus(aResp.status)
-	    	for( loc <- aResp.newLocations ) yield {
-	    		resp.addHeader("Location",
-	    		    WebAppInfo.servletPath + '/'+ aReq.args(0) + '/' + loc + '.' + getExtension(req))
-	    	}
-	    	aResp.contentType match {
-	    	  case Some(contentType : String) => { resp.setContentType(contentType) }
-	    	  case None => {}
-	    	}
-	    	
-	    	//Body
-	    	aResp.view match {
-	    	  case None => {
-	    	    aResp.binaryOutput match {
-	    	      case true =>  {resp.getOutputStream().write(aResp.binary)}
-	    	      case false => {resp.getOutputStream().print(aResp.output)}
-	    	    }
-	    		    
-	    	  }
-	    	  case Some(viewStr: String) => {
-	    		  for( (key,data) <- aResp.viewData) yield {
-	    			  req.setAttribute(key,data)
-	    		  }
-	    		  view(viewStr,req,resp)
-	    	  }
-	    	}
+          val aResp : Response = action.runAction(aReq)
+
+          //Headers
+          resp.setStatus(aResp.status)
+          for( loc <- aResp.newLocations ) yield {
+            resp.addHeader("Location",
+                WebAppInfo.servletPath + '/'+ aReq.args(0) + '/' + loc + '.' + getExtension(req))
+          }
+          aResp.contentType match {
+            case Some(contentType : String) => { resp.setContentType(contentType) }
+            case None => {}
+          }
+
+          //Body
+          aResp match {
+            case bin : BinaryResponse => resp.getOutputStream.write(bin.output)
+            case str : StringResponse => resp.getOutputStream.print(str.output)
+            case vue : ViewResponse   => {
+              for( (key,data) <- vue.viewData) yield {
+                req.setAttribute(key,data)
+              }
+              view(vue.view,req,resp)
+            }
+          }
+
         }
     }
     catch {

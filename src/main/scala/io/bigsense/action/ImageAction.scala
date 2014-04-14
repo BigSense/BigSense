@@ -4,7 +4,7 @@ import io.bigsense.util.TimeHelper
 
 class ImageAction extends ActionTrait {
 
-  def runAction(aReq: ActionRequest): ActionResponse = { 
+  def runAction(aReq: ActionRequest): Response = {
     var resp = new ActionResponse()
      
     aReq.method match {
@@ -13,7 +13,8 @@ class ImageAction extends ActionTrait {
 		    case "List" => {
 			    aReq.args(2) match {
 				    case "Latest" => {
-				      var limit : Int = aReq.args(3).toInt 
+				      var limit : Int = aReq.args(3).toInt
+
 				      resp.output = aReq.format.renderModels(dbHandler.retrieveLatestImageInfo(limit,aReq.parameters))
 				      resp.status = HttpServletResponse.SC_OK
 				    }
