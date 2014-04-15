@@ -1,6 +1,4 @@
 package io.bigsense.action
-import javax.servlet.http.HttpServletResponse
-import java.text.SimpleDateFormat
 import io.bigsense.util.TimeHelper
 import io.bigsense.db._
 
@@ -28,7 +26,7 @@ class AggregateAction extends ActionTrait {
         }
 
 
-        new StringResponse(HttpServletResponse.SC_OK, List(), None,
+        new StringResponse(
           aReq.format.renderModels(dbHandler.aggregate(start, end, Integer.parseInt(aReq.args(5)), {
             aReq.args(1) match {
               case "SumVolume" => AggVolumeOverTime
