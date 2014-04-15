@@ -5,13 +5,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <!-- Settings / Property File
+    <!-- Settings / Property File -->
     <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location" value="classpath:bigsense.properties"/>
     </bean>
-    -->
 
-	<!-- Actions -->
+    <!-- Actions -->
 
 	<bean id="BaseAction" name="BaseAction" class="io.bigsense.action.ActionTrait" abstract="true">
 		<property name="dbHandler" ref="serviceDataHandler" />
@@ -43,7 +42,7 @@
 	</bean>
 	
 	<!-- Security -->
-	<bean id="SecurityManager" name="SecurityManager" parent="securityManager" />
+	<bean id="SecurityManager" name="SecurityManager" parent="${securityManager}" />
 		
 	<bean id="SignatureSecurityManager" name="SignatureSecurityManager" class="io.bigsense.security.SignatureSecurityManageer">
 		<property name="dbHandler" ref="serviceDataHandler" />
@@ -107,10 +106,10 @@
 	<bean id="baseDataHandler" class="io.bigsense.db.DataHandlerTrait" abstract="true">
 		<property name="sqlCommands">
 			<bean id="sqlCommands" class="io.bigsense.util.SQLProperties">
-	    		<constructor-arg name="sqlCommandFile" value="/io/bigsense/db/dbms.commands"/>
+	    		<constructor-arg name="sqlCommandFile" value="/io/bigsense/db/${dbms}.commands"/>
 			</bean>
 		</property>
-        <property name="dbDialect" value="dbms" />
+        <property name="dbDialect" value="${dbms}" />
 		<property name="converters" ref="convertersAsScalaMap" />
 	</bean>
 	
@@ -120,32 +119,30 @@
 
 	<bean id="dboDataHandler" parent="baseDataHandler" class="io.bigsense.db.DBOHandler">
 		<property name="ds" ref="dboDataSource" />
-		<property name="ddlResource" value="/io/bigsense/db/ddl/dbms" />
+		<property name="ddlResource" value="/io/bigsense/db/ddl/${dbms}" />
 		<property name="env" value="environment" />
 	</bean>
  
 	<!-- Database configurations -->
 	<bean id="baseDataSource" abstract="true" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-	   <property name="driverClass" value="dbDriver" />
-	   <property name="jdbcUrl" value="connectionString" />
-	   <property name="idleConnectionTestPeriod" value="60"/>
-	   <property name="idleMaxAge" value="240"/>
-	   <property name="maxConnectionsPerPartition" value="dbPoolMaxPerPart"/>
-	   <property name="minConnectionsPerPartition" value="dbPoolMinPerPart"/>
-	   <property name="partitionCount" value="dbPoolPartitions"/>
+	   <property name="driverClass" value="${dbDriver}" />
+	   <property name="jdbcUrl" value="${connectionString}" />
+	   <property name="maxConnectionsPerPartition" value="${dbPoolMaxPerPart}"/>
+	   <property name="minConnectionsPerPartition" value="${dbPoolMinPerPart}"/>
+	   <property name="partitionCount" value="${dbPoolPartitions}"/>
 	   <property name="acquireIncrement" value="5"/>
 	   <property name="statementsCacheSize" value="100"/>
 	   <property name="releaseHelperThreads" value="3"/>
 	</bean>
 	
 	<bean id="serviceDataSource" parent="baseDataSource" >
-	   <property name="username" value="dbUser"/>
-	   <property name="password" value="dbPass"/>
+	   <property name="username" value="${dbUser}"/>
+	   <property name="password" value="${dbPass}"/>
 	</bean>
 	
 	<bean id="dboDataSource" parent="baseDataSource" >
-	   <property name="username" value="dboUser"/>
-	   <property name="password" value="dboPass"/>	
+	   <property name="username" value="${dboUser}"/>
+	   <property name="password" value="${dboPass}"/>
 	</bean>
  
 </beans>

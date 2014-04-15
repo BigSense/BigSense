@@ -58,9 +58,7 @@ class AgraDataXMLFormat extends FormatTrait {
   
   def loadModels(data : String) : List[ModelTrait] = { 
     
-    var xml : Elem = XML.loadString(data)
-    
-    var log : Logger = Logger.getLogger(this.getClass())
+    val xml : Elem = XML.loadString(data)
         
     var models = new ListBuffer[DataModel]
     
@@ -68,13 +66,12 @@ class AgraDataXMLFormat extends FormatTrait {
         
     	var model = new DataModel()
         
-	    var sensors = pack \ "sensors"
-	    var errors = pack \ "errors"
+	    val sensors = pack \ "sensors"
+	    val errors = pack \ "errors"
 	    model.timestamp = (pack \"@timestamp").text.trim()
 	    model.uniqueId = (pack \"@id"  ).text.trim()
 	       	    
 	    var sbList = new ListBuffer[SensorModel]()
-	    var sbErr = new ListBuffer[String]()
 	    
 	    for( node <- sensors \"sensor") yield {
 	      var sensorData = new SensorModel()
