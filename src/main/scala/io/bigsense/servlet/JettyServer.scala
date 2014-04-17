@@ -1,5 +1,5 @@
 package io.bigsense.servlet
 
-object NettyServer extends App {
+object JettyServer extends App {
   //println("Netty Version: " + io.netty.util.Version.identify())
 }

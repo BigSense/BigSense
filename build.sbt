@@ -34,7 +34,7 @@ libraryDependencies ++= Seq(
     "mysql" % "mysql-connector-java" % "5.1.27",
     //"io.netty" % "netty-all" % "4.0.14.Final",
     //"com.escalatesoft.subcut" % "subcut_2.9.2" % "2.0",
-    //"org.eclipse.jetty" % "jetty-project" % "9.1.3-SNAPSHOT",
+    "org.eclipse.jetty" % "jetty-project" % "9.1.4.v20140401",
     //bulk loader only (TODO: independent configuration and build
     "org.apache.commons" % "commons-compress" % "1.6",
     //build dependencies
