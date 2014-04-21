@@ -12,8 +12,7 @@ package io.bigsense.spring
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.apache.log4j.Logger
-
-
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
 
 
 object MySpring {
@@ -30,4 +29,8 @@ object MySpring {
   }
     
   
+}
+
+class BigSensePropertyLocation extends PropertyPlaceholderConfigurer {
+
 }
