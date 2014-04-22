@@ -9,7 +9,7 @@ class InitLoggingListener extends ServletContextListener {
 
   def contextInitialized(event: ServletContextEvent): Unit = {
     var props = new Properties();
-    props.load(this.getClass().getResourceAsStream("/io/bigsense/spring/log4j.properties"))
+    props.load(this.getClass().getResourceAsStream("/log4j.properties"))
     PropertyConfigurator.configure(props)    
   }
 

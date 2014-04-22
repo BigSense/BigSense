@@ -11,8 +11,9 @@ package io.bigsense.spring
 
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
-import org.apache.log4j.Logger
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
+import io.bigsense.servlet.JettyServer
+import org.springframework.core.io.FileSystemResource
 
 
 object MySpring {
@@ -32,5 +33,5 @@ object MySpring {
 }
 
 class BigSensePropertyLocation extends PropertyPlaceholderConfigurer {
-
+  setLocation(new FileSystemResource(JettyServer.config.params.configFile()))
 }

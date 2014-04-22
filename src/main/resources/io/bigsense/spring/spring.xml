@@ -6,9 +6,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <!-- Settings / Property File -->
-    <bean id="applicationProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:bigsense.properties"/>
-    </bean>
+    <bean id="applicationProperties" class="io.bigsense.spring.BigSensePropertyLocation" />
 
     <!-- Actions -->
 
