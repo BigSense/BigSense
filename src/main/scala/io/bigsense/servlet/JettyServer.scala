@@ -6,6 +6,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler
 import org.eclipse.jetty.server.handler.HandlerCollection
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.apache.log4j.Logger
+import io.bigsense.spring.BigSensePropertyLocation
 
 
 object JettyServer extends App {
@@ -15,16 +16,19 @@ object JettyServer extends App {
 
   lazy val config = new Configuration(args)
 
+  if(config.params.listConfig.isSupplied) {
+    new BigSensePropertyLocation().printProperties
+    System.exit(0)
+  }
+
 
   val server = new Server()
   val connector = new ServerConnector(server)
-  //TODO type check the port somewhere
   connector.setPort(config.options("httpPort").toInt)
   server.setConnectors(Array(connector))
   val context = new ServletContextHandler()
-  //TODO: configurable paths
-  context.setContextPath("/bigsense")
-  context.addServlet(new MasterServlet().getClass, "/api/*")
+  context.setContextPath(config.options("webRoot"))
+  context.addServlet(new MasterServlet().getClass, "/*")
   val handlers = new HandlerCollection()
   handlers.setHandlers(Array( context,new DefaultHandler()))
   server.setHandler(handlers)

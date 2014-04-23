@@ -11,6 +11,8 @@ scalaVersion := "2.10.3"
 
 resolvers += "couchbase" at "http://files.couchbase.com/maven2/"
 
+seq(webSettings :_*)
+
 libraryDependencies ++= Seq(
    //runtime dependencies
     "org.springframework" % "spring-beans" % "3.0.5.RELEASE",
@@ -34,14 +36,16 @@ libraryDependencies ++= Seq(
     "mysql" % "mysql-connector-java" % "5.1.27",
     //"io.netty" % "netty-all" % "4.0.14.Final",
     //"com.escalatesoft.subcut" % "subcut_2.9.2" % "2.0",
-    "org.eclipse.jetty" % "jetty-server" % "9.1.4.v20140401",
-    "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
+    "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" % "container",
+    "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" % "container",
+    "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" % "container",
     "org.rogach" %% "scallop" % "0.9.5",
     //bulk loader only (TODO: independent configuration and build
     "org.apache.commons" % "commons-compress" % "1.6",
     //build dependencies
-    "org.apache.tomcat" % "servlet-api" % "6.0.37" % "provided"
+    "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided"
 )
+
 
 licenses := Seq("GNU General Public License v3" -> url("https://www.gnu.org/licenses/gpl.html"))
 
