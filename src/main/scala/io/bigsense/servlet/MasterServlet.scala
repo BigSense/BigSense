@@ -38,7 +38,8 @@ class MasterServlet extends HttpServlet {
     
     val log : Logger = Logger.getLogger(this.getClass());
 
-    def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
+    //def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
+    def err(msg : String) = resp.getOutputStream.print("")
 
     try {      
         //main entry point - bootstrapping
