@@ -11,8 +11,6 @@ scalaVersion := "2.10.3"
 
 resolvers += "couchbase" at "http://files.couchbase.com/maven2/"
 
-seq(webSettings :_*)
-
 libraryDependencies ++= Seq(
    //runtime dependencies
     "org.springframework" % "spring-beans" % "3.0.5.RELEASE",
@@ -36,9 +34,8 @@ libraryDependencies ++= Seq(
     "mysql" % "mysql-connector-java" % "5.1.27",
     //"io.netty" % "netty-all" % "4.0.14.Final",
     //"com.escalatesoft.subcut" % "subcut_2.9.2" % "2.0",
-    "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" % "container",
-    "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" % "container",
-    "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" % "container",
+    "org.eclipse.jetty" % "jetty-server" % "9.1.4.v20140401",
+    "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
     "org.rogach" %% "scallop" % "0.9.5",
     //bulk loader only (TODO: independent configuration and build
     "org.apache.commons" % "commons-compress" % "1.6",
@@ -56,3 +53,5 @@ packageDescription := "web service designed for consuming and reporting data fro
 packageSummary := "TODO"
 
 maintainer := "Sumit Khanna<sumit@penguindreams.org>"
+
+Twirl.settings

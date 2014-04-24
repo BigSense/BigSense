@@ -37,6 +37,9 @@ class MasterServlet extends HttpServlet {
   override def service(req : HSReq, resp: HSResp) = {    
     
     val log : Logger = Logger.getLogger(this.getClass());
+
+    def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
+
     try {      
         //main entry point - bootstrapping
         
@@ -143,33 +146,28 @@ class MasterServlet extends HttpServlet {
     catch {
        case e:DatabaseException => {
          log.error("Database Error",e)
-         req.setAttribute("message",e.getMessage())
          resp.setStatus(HSResp.SC_INTERNAL_SERVER_ERROR)
-         view("error",req,resp)
+         err(e.getMessage)
        }
        case e:NoSuchBeanDefinitionException => {         
          log.warn("Invalid Incoming Request",e)
-         req.setAttribute("message","Bad Request")
          resp.setStatus(HSResp.SC_BAD_REQUEST)
-         view("error",req,resp)
+         err("Bad Request")
        }
        case e:UnsupportedFormatException => {
          log.warn("Request Made for Unsupported Format",e)
-         req.setAttribute("message",e.getMessage())
          resp.setStatus(HSResp.SC_BAD_REQUEST)
-         view("error",req,resp)
+         err(e.getMessage)
        }
        case e:SecurityManagerException => {
          log.warn("Security Manager Exception",e)
-         req.setAttribute("message",e.getMessage())
          resp.setStatus(HSResp.SC_UNAUTHORIZED)
-         view("error",req,resp)
+         err(e.getMessage)
        }
        case e:Throwable => {
          log.error("Internal Failure",e)
-         req.setAttribute("message","Internal Server Error")
          resp.setStatus(HSResp.SC_INTERNAL_SERVER_ERROR)
-         view("error",req,resp)
+         err("Internal Server Error")
        }
     }
 
