@@ -32,6 +32,7 @@ object JettyServer extends App {
 
   context.addEventListener(new InitLoggingListener())
   context.addEventListener(new DBUpdateListener())
+  context.setResourceBase(getClass.getResource("io/bigsense/web").toExternalForm)
 
   val handlers = new HandlerCollection()
   handlers.setHandlers(Array( context,new DefaultHandler()))
