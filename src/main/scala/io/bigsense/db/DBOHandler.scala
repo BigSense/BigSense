@@ -28,6 +28,7 @@ class DBOHandler extends DBOHandlerTrait {
         val currentVersion = getCurrentVersion()
         log.info("Current Version %d".format(currentVersion))
 	    for(i <- currentVersion+1 to ddlFiles.size) {
+        //log.debug("List:" + ddlFiles.toString)
 	      log.info("Processing Scheme File %s".format(ddlFiles(i).getName()))
 	      	for(stmts <- getStatements(ddlFiles(i))) {
             if(!stmts.trim().equals(""))  {  //ignore blank lines
@@ -42,7 +43,7 @@ class DBOHandler extends DBOHandlerTrait {
   
   def getCurrentVersion() : Int = {
     using(ds.getConnection()) { conn =>
-      var req : DBRequest = new DBRequest(conn,"currentDDLVersion")
+      val req : DBRequest = new DBRequest(conn,"currentDDLVersion")
       val results = runQuery(req).results
       results.length match {
         case 1 => {

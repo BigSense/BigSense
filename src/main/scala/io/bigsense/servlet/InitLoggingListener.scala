@@ -8,7 +8,7 @@ import org.apache.log4j.PropertyConfigurator
 class InitLoggingListener extends ServletContextListener {
 
   def contextInitialized(event: ServletContextEvent): Unit = {
-    var props = new Properties();
+    val props = new Properties();
     props.load(this.getClass().getResourceAsStream("/log4j.properties"))
     PropertyConfigurator.configure(props)    
   }

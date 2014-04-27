@@ -54,4 +54,8 @@ packageSummary := "TODO"
 
 maintainer := "Sumit Khanna<sumit@penguindreams.org>"
 
-//Twirl.settings
+fork in run := true
+
+//javaOptions += "-verbose:class"
+
+Twirl.settings

@@ -29,6 +29,10 @@ object JettyServer extends App {
   val context = new ServletContextHandler()
   context.setContextPath(config.options("webRoot"))
   context.addServlet(new MasterServlet().getClass, "/*")
+
+  context.addEventListener(new InitLoggingListener())
+  context.addEventListener(new DBUpdateListener())
+
   val handlers = new HandlerCollection()
   handlers.setHandlers(Array( context,new DefaultHandler()))
   server.setHandler(handlers)

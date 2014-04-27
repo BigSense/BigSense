@@ -38,8 +38,7 @@ class MasterServlet extends HttpServlet {
     
     val log : Logger = Logger.getLogger(this.getClass());
 
-    //def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
-    def err(msg : String) = resp.getOutputStream.print("")
+    def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
 
     try {      
         //main entry point - bootstrapping
@@ -109,8 +108,7 @@ class MasterServlet extends HttpServlet {
             case None => { false }
             case Some(error: ValidationError) => {
 	            resp.setStatus(error.statusCode)
-	            req.setAttribute("message",error.errorString)
-	            view("error",req,resp)
+              err(error.errorString)
 	            true
             }
           }
