@@ -12,8 +12,8 @@ package io.bigsense.spring
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.ClassPathXmlApplicationContext
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
-import io.bigsense.servlet.JettyServer
 import org.springframework.core.io.{ClassPathResource, FileSystemResource}
+import io.bigsense.server.BigSenseServer
 
 
 object MySpring {
@@ -33,7 +33,7 @@ object MySpring {
 }
 
 class BigSensePropertyLocation extends PropertyPlaceholderConfigurer {
-  setLocations(Array(new ClassPathResource("/io/bigsense/spring/defaults.properties"),new FileSystemResource(JettyServer.config.params.configFile())))
+  setLocations(Array(new ClassPathResource("/io/bigsense/spring/defaults.properties"),new FileSystemResource(BigSenseServer.config.params.configFile())))
 
   def printProperties = properties.list(System.out)
 

@@ -38,10 +38,13 @@ libraryDependencies ++= Seq(
     "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-webapp" % "9.1.4.v20140401",
     "org.rogach" %% "scallop" % "0.9.5",
+    "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" ,
+    "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
+    "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,
     //bulk loader only (TODO: independent configuration and build
-    "org.apache.commons" % "commons-compress" % "1.6",
+    "org.apache.commons" % "commons-compress" % "1.6"
     //build dependencies
-    "javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided"
+    //"javax.servlet" % "javax.servlet-api" % "3.0.1" % "provided"
 )
 
 

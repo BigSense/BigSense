@@ -1,4 +1,4 @@
-package io.bigsense.servlet
+package io.bigsense.server
 
 import org.apache.log4j.Logger
 import org.rogach.scallop.{ScallopOption, ScallopConf}
@@ -10,7 +10,7 @@ import io.bigsense.spring.BigSensePropertyLocation
  */
 class Configuration(args : Array[String]) {
 
-  val log : Logger = Logger.getLogger(JettyServer.getClass)
+  val log : Logger = Logger.getLogger(this.getClass)
 
   val requiredProperties = List("dbms","connectionString","environment",
     "dbDriver","dbUser","dbPass","dboUser","dboPass")
