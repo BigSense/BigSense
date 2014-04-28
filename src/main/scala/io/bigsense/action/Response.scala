@@ -1,6 +1,7 @@
 package io.bigsense.action
 
 import javax.servlet.http.HttpServletResponse
+import twirl.api.Html
 
 /**
  * Created by sumit on 4/11/14.
@@ -24,7 +25,7 @@ class StringResponse(val output : String,
                      newLocations: List[Int] = List())
   extends Response(status,contentType,newLocations)
 
-class ViewResponse(val view : String, val viewData : Map[String,Any],
+class ViewResponse(val view : Html,
                    status : Int = HttpServletResponse.SC_OK,
                    contentType : Option[String] = Some("text/html"),
                    newLocations: List[Int] = List())

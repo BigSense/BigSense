@@ -33,11 +33,6 @@
 	<bean id="ActionImage" name="ActionImage" class="io.bigsense.action.ImageAction" parent="BaseAction">
 		<property name="validator" ref="ImageActionValidator" />
 	</bean>
-
-	<bean id="ActionReport" name="ActionReport" class="io.bigsense.action.ReportAction" parent="BaseAction">
-		<property name="validator" ref="StatusActionValidator" />
-		<property name="converters" ref="convertersAsScalaMap" />
-	</bean>
 	
 	<!-- Security -->
 	<bean id="SecurityManager" name="SecurityManager" parent="${securityManager}" />

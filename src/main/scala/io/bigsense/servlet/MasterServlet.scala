@@ -42,7 +42,7 @@ class MasterServlet extends HttpServlet {
 
     try {      
         //main entry point - bootstrapping
-        
+
         //Setup basic hostname info for use downsteram
         WebAppInfo.contextPath = if(req.isSecure()) "https" else "http" + "://" + 
 	    		    req.getServerName + 
@@ -132,12 +132,7 @@ class MasterServlet extends HttpServlet {
           aResp match {
             case bin : BinaryResponse => resp.getOutputStream.write(bin.output)
             case str : StringResponse => resp.getOutputStream.print(str.output)
-            case vue : ViewResponse   => {
-              for( (key,data) <- vue.viewData) yield {
-                req.setAttribute(key,data)
-              }
-              view(vue.view,req,resp)
-            }
+            case vue : ViewResponse   => resp.getOutputStream.print(vue.view.body)
           }
 
         }

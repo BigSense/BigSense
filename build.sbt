@@ -36,6 +36,7 @@ libraryDependencies ++= Seq(
     //"com.escalatesoft.subcut" % "subcut_2.9.2" % "2.0",
     "org.eclipse.jetty" % "jetty-server" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
+    "org.eclipse.jetty" % "jetty-webapp" % "9.1.4.v20140401",
     "org.rogach" %% "scallop" % "0.9.5",
     //bulk loader only (TODO: independent configuration and build
     "org.apache.commons" % "commons-compress" % "1.6",

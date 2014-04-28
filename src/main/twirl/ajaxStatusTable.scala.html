@@ -1,0 +1,32 @@
+@(statusModelHeaders : List[String], statusModelCols : List[String], statusModelRows : List[Map[String,Any]], threshold : Int)
+
+<table id="SensorStatus" class="tablesorter">
+  <thead>
+    <tr>
+      @for(h <- statusModelHeaders) { <th>@h</th>}
+    </tr>
+  </thead>
+  <tbody>
+    @for(r <- statusModelRows) {
+      <tr>
+        @for(c <- statusModelCols) {
+          <td class="
+            @if(c == "time_since_last_report") {
+              @{
+                if(r(c).asInstanceOf[Long] > threshold ) { "rClass" }
+                else { "gClass" }
+              }
+            }
+          ">@r(c)</td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
+
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#SensorStatus").tablesorter();
+  });
+</script>

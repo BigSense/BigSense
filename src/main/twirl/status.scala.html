@@ -1,0 +1,75 @@
+@( webRoot : String, contentRoot : String, threshold : Int, refresh : Int)
+
+@headings = {
+  <script type="text/javascript" src="@contentRoot/js/jquery-1.7.1.min.js"></script>
+  <script type="text/javascript" src="@contentRoot/js/jquery.tablesorter.min.js"></script>
+  <script type="text/javascript" src="@contentRoot/js/jquery.timer.js"></script>
+  <link rel="StyleSheet" type="text/css" href="@contentRoot/js/jquery.tablesorter.theme.blue/style.css" />
+
+
+   <style type="text/css">
+     .rClass {
+       background-color:red !important;
+     }
+     .gClass {
+       background-color: green !important;
+     }
+   </style>
+
+   	<script type="text/javascript">
+
+   	  function pullStatusTable() {
+		  $.ajax({
+			  url: "Status/ajaxStatusTable",
+			  type: "GET",
+			  data: {
+				  refresh : $('#refresh').val(),
+				  threshold: $('#threshold').val()
+			  },
+			  cache: false
+		  })
+		  .success(function(data) {
+			  $('#statusTable').html(data)
+		  })
+		  .fail(function(data) {
+			  $('#statusTable').html('Error Loading Status Data')
+		  });
+   	  }
+
+	  var timer = $.timer(pullStatusTable);
+
+   	  function adjustTimer() {
+  		timer.once()
+		timer.set({
+			time: ($('#refresh').val() * 60000),
+			autostart: true
+		});
+   	  }
+
+	  $(document).ready(function () {
+		adjustTimer()
+		$('#updateChecks').click(adjustTimer);
+	  });
+	</script>
+}
+
+
+@main("Status",headings) {
+    <body>
+        <h1>Active Sensor Status</h1>
+
+        <form id="refreshForm" action="@webRoot/Status" method="get">
+            <p>
+                <label for="threshold">Threshold</label>
+                <input id="threshold" name="threshold" type="text" value="@threshold"/>
+                <label for="refresh">Refresh Interval</label>
+                <input id="refresh" name="refresh" type="text" value="@refresh" />
+                <input id="updateChecks" type="button" value="Update" />
+            </p>
+        </form>
+
+        <div id="statusTable">
+        </div>
+
+    </body>
+}
