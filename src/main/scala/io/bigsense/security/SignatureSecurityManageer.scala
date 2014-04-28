@@ -44,11 +44,11 @@ class SignatureSecurityManageer extends SecurityManagerTrait {
           throw new SecurityManagerException("Only data models are supported for verification")
         }
         
-        var sg = Signature.getInstance("SHA1withRSA");  
+        val sg = Signature.getInstance("SHA1withRSA");
         sg.initVerify(loadPublicKey(req.models(0).uniqueId))
-        
+
         req.signature match {
-          case None => { throw new SecurityManagerException("No Signature Found") }
+          case None => throw new SecurityManagerException("No Signature Found")
           case Some(sig : String) => {
             sg.update(req.data.trim().getBytes())
             return sg.verify(DatatypeConverter.parseBase64Binary(sig))
