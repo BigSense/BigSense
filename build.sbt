@@ -40,7 +40,8 @@ libraryDependencies ++= Seq(
     "org.rogach" %% "scallop" % "0.9.5",
     "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
-    "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,
+    "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,  //JSP (remove?)
+    //"org.apache.tomcat.embed" % "tomcat-embed-dbcp"               % "7.0.53" ,  //connection pooling
     //bulk loader only (TODO: independent configuration and build
     "org.apache.commons" % "commons-compress" % "1.6"
     //build dependencies
