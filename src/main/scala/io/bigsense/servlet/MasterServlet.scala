@@ -28,15 +28,10 @@ import scala.Some
 
 
 class MasterServlet extends HttpServlet {
-  
-  def view(view : String, req : HSReq, resp: HSResp) = {
-    getServletContext().getRequestDispatcher("/%s.jsp".format(view)).forward(req,resp)
-  }
 
-  
   override def service(req : HSReq, resp: HSResp) = {    
     
-    val log : Logger = Logger.getLogger(this.getClass());
+    val log : Logger = Logger.getLogger(this.getClass())
 
     def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
 
@@ -166,9 +161,9 @@ class MasterServlet extends HttpServlet {
     }
 
   }
-  
+
   def getExtension(req: HSReq) = req.getRequestURI().split("\\.").drop(1).mkString(".")
-  
+
   def getPath(req: HSReq) =
     req.getRequestURI()
      .substring( req.getContextPath().length() + req.getServletPath().length() )

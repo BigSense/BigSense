@@ -13,7 +13,7 @@ class JettyServer extends ServerTrait {
 
   val server = new Server()
   val connector = new ServerConnector(server)
-  connector.setPort(BigSenseServer.config.options("httpPort").toInt)
+  connector.setPort(httpPort)
   server.setConnectors(Array(connector))
 
   val context = new ServletContextHandler()
