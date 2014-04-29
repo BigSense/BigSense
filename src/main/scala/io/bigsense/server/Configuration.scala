@@ -17,7 +17,7 @@ class Configuration(args : Array[String]) {
 
   class Conf(args : Array[String]) extends ScallopConf(args) {
     version("BigSense X.X")
-    banner("""Usage: bigsense [-c|--config <file>] [-l|--list-config]
+    banner("""Usage: bigsense [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file>]
              |
              |BigSense is web service for storing and retrieving sensor network data.
              |
@@ -26,6 +26,7 @@ class Configuration(args : Array[String]) {
     footer("\nGNU GPL v3 :: http://bigsense.io")
     val configFile:ScallopOption[String] = opt[String]("config",descr="BigSense Configuration Property File",required = true, argName="file")
     val listConfig:ScallopOption[Boolean] = opt[Boolean]("list-config",descr="Prints current configuration and exists")
+    val bulkLoad:ScallopOption[String] = opt[String]("bulk-load",descr = "Loads a Bzip2 archive of sensor.xml files and exits", argName="file")
   }
 
   /**

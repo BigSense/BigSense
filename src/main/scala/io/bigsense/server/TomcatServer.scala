@@ -28,8 +28,8 @@ class TomcatServer extends ServerTrait {
   new InitLoggingListener().contextInitialized(null)
   new DBUpdateListener().contextInitialized(null)
 
-  println(BigSenseServer.getClass.getResource("/io/bigsense/web").toExternalForm)
-  val content = tomcat.addContext(BigSenseServer.contentRoot,BigSenseServer.getClass.getResource("/io/bigsense/web").toExternalForm)
+  //println(BigSenseServer.getClass.getResource("/io/bigsense/web").toExternalForm)
+  //val content = tomcat.addContext(BigSenseServer.contentRoot,BigSenseServer.getClass.getResource("/io/bigsense/web").toExternalForm)
 
 
   override def startServer() = {
