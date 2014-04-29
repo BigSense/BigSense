@@ -3,7 +3,9 @@ package io.bigsense.db
 import java.io.File
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.BeanProperty
-
+import org.apache.commons.io.IOUtils
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.springframework.core.io.Resource
 
 
 class DBOHandler extends DBOHandlerTrait {
@@ -29,8 +31,8 @@ class DBOHandler extends DBOHandlerTrait {
         log.info("Current Version %d".format(currentVersion))
 	    for(i <- currentVersion+1 to ddlFiles.size) {
         //log.debug("List:" + ddlFiles.toString)
-	      log.info("Processing Scheme File %s".format(ddlFiles(i).getName()))
-	      	for(stmts <- getStatements(ddlFiles(i))) {
+	      log.info("Processing Scheme File %s".format(ddlFiles(i).getFilename))
+	      	for(stmts <- getStatements(ddlFiles(i).getFile)) {
             if(!stmts.trim().equals(""))  {  //ignore blank lines
 	      	    log.info("Running %s".format(stmts))
 	      	    conn.prepareStatement(stmts).execute()
@@ -76,27 +78,29 @@ class DBOHandler extends DBOHandlerTrait {
    * @param environemnt an environment string 
    * @return Array of File objects representing SQL statements to be run in order
    */
-  private def getDDLList() : Map[Int,File] = {
-    val retval =  scala.collection.mutable.Map[Int,File]()
-    
-    for (file <- new File(getClass().getResource(ddlResource).getFile()).listFiles()) { 
-    	val parts = file.getName().split("-")
-    	
-    	if(parts(0).toInt != 0) { //skip 000, bootstrap file me be installed manually
-    	  
-    		//environment specific files
-	    	if(parts(1).startsWith("[")) {
-	    	  if(parts(1).contains(env)) {
-	    		retval.put(parts(0).toInt,file)
-	    	  }
-	    	}
-	    	//files without environment specified
-	    	else {
-	    	  retval.put(parts(0).toInt,file)
-	    	}
-    	}
+  private def getDDLList() : Map[Int,Resource] = {
+    val retval =  scala.collection.mutable.Map[Int,Resource]()
+
+    for(resource <- new PathMatchingResourcePatternResolver().getResources(ddlResource)) {
+
+      val parts = resource.getFilename().split("-")
+      log.trace("File " + resource.getFilename)
+
+      if(parts(0).toInt != 0) { //skip 000, bootstrap file me be installed manually
+        //environment specific files
+        if(parts(1).startsWith("[")) {
+          if(parts(1).contains(env)) {
+            retval.put(parts(0).toInt,resource)
+          }
+        }
+        //files without environment specified
+        else {
+          retval.put(parts(0).toInt,resource)
+        }
+      }
+
     }
-    retval.toMap[Int,File]
+    retval.toMap[Int,Resource]
   }
   
   /**

@@ -23,6 +23,7 @@ libraryDependencies ++= Seq(
     "aopalliance" % "aopalliance" % "1.0",
     "commons-logging" % "commons-logging" % "1.1.1",
     "commons-codec" % "commons-codec" % "1.6",
+    "commons-io" % "commons-io" % "2.4",
     "javax.servlet" % "jstl" % "1.1.2",
     "taglibs" % "standard" % "1.1.2",
     "net.sourceforge.jtds" % "jtds" % "1.2.4",

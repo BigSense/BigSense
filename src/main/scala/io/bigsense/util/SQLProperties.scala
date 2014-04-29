@@ -7,6 +7,7 @@ import scala.reflect.BeanProperty
 
 
 class SQLProperties(val sqlCommandFile : String) extends EProperties {  
-	load(new java.io.FileInputStream(getClass().getResource(sqlCommandFile).getFile()))  
+	//load(new java.io.FileInputStream(getClass().getResource(sqlCommandFile).getFile()))
+  load(getClass()getResourceAsStream(sqlCommandFile))
 }
 
