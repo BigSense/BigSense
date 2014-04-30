@@ -16,9 +16,8 @@ object BulkBZip2DataLoader {
 
 
   val BUFFER_SIZE = 4096
-  val PACKAGE_CHUNK_SIZE = 10000
 
-  def load(file : String)  {
+  def load(file : String, chunkSize : Long)  {
 
     val loader = MySpring.getObject("FormatAGRA.XML").asInstanceOf[FormatTrait]
     val db     = MySpring.getObject("serviceDataHandler").asInstanceOf[ServiceDataHandlerTrait]
@@ -38,8 +37,8 @@ object BulkBZip2DataLoader {
           xmlfile.close()
 
           chunks = chunks + 1
-          if( chunks % PACKAGE_CHUNK_SIZE == 0) {
-            System.out.println("Sending batch of %d to database".format(PACKAGE_CHUNK_SIZE))
+          if( chunks % chunkSize == 0) {
+            System.out.println("Sending batch of %d to database".format(chunkSize))
             db.loadData(models.toList.asInstanceOf[List[DataModel]])
             models.clear()
           }

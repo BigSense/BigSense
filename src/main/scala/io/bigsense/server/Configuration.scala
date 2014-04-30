@@ -17,7 +17,7 @@ class Configuration(args : Array[String]) {
 
   class Conf(args : Array[String]) extends ScallopConf(args) {
     version("BigSense X.X")
-    banner("""Usage: bigsense [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file>]
+    banner("""Usage: bigsense [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file> (-s) <chunk size>]
              |
              |BigSense is web service for storing and retrieving sensor network data.
              |
@@ -27,6 +27,8 @@ class Configuration(args : Array[String]) {
     val configFile:ScallopOption[String] = opt[String]("config",descr="BigSense Configuration Property File",required = true, argName="file")
     val listConfig:ScallopOption[Boolean] = opt[Boolean]("list-config",descr="Prints current configuration and exists")
     val bulkLoad:ScallopOption[String] = opt[String]("bulk-load",descr = "Loads a Bzip2 archive of sensor.xml files and exits", argName="file")
+    val chunkSize:ScallopOption[Long] = opt[Long]("block-size", short='s',descr="Number of records to load before database write for bulk loading",argName="chunk size",default=Some(10000))
+    dependsOnAny(chunkSize,List(bulkLoad))
   }
 
   /**
