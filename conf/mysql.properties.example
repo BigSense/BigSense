@@ -1,0 +1,14 @@
+dbms=mysql
+environment=development
+connectionString=jdbc:mysql://localhost:3306/BigSense?useLegacyDatetimeCode=false&serverTimezone=UTC
+dbDriver=com.mysql.jdbc.Driver
+dbUser=db_bigsense
+dbPass=insertpassword
+dboUser=db_bigsense_ddl
+dboPass=insertpassword
+securityManager=DisabledSecurityManager
+httpPort=8181
+dbPoolMaxPerPart=3
+dbPoolMinPerPart=1
+dbPoolPartitions=1
+server=tomcat

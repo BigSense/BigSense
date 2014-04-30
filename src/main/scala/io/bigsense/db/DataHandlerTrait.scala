@@ -125,7 +125,7 @@ trait DataHandlerTrait {
               stmt.setTimestamp(x, s, Calendar.getInstance(TimeZone.getTimeZone("UTC")))
             }
             case s: ByteArrayInputStream => {
-              stmt.setBinaryStream(x, s, s.asInstanceOf[ByteArrayInputStream].available())
+              stmt.setBinaryStream(x, s, s.available())
             }
             case s => {
               stmt.setObject(x, s)
