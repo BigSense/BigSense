@@ -10,6 +10,7 @@ import io.bigsense.format.{FormatTrait, AgraDataXMLFormat}
 import scala.collection.mutable.ListBuffer
 import io.bigsense.model.{DataModel, ModelTrait}
 import io.bigsense.db.ServiceDataHandlerTrait
+import java.util.{Calendar, TimeZone}
 
 
 object BulkBZip2DataLoader {
@@ -39,13 +40,12 @@ object BulkBZip2DataLoader {
               .filter( p => p.isInstanceOf[DataModel])
               .filter( q => {
                 minYear match {
-                  case Some(year) => TimeHelper.timestampToDate(q.asInstanceOf[DataModel].timestamp).getYear >= year
+                  case Some(year) => TimeHelper.yearFromTimestamp(q.asInstanceOf[DataModel].timestamp)>= year
                   case None => true
                 }
               })
           )
 
-          //models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
           xmlfile.close()
 
           chunks = chunks + 1

@@ -4,6 +4,7 @@ import java.util.{Calendar, TimeZone, SimpleTimeZone}
 import java.sql.Timestamp
 import org.apache.log4j.Logger
 
+
 object TimeHelper {
   
   /*def convertDateArgument(date : String, parameters : Map[String,Array[String]] ) : String = {
@@ -79,5 +80,17 @@ object TimeHelper {
       sdf.setTimeZone(new SimpleTimeZone(0, "UTC"))
       sdf.applyPattern("yyyy-MM-dd HH:mm:ss.SSS")
       sdf.format(new Timestamp(stamp))
+  }
+
+  /**
+   * returns the year in UTC for a UNIX timestamp in milliseconds.
+   * Used in the bulk loader for minimum year constraint
+   * @param unixTimeStamp timestamp as a milliseconds (Long)
+   * @return year in UTC
+   */
+  def yearFromTimestamp(unixTimeStamp: String) = {
+    val cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    cal.setTimeInMillis(unixTimeStamp.toLong)
+    cal.get(Calendar.YEAR)
   }
 }

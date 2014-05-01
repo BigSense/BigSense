@@ -21,7 +21,7 @@ object BigSenseServer extends App {
   if(config.params.bulkLoad.isSupplied) {
     new InitLoggingListener().contextInitialized(null)
     new DBUpdateListener().contextInitialized(null)
-    BulkBZip2DataLoader.load(config.params.bulkLoad(),config.params.chunkSize())
+    BulkBZip2DataLoader.load(config.params.bulkLoad(),config.params.chunkSize(),config.params.minYear.get)
     System.exit(0)
   }
 

@@ -17,7 +17,7 @@ class Configuration(args : Array[String]) {
 
   class Conf(args : Array[String]) extends ScallopConf(args) {
     version("BigSense X.X")
-    banner("""Usage: bigsense [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file> (-s) <chunk size>]
+    banner("""Usage: bigsense [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file> (-s) <chunk size> (-y) <min year>]
              |
              |BigSense is web service for storing and retrieving sensor network data.
              |
@@ -28,7 +28,9 @@ class Configuration(args : Array[String]) {
     val listConfig:ScallopOption[Boolean] = opt[Boolean]("list-config",descr="Prints current configuration and exists")
     val bulkLoad:ScallopOption[String] = opt[String]("bulk-load",descr = "Loads a Bzip2 archive of sensor.xml files and exits", argName="file")
     val chunkSize:ScallopOption[Long] = opt[Long]("block-size", short='s',descr="Number of records to load before database write for bulk loading",argName="chunk size",default=Some(10000))
+    val minYear:ScallopOption[Int] = opt[Int]("min-year",short = 'y', descr="Timestamp must be greater or equal to year in bulk processing", argName="min year")
     dependsOnAny(chunkSize,List(bulkLoad))
+    dependsOnAny(minYear,List(bulkLoad))
   }
 
   /**
