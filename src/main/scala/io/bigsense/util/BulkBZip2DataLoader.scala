@@ -17,7 +17,7 @@ object BulkBZip2DataLoader {
 
   val BUFFER_SIZE = 4096
 
-  def load(file : String, chunkSize : Long)  {
+  def load(file : String, chunkSize : Long, minYear : Option[Int] = None)  {
 
     val loader = MySpring.getObject("FormatAGRA.XML").asInstanceOf[FormatTrait]
     val db     = MySpring.getObject("serviceDataHandler").asInstanceOf[ServiceDataHandlerTrait]
@@ -32,13 +32,25 @@ object BulkBZip2DataLoader {
 
           val xmlfile = new ByteArrayOutputStream()
           IOUtils.copy(bzin,xmlfile)
-          System.out.println(String.format("Processing Entry %s",entry.getName));
-          models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
+          println(String.format("Processing Entry %s",entry.getName));
+
+          models.appendAll(
+            loader.loadModels(new String(xmlfile.toByteArray()))
+              .filter( p => p.isInstanceOf[DataModel])
+              .filter( q => {
+                minYear match {
+                  case Some(year) => TimeHelper.timestampToDate(q.asInstanceOf[DataModel].timestamp).getYear >= year
+                  case None => true
+                }
+              })
+          )
+
+          //models.appendAll( loader.loadModels(new String(xmlfile.toByteArray())) )
           xmlfile.close()
 
           chunks = chunks + 1
           if( chunks % chunkSize == 0) {
-            System.out.println("Sending batch of %d to database".format(chunkSize))
+            println("Sending batch of %d to database".format(chunkSize))
             db.loadData(models.toList.asInstanceOf[List[DataModel]])
             models.clear()
           }

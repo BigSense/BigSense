@@ -36,7 +36,6 @@ object TimeHelper {
 
     //We should really error on multiple TimeZones, but
     // we're just going to chose the last one
-    var retval : String = ""
     if(parameters.contains("Timezone")) {
       df2.setTimeZone(TimeZone.getTimeZone(parameters("Timezone").last.toString))
       val parts = df2.format(df1.parse(date)).split("-")
@@ -76,9 +75,9 @@ object TimeHelper {
 
 
   def timestampToSQLString(stamp : Long) : String = {
-	  var sdf : SimpleDateFormat = new SimpleDateFormat()
-      sdf.setTimeZone(new SimpleTimeZone(0, "UTC"));
-      sdf.applyPattern("yyyy-MM-dd HH:mm:ss.SSS");
+	  val sdf : SimpleDateFormat = new SimpleDateFormat()
+      sdf.setTimeZone(new SimpleTimeZone(0, "UTC"))
+      sdf.applyPattern("yyyy-MM-dd HH:mm:ss.SSS")
       sdf.format(new Timestamp(stamp))
   }
 }
