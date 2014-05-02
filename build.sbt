@@ -29,7 +29,7 @@ libraryDependencies ++= Seq(
     "org.scalaj" %% "scalaj-collection" % "1.5",
     "bouncycastle" % "bcprov-jdk15" % "140",
     "postgresql" % "postgresql" % "9.1-901.jdbc4",
-    "mysql" % "mysql-connector-java" % "5.1.27",
+    "mysql" % "mysql-connector-java" % "5.1.30",
     "org.eclipse.jetty" % "jetty-server" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-webapp" % "9.1.4.v20140401",
