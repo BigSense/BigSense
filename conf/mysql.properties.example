@@ -1,6 +1,6 @@
 dbms=mysql
 environment=development
-connectionString=jdbc:mysql://localhost:3306/BigSense
+connectionString=jdbc:mysql://localhost:3306/BigSense?useLegacyDatetimeCode=false&serverTimezone=UTC
 dbDriver=com.mysql.jdbc.Driver
 dbUser=db_bigsense
 dbPass=insertpassword

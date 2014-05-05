@@ -167,10 +167,13 @@ trait DataHandlerTrait {
                   rMap += (meta.getColumnLabel(i) -> (ret.getObject(i) match {
                     case null => null
                     case ts : Timestamp  => {
-                      //Ensure UTC (MySQL is the only driver that has trouble with this)
-                      val dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss.SSS")
-                      dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"))
-                      dateFormatGmt.format(ts)
+                      if(dbDialect == DB_MYSQL) {
+                        //Ensure UTC (MySQL is the only driver that has trouble with this)
+                        val dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss.SSS")
+                        dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"))
+                        dateFormatGmt.format(ts)
+                      }
+                      else ts
                     }
                     case x:Any => x
                   }))
