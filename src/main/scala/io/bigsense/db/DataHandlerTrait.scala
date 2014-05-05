@@ -18,6 +18,7 @@ import java.sql.Time
 import java.sql.Timestamp
 import java.io.ByteArrayInputStream
 import java.util.{TimeZone, Calendar}
+import java.text.SimpleDateFormat
 
 
 trait DataHandlerTrait {
@@ -163,7 +164,15 @@ trait DataHandlerTrait {
                 val rMap = scala.collection.mutable.Map[String, Any]()
 
                 for (i <- 1 to meta.getColumnCount()) {
-                  rMap += (meta.getColumnLabel(i) -> ret.getObject(i))
+                  rMap += (meta.getColumnLabel(i) -> (ret.getObject(i) match {
+                    case ts : Timestamp  => {
+                      //Ensure UTC (MySQL is the only driver that has trouble with this)
+                      val dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss.SSS")
+                      dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"))
+                      dateFormatGmt.format(ts)
+                    }
+                    case x:Any => x
+                  }))
                 }
 
                 //conversion
@@ -175,7 +184,6 @@ trait DataHandlerTrait {
                     }
                   }
                 }
-
 
                 retbuf += Map(rMap.toSeq: _*)
               }
