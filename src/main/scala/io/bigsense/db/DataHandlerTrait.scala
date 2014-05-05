@@ -169,7 +169,7 @@ trait DataHandlerTrait {
                     case ts : Timestamp  => {
                       if(dbDialect == DB_MYSQL) {
                         //Ensure UTC (MySQL is the only driver that has trouble with this)
-                        val dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss.SSS")
+                        val dateFormatGmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
                         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("UTC"))
                         dateFormatGmt.format(ts)
                       }
