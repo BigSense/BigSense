@@ -165,6 +165,7 @@ trait DataHandlerTrait {
 
                 for (i <- 1 to meta.getColumnCount()) {
                   rMap += (meta.getColumnLabel(i) -> (ret.getObject(i) match {
+                    case null => null
                     case ts : Timestamp  => {
                       //Ensure UTC (MySQL is the only driver that has trouble with this)
                       val dateFormatGmt = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss.SSS")
