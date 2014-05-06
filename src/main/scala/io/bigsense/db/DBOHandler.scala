@@ -6,6 +6,7 @@ import scala.reflect.BeanProperty
 import org.apache.commons.io.IOUtils
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.io.Resource
+import io.bigsense.server.BigSenseServer
 
 
 class DBOHandler extends DBOHandlerTrait {
@@ -104,13 +105,15 @@ class DBOHandler extends DBOHandlerTrait {
   }
   
   /**
-   * returns all the SQL statements from a file, separated by semicolons (;)
+   * returns all the SQL statements from a file, separated by semicolons (;).
+   * Substitution for database user names occurs here. Only needed for
+   * postgres since it requires permissions per table.
    * @param sql SQL File to read 
    * @return Array of SQL statements as strings
    */
   private def getStatements(sql : File) : Array[String] = {
     val source = scala.io.Source.fromFile(sql)
-    val lines = source.mkString.split(";")
+    val lines = source.mkString.replace("${dbUser}",BigSenseServer.config.options("dbUser")).split(";")
     source.close ()
     lines
   }
