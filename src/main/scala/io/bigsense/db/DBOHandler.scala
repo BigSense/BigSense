@@ -28,18 +28,17 @@ class DBOHandler extends DBOHandlerTrait {
   def updateSchema() : Unit = {
     val ddlFiles = getDDLList()   
     using(ds.getConnection()) { conn =>
-        val currentVersion = getCurrentVersion()
-        log.info("Current Version %d".format(currentVersion))
+      val currentVersion = getCurrentVersion()
+      log.info("Current Version %d".format(currentVersion))
 	    for(i <- currentVersion+1 to ddlFiles.size) {
-        //log.debug("List:" + ddlFiles.toString)
 	      log.info("Processing Scheme File %s".format(ddlFiles(i).getFilename))
-	      	for(stmts <- getStatements(ddlFiles(i).getFile)) {
-            if(!stmts.trim().equals(""))  {  //ignore blank lines
-	      	    log.info("Running %s".format(stmts))
-	      	    conn.prepareStatement(stmts).execute()
-            }
-	      	}
-	      	updateVersion(i)
+	      for(stmts <- getStatements(ddlFiles(i).getFile)) {
+          if(!stmts.trim().equals(""))  {  //ignore blank lines
+	         log.info("Running %s".format(stmts))
+	         conn.prepareStatement(stmts).execute()
+          }
+	      }
+	      updateVersion(i)
 	    }
     }
   }
@@ -50,9 +49,9 @@ class DBOHandler extends DBOHandlerTrait {
       val results = runQuery(req).results
       results.length match {
         case 1 => {
-          return results(0)("version").asInstanceOf[Int]
+          results(0)("version").asInstanceOf[Int]
         }
-        case 0 => { return 0 }
+        case 0 => { 0 }
         case _ => { throw new DatabaseException("Multiple Results for Single Row Operation") }
       }
     }    
@@ -99,7 +98,6 @@ class DBOHandler extends DBOHandlerTrait {
           retval.put(parts(0).toInt,resource)
         }
       }
-
     }
     retval.toMap[Int,Resource]
   }
@@ -111,12 +109,10 @@ class DBOHandler extends DBOHandlerTrait {
    * @param sql SQL File to read 
    * @return Array of SQL statements as strings
    */
-  private def getStatements(sql : File) : Array[String] = {
-    val source = scala.io.Source.fromFile(sql)
-    val lines = source.mkString.replace("${dbUser}",BigSenseServer.config.options("dbUser")).split(";")
-    source.close ()
-    lines
-  }
+  private def getStatements(sql : File) : Array[String] =
+    using(scala.io.Source.fromFile(sql)) {
+      _.mkString.replace("${dbUser}", BigSenseServer.config.options("dbUser")).split(";")
+    }
   
   /**
    * updates schema information table to indicate the latest schema version installed.
