@@ -3,9 +3,9 @@ import com.typesafe.sbt.SbtNativePackager.packageArchetype
 import com.typesafe.sbt.SbtNativePackager.Universal
 import NativePackagerKeys._
 
-name := "BigSense"
+name := "bigsense"
 
-version := "0.1"
+version := "0.2alpha"
 
 scalaVersion := "2.10.3"
 
@@ -40,17 +40,27 @@ libraryDependencies ++= Seq(
     "org.apache.commons" % "commons-compress" % "1.6"
 )
 
+licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))
 
-licenses := Seq("GNU General Public License v3" -> url("https://www.gnu.org/licenses/gpl.html"))
+//publishing
+
+bintray.Keys.bintrayOrganization in bintray.Keys.bintray := Some("bigsense")
+
+bintray.Keys.repository in bintray.Keys.bintray := "trusty"
+
+seq(bintrayPublishSettings:_*)
+
+//packaging
 
 packageArchetype.java_server
 
 packageDescription := "web service designed for consuming and reporting data from sensor networks"
 
-packageSummary := "TODO"
+packageSummary := "BigSense is a web service designed to process and report data from sensor networks. (http://bigsense.io)"
 
 maintainer := "Sumit Khanna<sumit@penguindreams.org>"
 
 fork in run := true
 
 Twirl.settings
+
