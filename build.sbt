@@ -44,11 +44,13 @@ licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))
 
 //publishing
 
+seq(bintrayPublishSettings:_*)
+
+publishMavenStyle := false
+
 bintray.Keys.bintrayOrganization in bintray.Keys.bintray := Some("bigsense")
 
 bintray.Keys.repository in bintray.Keys.bintray := "trusty"
-
-seq(bintrayPublishSettings:_*)
 
 //packaging
 
