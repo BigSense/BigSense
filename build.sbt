@@ -42,16 +42,6 @@ libraryDependencies ++= Seq(
 
 licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))
 
-//publishing
-
-seq(bintrayPublishSettings:_*)
-
-publishMavenStyle := false
-
-bintray.Keys.bintrayOrganization in bintray.Keys.bintray := Some("bigsense")
-
-bintray.Keys.repository in bintray.Keys.bintray := "trusty"
-
 //packaging
 
 packageArchetype.java_server
@@ -63,6 +53,17 @@ packageSummary := "BigSense is a web service designed to process and report data
 maintainer := "Sumit Khanna<sumit@penguindreams.org>"
 
 fork in run := true
+
+mappings in Universal ++= Seq(
+  file("conf/log4j.properties") -> "conf/log4j.properties",
+  file("conf/mysql.example.properties") -> "conf/mysql.example.properties",
+  file("conf/mssql.example.properties") -> "conf/mssql.example.properties",
+  file("conf/pgsql.example.properties") -> "conf/pgsql.example.properties",
+  file("src/main/resources/io/bigsense/db/ddl/mysql/000-DDLInitilization.sql") -> "conf/initalize-mysql.sql",
+  file("src/main/resources/io/bigsense/db/ddl/mssql/000-DDLInitilization.sql") -> "conf/initalize-mssql.sql",
+  file("src/main/resources/io/bigsense/db/ddl/pgsql/000-DDLInitilization.sql") -> "conf/initalize-pgsql.sql"
+)
+
 
 Twirl.settings
 
