@@ -1,11 +1,12 @@
 import _root_.sbt.Keys._
+import com.typesafe.sbt.packager.linux.LinuxSymlink
 import com.typesafe.sbt.SbtNativePackager.packageArchetype
 import com.typesafe.sbt.SbtNativePackager.Universal
 import NativePackagerKeys._
 
 name := "bigsense"
 
-version := "0.2alpha"
+version := "0.2.1alpha"
 
 scalaVersion := "2.10.3"
 
