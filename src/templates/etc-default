@@ -15,7 +15,7 @@
 # -------------------------------------------------
 
 
-# Custom Stuff to Catalyst/Telecom
+# Custom for default cofiguration
 
  -Dmobilewalletprov.config=/etc/${{app_name}}/application.conf
  -Dbigsense.log4jconfig=/etc/${{app_name}}/log4j.properties
