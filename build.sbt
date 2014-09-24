@@ -1,5 +1,5 @@
 import _root_.sbt.Keys._
-import com.typesafe.sbt.packager.linux.LinuxSymlink
+import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
 import com.typesafe.sbt.SbtNativePackager.packageArchetype
 import com.typesafe.sbt.SbtNativePackager.Universal
 import NativePackagerKeys._
@@ -65,6 +65,23 @@ mappings in Universal ++= Seq(
   file("src/main/resources/io/bigsense/db/ddl/pgsql/000-DDLInitilization.sql") -> "conf/initalize-pgsql.sql"
 )
 
+//RPMs
+
+rpmVendor := "BigSense.io"
+
+name in Rpm := "BigSense"
+
+rpmUrl := Some("http://bigsense.io")
+
+version in Rpm := "0.1"
+
+rpmRelease := "0"
+
+rpmLicense := Some("GPL-3.0")
+
+rpmGroup := Some("bigsense")
+
+serverLoading in Rpm := Systemd
 
 Twirl.settings
 
