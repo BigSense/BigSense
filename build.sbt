@@ -3,10 +3,13 @@ import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
 import com.typesafe.sbt.SbtNativePackager.packageArchetype
 import com.typesafe.sbt.SbtNativePackager.Universal
 import NativePackagerKeys._
+import com.typesafe.sbt.SbtGit._
 
 name := "bigsense"
 
-version := "0.2.1alpha"
+versionWithGit
+
+git.baseVersion := "0.2.1"
 
 scalaVersion := "2.10.3"
 
@@ -84,4 +87,5 @@ rpmGroup := Some("bigsense")
 serverLoading in Rpm := Systemd
 
 Twirl.settings
+
 
