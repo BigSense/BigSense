@@ -6,7 +6,7 @@ import NativePackagerKeys._
 
 name := "bigsense"
 
-version := "0.2.1alpha"
+version := Process("git" , Seq("describe" , "--dirty")).!!.trim() 
 
 scalaVersion := "2.10.3"
 
