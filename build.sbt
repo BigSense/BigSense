@@ -10,6 +10,17 @@ version := Process("git" , Seq("describe" , "--dirty")).!!.trim()
 
 scalaVersion := "2.10.3"
 
+//sbt-build info
+buildInfoSettings
+
+sourceGenerators in Compile <+= buildInfo
+
+buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
+
+buildInfoPackage := "io.bigsense"
+
+//dependencies
+
 resolvers += "couchbase" at "http://files.couchbase.com/maven2/"
 
 libraryDependencies ++= Seq(

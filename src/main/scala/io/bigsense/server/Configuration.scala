@@ -16,10 +16,11 @@ class Configuration(args : Array[String]) {
     "dbDriver","dbUser","dbPass","dboUser","dboPass")
 
   class Conf(args : Array[String]) extends ScallopConf(args) {
-    version("BigSense X.X")
-    banner("""Usage: bigsense [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file> (-s) <chunk size> (-y) <min year>]
+    val name = io.bigsense.BuildInfo.name
+    version(f"$name%s ${io.bigsense.BuildInfo.version}%s")
+    banner(f"""Usage: $name%s [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file> (-s) <chunk size> (-y) <min year>]
              |
-             |BigSense is web service for storing and retrieving sensor network data.
+             |$name%s is web service for storing and retrieving sensor network data.
              |
              |Options:
              |""".stripMargin)
