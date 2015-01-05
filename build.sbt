@@ -66,14 +66,14 @@ maintainer := "Sumit Khanna<sumit@penguindreams.org>"
 
 fork in run := true
 
-mappings in Universal ++= Seq(
-  file("conf/log4j.properties") -> "conf/log4j.properties",
-  file("conf/mysql.example.properties") -> "conf/mysql.example.properties",
-  file("conf/mssql.example.properties") -> "conf/mssql.example.properties",
-  file("conf/pgsql.example.properties") -> "conf/pgsql.example.properties",
-  file("src/main/resources/io/bigsense/db/ddl/mysql/000-DDLInitilization.sql") -> "conf/initalize-mysql.sql",
-  file("src/main/resources/io/bigsense/db/ddl/mssql/000-DDLInitilization.sql") -> "conf/initalize-mssql.sql",
-  file("src/main/resources/io/bigsense/db/ddl/pgsql/000-DDLInitilization.sql") -> "conf/initalize-pgsql.sql"
+linuxPackageMappings ++= Seq (
+  packageMapping(file("conf/log4j.properties") -> "/etc/bigsense/log4j.properties"),
+  packageMapping(file("conf/mysql.example.properties") -> "/etc/bigsense/examples/mysql.properties"),
+  packageMapping(file("conf/mssql.example.properties") -> "/etc/bigsense/examples/mssql.properties"),
+  packageMapping(file("conf/pgsql.example.properties") -> "/etc/bigsense/examples/pgsql.properties"),
+  packageMapping(file("src/main/resources/io/bigsense/db/ddl/mysql/000-DDLInitilization.sql") -> "/etc/bigsense/schema/initalize-mysql.sql"),
+  packageMapping(file("src/main/resources/io/bigsense/db/ddl/mssql/000-DDLInitilization.sql") -> "/etc/bigsense/schema/initalize-mssql.sql"),
+  packageMapping(file("src/main/resources/io/bigsense/db/ddl/pgsql/000-DDLInitilization.sql") -> "/etc/bigsense/schema/initalize-pgsql.sql")
 )
 
 //RPMs
