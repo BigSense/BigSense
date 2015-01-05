@@ -17,7 +17,7 @@
 
 # Custom for default cofiguration
 
- -Dmobilewalletprov.config=/etc/${{app_name}}/application.conf
+ --config /etc/${{app_name}}/bigsense.conf
  -Dbigsense.log4jconfig=/etc/${{app_name}}/log4j.properties
 
 # Setting -Xmx and -Xms in Megabyte
