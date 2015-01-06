@@ -1,6 +1,6 @@
 package io.bigsense.db
 
-import java.io.File
+import java.io.{InputStream, File}
 import scala.collection.mutable.ArrayBuffer
 import scala.reflect.BeanProperty
 import org.apache.commons.io.IOUtils
@@ -32,7 +32,7 @@ class DBOHandler extends DBOHandlerTrait {
       log.info("Current Version %d".format(currentVersion))
 	    for(i <- currentVersion+1 to ddlFiles.size) {
 	      log.info("Processing Scheme File %s".format(ddlFiles(i).getFilename))
-	      for(stmts <- getStatements(ddlFiles(i).getFile)) {
+	      for(stmts <- getStatements(ddlFiles(i).getInputStream)) {
           if(!stmts.trim().equals(""))  {  //ignore blank lines
 	         log.info("Running %s".format(stmts))
 	         conn.prepareStatement(stmts).execute()
@@ -109,8 +109,8 @@ class DBOHandler extends DBOHandlerTrait {
    * @param sql SQL File to read 
    * @return Array of SQL statements as strings
    */
-  private def getStatements(sql : File) : Array[String] =
-    using(scala.io.Source.fromFile(sql)) {
+  private def getStatements(sql : InputStream) : Array[String] =
+    using(scala.io.Source.fromInputStream(sql)) {
       _.mkString.replace("${dbUser}", BigSenseServer.config.options("dbUser")).split(";")
     }
   
