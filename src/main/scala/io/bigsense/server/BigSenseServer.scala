@@ -30,12 +30,21 @@ object BigSenseServer extends App {
     System.exit(0)
   }
 
-  val server = config.options("server") match {
-    case "tomcat" => new TomcatServer().startServer()
-    case "jetty" => new JettyServer().startServer()
-    case _ => {
-      log.fatal("Unknown server type: %s. (Was expecting tomcat or jetty)")
-      System.exit(4)
+  try {
+    config.options("server") match {
+      case "tomcat" => new TomcatServer().startServer()
+      case "jetty" => new JettyServer().startServer()
+      case _ => {
+        log.fatal("Unknown server type: %s. (Was expecting tomcat or jetty)")
+        System.exit(4)
+      }
     }
   }
+  catch {
+    case e:Exception => {
+      log.fatal("Unexpected error",e)
+      System.exit(5)
+    }
+  }
+
 }
