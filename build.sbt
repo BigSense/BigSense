@@ -84,9 +84,9 @@ name in Rpm := "BigSense"
 
 rpmUrl := Some("http://bigsense.io")
 
-version in Rpm := "0.1"
+version in Rpm := version.value.split('-')(0)
 
-rpmRelease := "0"
+rpmRelease := (version.value.split('-') slice (1,version.value.length)).mkString("_")
 
 rpmLicense := Some("GPL-3.0")
 
