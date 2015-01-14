@@ -1,8 +1,9 @@
-import _root_.sbt.Keys._
-import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
+
 import com.typesafe.sbt.SbtNativePackager.packageArchetype
-import com.typesafe.sbt.SbtNativePackager.Universal
-import NativePackagerKeys._
+
+enablePlugins(JavaAppPackaging)
+enablePlugins(DebianPlugin)
+enablePlugins(RpmPlugin)
 
 name := "bigsense"
 
@@ -91,8 +92,6 @@ rpmRelease := (version.value.split('-') slice (1,version.value.length)).mkString
 rpmLicense := Some("GPL-3.0")
 
 rpmGroup := Some("bigsense")
-
-serverLoading in Rpm := Systemd
 
 Twirl.settings
 
