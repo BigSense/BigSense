@@ -3,8 +3,8 @@ CREATE TABLE processors (
   class varchar(255)
 );
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON processors TO db_bigsense;
-GRANT USAGE ON SEQUENCE processors_id_seq TO db_bigsense;
+GRANT SELECT,INSERT,UPDATE,DELETE ON processors TO ${dbUser};
+GRANT USAGE ON SEQUENCE processors_id_seq TO ${dbUser};
 
 
 CREATE TABLE sensor_processors (
@@ -16,6 +16,6 @@ CREATE TABLE sensor_processors (
   CONSTRAINT fk_sensors_processors_processor_id FOREIGN KEY ( processor_id ) REFERENCES processors(id)
 );
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_processors TO db_bigsense;
-GRANT USAGE ON SEQUENCE sensor_processors_sensor_id_seq TO db_bigsense;
+GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_processors TO ${dbUser};
+GRANT USAGE ON SEQUENCE sensor_processors_sensor_id_seq TO ${dbUser};
 

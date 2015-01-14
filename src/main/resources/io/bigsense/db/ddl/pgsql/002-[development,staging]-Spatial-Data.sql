@@ -4,7 +4,7 @@ CREATE TABLE sensor_locations (
     location geography(POINT)
 );
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_locations TO db_bigsense;
+GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_locations TO ${dbUser};
 
 
 INSERT INTO sensor_locations VALUES('VRFLO001',ST_GeographyFromText('POINT(39.1367 -84.5083)'));

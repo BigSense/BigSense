@@ -9,7 +9,7 @@ CREATE TABLE sensor_images (
 
 );
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_images TO db_bigsense;
-GRANT USAGE ON SEQUENCE sensor_images_id_seq TO db_bigsense;
+GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_images TO ${dbUser};
+GRANT USAGE ON SEQUENCE sensor_images_id_seq TO ${dbUser};
 
 INSERT INTO sensor_types (id,name) VALUES(5,'Image');

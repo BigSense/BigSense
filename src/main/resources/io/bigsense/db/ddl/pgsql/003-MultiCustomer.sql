@@ -4,7 +4,7 @@ CREATE TABLE sites (
    data_keys_pem TEXT
 );
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON sites TO db_bigsense;
+GRANT SELECT,INSERT,UPDATE,DELETE ON sites TO ${dbUser};
 
 
 CREATE TABLE site_relays (
@@ -13,7 +13,7 @@ CREATE TABLE site_relays (
 );
 
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON site_relays TO db_bigsense;
+GRANT SELECT,INSERT,UPDATE,DELETE ON site_relays TO ${dbUser};
 
 
 
