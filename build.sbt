@@ -1,7 +1,5 @@
 
-import com.typesafe.sbt.SbtNativePackager.packageArchetype
-
-enablePlugins(JavaAppPackaging)
+enablePlugins(JavaServerAppPackaging)
 enablePlugins(DebianPlugin)
 enablePlugins(RpmPlugin)
 
@@ -56,8 +54,6 @@ libraryDependencies ++= Seq(
 licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))
 
 //packaging
-
-packageArchetype.java_server
 
 packageDescription := "web service designed for consuming and reporting data from sensor networks"
 
