@@ -12,3 +12,4 @@ lib/
 .settings/
 web/js/jquery.tablesorter.theme.blue/.svn/
 target/
+package/

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+base=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+sbt ";set target := file(\"$base/package/deb-upstart\"); set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.Upstart; debian:packageBin; set target := file(\"$base/package/deb-systemv\"); set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV; debian:packageBin; set target := file(\"$base/package/rpm-systemd\"); rpm:packageBin"
