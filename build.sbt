@@ -7,7 +7,7 @@ name := "bigsense"
 
 version := Process("git" , Seq("describe" , "--dirty")).!!.trim() 
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.4"
 
 //sbt-build info
 buildInfoSettings
