@@ -113,7 +113,6 @@
 	<bean id="dboDataHandler" parent="baseDataHandler" class="io.bigsense.db.DBOHandler">
 		<property name="ds" ref="dboDataSource" />
 		<property name="ddlResource" value="/io/bigsense/db/ddl/${dbms}/*" />
-		<property name="env" value="${environment}" />
 	</bean>
  
 	<!-- Database configurations -->

@@ -12,13 +12,6 @@ import io.bigsense.server.BigSenseServer
 class DBOHandler extends DBOHandlerTrait {
 
   /**
-   * environment.
-   * Examples: development, staging, production. 
-   */
-  @BeanProperty
-  var env : String = "unknown"
-  
-  /**
    * class resource path to DDL files.
    */
   @BeanProperty
@@ -65,17 +58,12 @@ class DBOHandler extends DBOHandlerTrait {
    * All SQL files for database construction are contained within the ddl/<database backend> direcotry.
    * Currently only MSSQL is supported. The format for naimg the files is as such:
    * 
-   * ###-[environment,environment]-Name.sql
-   * 
-   * The environment is optional and, if left out, means the SQL file applies to all environments. 
-   * Multiple environments can be specified using a comma. File 000 is ignored as it's bootstraping file
-   * that contains passwords and must be setup manually
+   * ###-Name.sql
    * 
    * Example:
    * 
-   * 002-[Production]-SomeFeature.sql
-   * 
-   * @param environemnt an environment string 
+   * 002-SomeFeature.sql
+   *
    * @return Array of File objects representing SQL statements to be run in order
    */
   private def getDDLList() : Map[Int,Resource] = {
