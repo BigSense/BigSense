@@ -75,16 +75,7 @@ class DBOHandler extends DBOHandlerTrait {
       log.trace("File " + resource.getFilename)
 
       if(parts(0).toInt != 0) { //skip 000, bootstrap file me be installed manually
-        //environment specific files
-        if(parts(1).startsWith("[")) {
-          if(parts(1).contains(env)) {
-            retval.put(parts(0).toInt,resource)
-          }
-        }
-        //files without environment specified
-        else {
           retval.put(parts(0).toInt,resource)
-        }
       }
     }
     retval.toMap[Int,Resource]
