@@ -68,7 +68,7 @@ aggregationForInterval = "SELECT
 
 
 totalDataForInterval={
-  compoundFormula = MAX(CAST(dat.data AS FLOAT) - MIN(CAST(dat.data AS FLOAT))
+  compoundFormula = MAX(CAST(dat.data AS FLOAT)) - MIN(CAST(dat.data AS FLOAT))
   sql = ${aggregationForInterval}
 }
 
@@ -83,12 +83,10 @@ readPackage = ${readPackages} WHERE pak.id=?
 listRelays = SELECT unique_id,public_key FROM relays
 
 listSensors = "SELECT sen.unique_id AS sensor_id , r.unique_id AS relay_id,
-                  sen.units AS units, t.name AS sensor_type,
-                  ST_X(location::geometry) AS latitude, ST_Y(location::geometry) as longitude
+                  sen.units AS units, t.name AS sensor_type
                   FROM sensors sen
                   LEFT JOIN sensor_types t ON t.id = sen.sensor_type
-                  LEFT JOIN relays r ON r.id = sen.relay_id
-                  LEFT JOIN sensor_locations l ON l.sensor_unique_id=LEFT(sen.unique_id,16)"
+                  LEFT JOIN relays r ON r.id = sen.relay_id"
 
 
 sensorAliveStatus = "SELECT rly.unique_id AS relay_id, lpr.last_report_time,

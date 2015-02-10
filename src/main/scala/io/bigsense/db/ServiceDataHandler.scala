@@ -52,8 +52,8 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 
   def listSensors() : List[FlatModel] = {
     val ret = new FlatModel()
-    ret.headers = List("SensorID","RelayID","Units","SensorType","Latitude","Longitude")
-    ret.cols = List("sensor_id","relay_id","units","sensor_type","latitude","longitude")
+    ret.headers = List("SensorID","RelayID","Units","SensorType")
+    ret.cols = List("sensor_id","relay_id","units","sensor_type")
     using(ds.getConnection()) { conn =>
         var req = new DBRequest(conn,"listSensors")
     	ret.rows = runQuery(req).results  
