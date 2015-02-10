@@ -1,1 +1,1 @@
---Removed / Technical Debt
+SELECT 1=1;
