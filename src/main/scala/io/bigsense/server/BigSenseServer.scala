@@ -3,7 +3,7 @@ package io.bigsense.server
 import org.apache.log4j.Logger
 import io.bigsense.spring.BigSensePropertyLocation
 import io.bigsense.util.BulkBZip2DataLoader
-import io.bigsense.servlet.{DBUpdateListener, InitLoggingListener}
+import io.bigsense.servlet.DBUpdateListener
 
 /**
  * Created by sumit on 4/28/14.
@@ -18,8 +18,9 @@ object BigSenseServer extends App {
 
   lazy val contentRoot = config.options("contentRoot")
 
+  new LoggingConfiguration()
+
   if(config.params.bulkLoad.isSupplied) {
-    new InitLoggingListener().contextInitialized(null)
     new DBUpdateListener().contextInitialized(null)
     BulkBZip2DataLoader.load(config.params.bulkLoad(),config.params.chunkSize(),config.params.minYear.get)
     System.exit(0)

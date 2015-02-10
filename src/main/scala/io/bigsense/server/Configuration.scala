@@ -12,7 +12,7 @@ class Configuration(args : Array[String]) {
 
   val log : Logger = Logger.getLogger(this.getClass)
 
-  val requiredProperties = List("dbms","connectionString","environment",
+  val requiredProperties = List("dbms","connectionString",
     "dbDriver","dbUser","dbPass","dboUser","dboPass")
 
   class Conf(args : Array[String]) extends ScallopConf(args) {

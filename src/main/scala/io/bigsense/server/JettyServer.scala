@@ -6,7 +6,7 @@ import org.eclipse.jetty.server.handler.DefaultHandler
 import org.eclipse.jetty.server.handler.HandlerCollection
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.webapp.WebAppContext
-import io.bigsense.servlet.{DBUpdateListener, InitLoggingListener, MasterServlet}
+import io.bigsense.servlet.{DBUpdateListener, MasterServlet}
 
 
 class JettyServer extends ServerTrait {
@@ -19,7 +19,6 @@ class JettyServer extends ServerTrait {
   val context = new ServletContextHandler()
   context.setContextPath(BigSenseServer.webRoot)
   context.addServlet(new MasterServlet().getClass, "/*")
-  context.addEventListener(new InitLoggingListener())
   context.addEventListener(new DBUpdateListener())
 
   val fileContext = new WebAppContext()

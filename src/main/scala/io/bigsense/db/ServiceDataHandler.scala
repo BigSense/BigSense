@@ -52,8 +52,8 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 
   def listSensors() : List[FlatModel] = {
     val ret = new FlatModel()
-    ret.headers = List("SensorID","RelayID","Units","SensorType","Latitude","Longitude")
-    ret.cols = List("sensor_id","relay_id","units","sensor_type","latitude","longitude")
+    ret.headers = List("SensorID","RelayID","Units","SensorType")
+    ret.cols = List("sensor_id","relay_id","units","sensor_type")
     using(ds.getConnection()) { conn =>
         var req = new DBRequest(conn,"listSensors")
     	ret.rows = runQuery(req).results  
@@ -241,7 +241,10 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 	    }
 	    prev = Numbers.toLong(row("package_id"))
 	  
-	    dmodel.timestamp = row("time").asInstanceOf[Timestamp].getTime().toString()
+	    dmodel.timestamp = row("time") match {
+        case e:Timestamp => e.getTime().toString()
+        case s:String => s
+      }
 	    dmodel.uniqueId  = row("relay").toString()
 	  
 	    var sensorListBuf = new ListBuffer[SensorModel]

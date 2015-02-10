@@ -42,18 +42,6 @@
 	</bean>	
 	<bean id="DisabledSecurityManager" name="DisabledSecurityManager" class="io.bigsense.security.DisabledSecurityManager" />
 	
-	<!-- Processors --> 
-	<bean id="BaseProcessor" name ="BaseProcessor" class="io.bigsense.processor.ProcessorTrait" abstract="true">
-		<property name="dbHandler" ref="serviceDataHandler" />
-	</bean>
-	
-	<bean id="CounterProcessor" name="ProcessorCounter" class="io.bigsense.processor.CounterProcessor" parent="BaseProcessor" />
-	<bean id="ImageProcessor" name="ProcessorImage" class="io.bigsense.processor.ImageProcessor" parent="BaseProcessor" />
-	
-	
-	<!-- Smart Vision Analyzers -->
-	<bean id="AnalyzerWaterLevel" name="AnalyzerWaterLevel" class="io.bigsense.smartvision.WaterLevelAnalyzer" />
-	
 	<!--  Validators -->
 	
 	<bean id="QueryActionValidator" name="QueryActionValidator" class="io.bigsense.validation.QueryActionValidator" />

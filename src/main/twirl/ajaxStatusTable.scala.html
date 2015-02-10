@@ -13,7 +13,10 @@
           <td class="
             @if(c == "time_since_last_report") {
               @{
-                if(r(c).asInstanceOf[Long] > threshold ) { "rClass" }
+                if(r(c) match {
+                  case e:Double => e > threshold
+                  case e:Long => e > threshold
+                } ) { "rClass" }
                 else { "gClass" }
               }
             }
