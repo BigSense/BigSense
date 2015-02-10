@@ -105,8 +105,8 @@
  
 	<!-- Database configurations -->
 	<bean id="baseDataSource" abstract="true" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-	   <property name="driverClass" value="${dbDriver}" />
-	   <property name="jdbcUrl" value="${connectionString}" />
+       <property name="driverClass" value="#{T(io.bigsense.spring.MySpring).dbDriver('${dbms}')}" />
+	   <property name="jdbcUrl" value="#{T(io.bigsense.spring.MySpring).dbConnectionString('${dbms}','${dbHostname}','${dbDatabase}','${dbPort}')}" />
 	   <property name="maxConnectionsPerPartition" value="${dbPoolMaxPerPart}"/>
 	   <property name="minConnectionsPerPartition" value="${dbPoolMinPerPart}"/>
 	   <property name="partitionCount" value="${dbPoolPartitions}"/>

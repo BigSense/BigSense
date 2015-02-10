@@ -12,8 +12,8 @@ class Configuration(args : Array[String]) {
 
   val log : Logger = Logger.getLogger(this.getClass)
 
-  val requiredProperties = List("dbms","connectionString",
-    "dbDriver","dbUser","dbPass","dboUser","dboPass")
+  val requiredProperties = List("dbms","dbHostname","dbDatabase","dbPort",
+    "dbUser","dbPass","dboUser","dboPass")
 
   class Conf(args : Array[String]) extends ScallopConf(args) {
     val name = io.bigsense.BuildInfo.name
@@ -55,7 +55,6 @@ class Configuration(args : Array[String]) {
       requiredProperties.foreach( req => {
         if(p.getProperty(req) == null) { throw new Exception("Required property %s is missing".format(req)) }
       })
-      p.getProperty("httpPort").toInt
       p.asScala.toMap
     }
     catch {

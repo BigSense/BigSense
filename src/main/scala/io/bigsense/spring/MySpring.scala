@@ -29,7 +29,21 @@ object MySpring {
     context.get.getBean(name)    
   }
     
-  
+  def dbDriver(dbms : String) = {
+    dbms match {
+      case "pgsql" => "org.postgresql.Driver"
+      case "mssql" => "net.sourceforge.jtds.jdbc.Driver"
+      case "mysql" => "com.mysql.jdbc.Driver"
+    }
+  }
+
+  def dbConnectionString(dbms: String, hostname: String, database: String, port: String) = {
+    dbms match {
+      case "pgsql" => s"jdbc:postgresql://$hostname:$port/$database"
+      case "mssql" => s"jdbc:jtds:sqlserver://$hostname:$port/$database"
+      case "mysql" => s"jdbc:mysql://$hostname:$port/$database?useLegacyDatetimeCode=false&serverTimezone=UTC"
+    }
+  }
 }
 
 class BigSensePropertyLocation extends PropertyPlaceholderConfigurer {
