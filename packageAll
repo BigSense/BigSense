@@ -2,4 +2,20 @@
 
 base=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 echo $base
-sbt -Dsbt.log.noformat=true ";set target := file(\"$base/package/deb-upstart\"); set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.Upstart; debian:packageBin; set target := file(\"$base/package/deb-systemv\"); set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV; debian:packageBin; set target := file(\"$base/package/rpm-systemd\"); rpm:packageBin"
+sbt -Dsbt.log.noformat=true ";
+  set target := file(\"$base/package/deb-upstart\"); 
+  set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.Upstart; 
+  set version := Process(\"git\" , Seq(\"describe\" , \"--dirty\")).!!.trim() + \"~upstart\";
+  debian:packageBin; 
+  set target := file(\"$base/package/deb-systemv\"); 
+  set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.SystemV; 
+  set version := Process(\"git\" , Seq(\"describe\" , \"--dirty\")).!!.trim() + \"~systemv\";
+  debian:packageBin; 
+  set target := file(\"$base/package/deb-systemd\"); 
+  set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd;
+  set version := Process(\"git\" , Seq(\"describe\" , \"--dirty\")).!!.trim() + \"~systemd\";
+  debian:packageBin;
+  set serverLoading in Rpm := com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd;
+  set version := Process(\"git\" , Seq(\"describe\" , \"--dirty\")).!!.trim();
+  set target := file(\"$base/package/rpm-systemd\"); 
+  rpm:packageBin"
