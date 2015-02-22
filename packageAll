@@ -1,7 +1,9 @@
 #!/bin/sh
 
 base=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-echo $base
+echo "Cleaning $base/package"
+rm -rf "$base/package/*" &> /dev/null
+
 sbt -Dsbt.log.noformat=true ";
   set target := file(\"$base/package/deb-upstart\"); 
   set serverLoading in Debian := com.typesafe.sbt.packager.archetypes.ServerLoader.Upstart; 
