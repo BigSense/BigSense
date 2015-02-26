@@ -1,4 +1,4 @@
-@( database : String, serverHost : String, dboUser : String, dboPass : String, dbUser : String, dbPass : String )
+@( serverHost : String , database : String, dboUser : String, dboPass : String, dbUser : String, dbPass : String)
 CREATE DATABASE @database;
 GRANT ALL ON @{database}.* TO '@dboUser'@@'@serverHost' IDENTIFIED BY '@dboPass';
 GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON @database.* TO '@dbUser'@@'@serverHost' IDENTIFIED BY '@dbPass';

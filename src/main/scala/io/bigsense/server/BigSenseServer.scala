@@ -6,7 +6,6 @@ import org.apache.log4j.Logger
 import io.bigsense.spring.BigSensePropertyLocation
 import io.bigsense.util.BulkBZip2DataLoader
 import io.bigsense.servlet.DBUpdateListener
-import play.twirl.api.Format
 
 /**
  * Created by sumit on 4/28/14.
@@ -24,32 +23,19 @@ object BigSenseServer extends App {
   new LoggingConfiguration()
 
   if(config.params.showDDL.isSupplied) {
-    print( BigSenseServer.config.options("dbms") match {
-      case "mysql" => txt.mysql(
-        BigSenseServer.config.options("dbDatabase"),
-        InetAddress.getLocalHost().getCanonicalHostName,
-        BigSenseServer.config.options("dboUser"),
-        BigSenseServer.config.options("dboPass"),
-        BigSenseServer.config.options("dbUser"),
-        BigSenseServer.config.options("dbPass")
-      )
-      case "pgsql" => txt.pgsql(
-        BigSenseServer.config.options("dbDatabase"),
-        InetAddress.getLocalHost().getCanonicalHostName,
-        BigSenseServer.config.options("dboUser"),
-        BigSenseServer.config.options("dboPass"),
-        BigSenseServer.config.options("dbUser"),
-        BigSenseServer.config.options("dbPass")
-      )
-      case "mssql" => txt.mssql(
-        BigSenseServer.config.options("dbDatabase"),
-        InetAddress.getLocalHost().getCanonicalHostName,
-        BigSenseServer.config.options("dboUser"),
-        BigSenseServer.config.options("dboPass"),
-        BigSenseServer.config.options("dbUser"),
-        BigSenseServer.config.options("dbPass")
-      )
-    })
+
+    print((config.options("dbms") match {
+      case "pgsql" => txt.pgsql.apply _
+      case "mssql" => txt.mssql.apply _
+      case "mysql" => txt.mysql.apply(InetAddress.getLocalHost().getCanonicalHostName,
+                                      _:String, _:String, _:String,_:String, _:String)
+    })(
+        config.options("dbDatabase"),
+        config.options("dboUser"),
+        config.options("dboPass"),
+        config.options("dbUser"),
+        config.options("dbPass")
+    ))
 
     System.exit(0)
   }

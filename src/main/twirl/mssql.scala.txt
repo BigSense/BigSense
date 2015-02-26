@@ -1,4 +1,4 @@
-@( database : String, serverHost : String, dboUser : String, dboPass : String, dbUser : String, dbPass : String )
+@( database : String, dboUser : String, dboPass : String, dbUser : String, dbPass : String )
 --This is a bootstrap file. It must be run manually. Adjust the setting in it accordingly. All other schema
 -- will be updated automatically whenever a new war is deployed
 
