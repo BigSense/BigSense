@@ -1,0 +1,21 @@
+@( database : String, serverHost : String, dboUser : String, dboPass : String, dbUser : String, dbPass : String )
+CREATE DATABASE @database;
+GRANT ALL ON @{database}.* TO '@dboUser'@@'@serverHost' IDENTIFIED BY '@dboPass';
+GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON @database.* TO '@dbUser'@@'@serverHost' IDENTIFIED BY '@dbPass';
+
+USE @database;
+CREATE TABLE ddl_info( id INT auto_increment PRIMARY KEY, version INT, installed TIMESTAMP );
+
+delimiter $$
+drop function if exists `isnumeric` $$
+create function `isnumeric` (s varchar(255)) returns int deterministic
+begin
+set @@match =
+   '^(([0-9+-.$]{1})|([+-]?[$]?[0-9]*(([.]{1}[0-9]*)|([.]?[0-9]+))))$';
+
+return if(s regexp @@match, 1, 0);
+end $$
+
+delimiter ;
+
+GRANT EXECUTE ON PROCEDURE @{database}.isnumeric TO '@dbUser'@@'@serverHost'

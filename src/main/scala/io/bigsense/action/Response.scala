@@ -1,7 +1,8 @@
 package io.bigsense.action
 
 import javax.servlet.http.HttpServletResponse
-import twirl.api.Html
+import play.twirl.api.Html
+
 
 /**
  * Created by sumit on 4/11/14.

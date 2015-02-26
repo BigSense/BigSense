@@ -1,9 +1,12 @@
 package io.bigsense.server
 
+import java.net.InetAddress
+
 import org.apache.log4j.Logger
 import io.bigsense.spring.BigSensePropertyLocation
 import io.bigsense.util.BulkBZip2DataLoader
 import io.bigsense.servlet.DBUpdateListener
+import play.twirl.api.Format
 
 /**
  * Created by sumit on 4/28/14.
@@ -19,6 +22,37 @@ object BigSenseServer extends App {
   lazy val contentRoot = config.options("contentRoot")
 
   new LoggingConfiguration()
+
+  if(config.params.showDDL.isSupplied) {
+    print( BigSenseServer.config.options("dbms") match {
+      case "mysql" => txt.mysql(
+        BigSenseServer.config.options("dbDatabase"),
+        InetAddress.getLocalHost().getCanonicalHostName,
+        BigSenseServer.config.options("dboUser"),
+        BigSenseServer.config.options("dboPass"),
+        BigSenseServer.config.options("dbUser"),
+        BigSenseServer.config.options("dbPass")
+      )
+      case "pgsql" => txt.pgsql(
+        BigSenseServer.config.options("dbDatabase"),
+        InetAddress.getLocalHost().getCanonicalHostName,
+        BigSenseServer.config.options("dboUser"),
+        BigSenseServer.config.options("dboPass"),
+        BigSenseServer.config.options("dbUser"),
+        BigSenseServer.config.options("dbPass")
+      )
+      case "mssql" => txt.mssql(
+        BigSenseServer.config.options("dbDatabase"),
+        InetAddress.getLocalHost().getCanonicalHostName,
+        BigSenseServer.config.options("dboUser"),
+        BigSenseServer.config.options("dboPass"),
+        BigSenseServer.config.options("dbUser"),
+        BigSenseServer.config.options("dbPass")
+      )
+    })
+
+    System.exit(0)
+  }
 
   if(config.params.bulkLoad.isSupplied) {
     new DBUpdateListener().contextInitialized(null)

@@ -2,6 +2,7 @@
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(DebianPlugin)
 enablePlugins(RpmPlugin)
+enablePlugins(SbtTwirl)
 
 name := "bigsense"
 
@@ -67,10 +68,7 @@ linuxPackageMappings ++= Seq (
   packageMapping(file("conf/log4j.properties") -> "/etc/bigsense/log4j.properties") withPerms("0644"),
   packageMapping(file("conf/mysql.example.properties") -> "/etc/bigsense/examples/bigsense-mysql.conf") withPerms("0644"),
   packageMapping(file("conf/mssql.example.properties") -> "/etc/bigsense/examples/bigsense-mssql.conf") withPerms("0644"),
-  packageMapping(file("conf/pgsql.example.properties") -> "/etc/bigsense/examples/bigsense-pgsql.conf") withPerms("0644"),
-  packageMapping(file("src/main/resources/io/bigsense/db/ddl/mysql/000-DDLInitilization.sql") -> "/etc/bigsense/schema/initalize-mysql.sql") withPerms("0644"),
-  packageMapping(file("src/main/resources/io/bigsense/db/ddl/mssql/000-DDLInitilization.sql") -> "/etc/bigsense/schema/initalize-mssql.sql") withPerms("0644"),
-  packageMapping(file("src/main/resources/io/bigsense/db/ddl/pgsql/000-DDLInitilization.sql") -> "/etc/bigsense/schema/initalize-pgsql.sql") withPerms("0644")
+  packageMapping(file("conf/pgsql.example.properties") -> "/etc/bigsense/examples/bigsense-pgsql.conf") withPerms("0644")
 )
 
 //RPMs
@@ -89,5 +87,4 @@ rpmLicense := Some("GPL-3.0")
 
 rpmGroup := Some("bigsense")
 
-Twirl.settings
 

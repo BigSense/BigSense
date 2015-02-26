@@ -1,0 +1,103 @@
+@( database : String, serverHost : String, dboUser : String, dboPass : String, dbUser : String, dbPass : String )
+--This is a bootstrap file. It must be run manually. Adjust the setting in it accordingly. All other schema
+-- will be updated automatically whenever a new war is deployed
+
+CREATE DATABASE [@database] 
+GO
+ALTER DATABASE [@database] SET COMPATIBILITY_LEVEL = 100
+GO
+ALTER DATABASE [@database] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [@database] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [@database] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [@database] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [@database] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [@database] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [@database] SET AUTO_CREATE_STATISTICS ON 
+GO
+ALTER DATABASE [@database] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [@database] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [@database] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [@database] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [@database] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [@database] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [@database] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [@database] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [@database] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [@database] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [@database] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [@database] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [@database] SET  READ_WRITE 
+GO
+ALTER DATABASE [@database] SET RECOVERY FULL 
+GO
+ALTER DATABASE [@database] SET  MULTI_USER 
+GO
+ALTER DATABASE [@database] SET PAGE_VERIFY CHECKSUM  
+GO
+USE [@database]
+GO
+IF NOT EXISTS (SELECT name FROM sys.filegroups WHERE is_default=1 AND name = N'PRIMARY') ALTER DATABASE [@database] MODIFY FILEGROUP [PRIMARY] DEFAULT
+GO
+
+--Create DBO User
+
+USE [@database]
+GO
+CREATE LOGIN [@dboUser] WITH PASSWORD=N'@dboPass', DEFAULT_DATABASE=[@database], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+--Add DBO Role to Insrance
+
+USE [@database]
+GO
+CREATE USER [@dboUser] FOR LOGIN [@dboUser]
+GO
+USE [@database]
+GO
+EXEC sp_addrolemember N'db_owner', N'@dboUser'
+GO
+
+--Create Standard User
+
+USE [@database]
+GO
+CREATE LOGIN [@dbUser] WITH PASSWORD=N'@dbPass', DEFAULT_DATABASE=[@database], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+USE [@database]
+GO
+CREATE USER [@dbUser] FOR LOGIN [@dbUser]
+GO
+USE [@database]
+GO
+USE [@database]
+GO
+EXEC sp_addrolemember N'db_datareader', N'@dbUser'
+EXEC sp_addrolemember N'db_datawriter', N'@dbUser'
+GO
+GO
+
+
+CREATE TABLE ddl_info (
+	id BIGINT IDENTITY(1,1) PRIMARY KEY,
+	version INT,
+	installed rowversion
+);

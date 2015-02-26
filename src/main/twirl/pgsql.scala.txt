@@ -1,0 +1,30 @@
+@( database : String, serverHost : String, dboUser : String, dboPass : String, dbUser : String, dbPass : String )
+CREATE USER @dboUser CREATEDB PASSWORD '@dboPass';
+CREATE USER @dbUser PASSWORD '@dbPass';
+
+CREATE DATABASE @database
+  WITH OWNER = @dboUser
+       ENCODING = 'UTF8';
+
+
+GRANT ALL ON DATABASE @database to @dbUser;
+
+
+\connect @database;
+
+CREATE EXTENSION postgis;
+CREATE TABLE ddl_info( id SERIAL, version INT, installed TIMESTAMP );
+
+GRANT SELECT,INSERT,UPDATE,DELETE ON ddl_info TO @dboUser;
+GRANT USAGE ON SEQUENCE ddl_info_id_seq TO @dboUser;
+
+CREATE OR REPLACE FUNCTION isnumeric(text) RETURNS BOOLEAN AS $$
+DECLARE x NUMERIC;
+BEGIN
+    x = $1::NUMERIC;
+    RETURN TRUE;
+EXCEPTION WHEN others THEN
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
