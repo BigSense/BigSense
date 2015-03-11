@@ -7,8 +7,8 @@
  */
 package io.bigsense.servlet
 
-import javax.servlet.http.{HttpServlet,
-  HttpServletRequest => HSReq, HttpServletResponse => HSResp}
+import javax.servlet.http.{HttpServletRequest => HSReq, HttpServletResponse => HSResp, HttpServlet}
+import io.bigsense.server.BigSenseServer
 import io.bigsense.spring.MySpring
 import io.bigsense.action._
 import org.springframework.beans.factory.NoSuchBeanDefinitionException
@@ -96,10 +96,15 @@ class MasterServlet extends HttpServlet {
           throw new SecurityManagerException("Could not verify Signature")
         }
 
-       
-        
+
+        //read only mode check
+        if( aReq.method != "GET" && BigSenseServer.config.options("readOnly").toBoolean) {
+          resp.setStatus(HSResp.SC_FORBIDDEN)
+          log.info("Blocked Non GET Request (read-only mode)")
+          err("Server in read-only mode")
+        }
         //validation
-        if( action.validator.validateRequest(aReq) match {
+        else if( action.validator.validateRequest(aReq) match {
             case None => { false }
             case Some(error: ValidationError) => {
 	            resp.setStatus(error.statusCode)
