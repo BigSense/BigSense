@@ -14,9 +14,8 @@ class AggregateActionValidator extends ValidatorTrait {
         }
         
         aReq.args(1) match {
-	      case "SumVolume" => {}
-	      case "AvgTemp" => {}
-	      case "AvgFlow" => {}
+	      case "Sum" => {}
+	      case "Average" => {}
 	      case _ => return Some(new ValidationError("Invalid Aggregate Function",BAD_REQUEST))
         }
         

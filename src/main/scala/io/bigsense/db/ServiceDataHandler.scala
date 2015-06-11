@@ -204,7 +204,6 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
       var req : DBRequest = new DBRequest(conn,aggType.sql)
       
       var htemp = scala.collection.mutable.Map(constraints.toSeq: _*)
-      htemp("SensorType") = Array(aggType.sensorType)
       htemp("IntervalAbove") = Array(start)
       htemp("IntervalBelow") = Array(end)
       htemp("NumericData") = Array(true)
