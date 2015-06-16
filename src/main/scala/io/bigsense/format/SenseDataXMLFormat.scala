@@ -27,6 +27,7 @@ class SenseDataXMLFormat extends FormatTrait {
                                                              altitude={loc.altitude.toString} />
                   case None => {}
                 }
+              }{
                 <sensors> {
                   for (sensor <- pack.sensors) yield {
                   <sensor id={sensor.uniqueId} type={sensor.stype} units={sensor.units} timestamp={sensor.timestamp}>

@@ -226,7 +226,6 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     var ret = new ListBuffer[DataModel]
     var prev : Long = -1;
     if( results.results.length > 0) {
-      //log.debug("#### Result Head:%s".format(results.results.head))
       prev = Numbers.toLong(results.results.head("package_id"))
     }
     var dmodel : DataModel = new DataModel()
@@ -244,7 +243,18 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
         case s:String => s
       }
 	    dmodel.uniqueId  = row("relay").toString()
-	  
+
+      //All or nothing
+      dmodel.location = if (row("latitude") != null && row("longitude") != null && row("accuracy") != null && row("altitude") != null) {
+        Some(new LocationModel(
+          row("latitude").toString.toDouble,
+          row("longitude").toString.toDouble,
+          row("accuracy").toString.toDouble,
+          row("altitude").toString.toDouble
+        ))
+      }
+      else None
+
 	    var sensorListBuf = new ListBuffer[SensorModel]
 	    for( senrow <- results.results) {
 	      var smodel : SensorModel = new SensorModel()
