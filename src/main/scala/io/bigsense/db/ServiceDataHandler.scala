@@ -8,14 +8,12 @@
 package io.bigsense.db
 
 
-import io.bigsense.model.DataModel
+import io.bigsense.model._
+import org.postgis.{PGgeometry, Point}
 import scala.collection.mutable.ListBuffer
 import org.apache.log4j.Logger
 import java.sql.Timestamp
 import java.sql.Statement
-import io.bigsense.model.SensorModel
-import io.bigsense.model.RelayModel
-import io.bigsense.model.FlatModel
 import java.text.SimpleDateFormat
 import java.util.SimpleTimeZone
 import io.bigsense.conversion.ConverterTrait
@@ -267,9 +265,9 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     
     val log = Logger.getLogger(this.getClass())
     var generatedIds : ListBuffer[Int] = new ListBuffer()
-
     
     using(ds.getConnection()) { conn =>
+
 	    //Start Transaction
 	    conn.setAutoCommit(false)
 	    try{
@@ -291,9 +289,17 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		      }
 		      
 		      req = new DBRequest(conn,"addDataPackage")
-		      
-		      
-		      req.args = List(TimeHelper.timestampToDate(set.timestamp),relayId)
+
+		      req.args = set.location match {
+            case Some(l:LocationModel) => List(TimeHelper.timestampToDate(set.timestamp),relayId,
+              dbDialect match {
+                case DB_PGSQL => new PGgeometry(new Point(l.x, l.y))
+                case DB_MYSQL => None //TODO: implement
+                case DB_MSSQL => None //TODO: implement
+              }
+              ,l.accuracy,l.altitude)
+            case None => List(TimeHelper.timestampToDate(set.timestamp),relayId,null,null,null)
+          }
 		      val packageId = runQuery(req)
 		         .generatedKeys(0)
 		         .asInstanceOf[Int]

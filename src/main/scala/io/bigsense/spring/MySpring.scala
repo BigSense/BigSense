@@ -31,7 +31,7 @@ object MySpring {
     
   def dbDriver(dbms : String) = {
     dbms match {
-      case "pgsql" => "org.postgresql.Driver"
+      case "pgsql" => "org.postgis.DriverWrapper"
       case "mssql" => "net.sourceforge.jtds.jdbc.Driver"
       case "mysql" => "com.mysql.jdbc.Driver"
     }

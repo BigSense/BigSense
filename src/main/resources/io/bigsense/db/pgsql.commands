@@ -11,7 +11,7 @@ getSensorRecord = SELECT * FROM sensors WHERE relay_id=? AND unique_id=?
 addSensorRecord = "INSERT INTO sensors(unique_id,relay_id,sensor_type,units)
   VALUES(?,?,( SELECT id FROM sensor_types WHERE name=? ),?)"
 
-addDataPackage = INSERT INTO data_package (rtime,relay_id) VALUES(?,?)
+addDataPackage = INSERT INTO data_package (rtime,relay_id, location, accuracy, altitude) VALUES(?,?,?,?,?)
 
 addSensorData = INSERT INTO sensor_data(package_id,sensor_id,data) VALUES (?,?,?)
 

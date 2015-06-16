@@ -6,7 +6,7 @@ import org.apache.commons.compress.archivers.tar.{TarArchiveEntry, TarArchiveInp
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 import io.bigsense.spring.MySpring
 import org.apache.commons.compress.utils.IOUtils
-import io.bigsense.format.{FormatTrait, AgraDataXMLFormat}
+import io.bigsense.format.{FormatTrait, SenseDataXMLFormat}
 import scala.collection.mutable.ListBuffer
 import io.bigsense.model.{DataModel, ModelTrait}
 import io.bigsense.db.ServiceDataHandlerTrait

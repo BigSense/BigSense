@@ -67,7 +67,7 @@
 
 	<!-- Formats -->
 	
-	<bean id="FormatAGRA.XML" class="io.bigsense.format.AgraDataXMLFormat" />
+	<bean id="FormatSENSE.XML" class="io.bigsense.format.SenseDataXMLFormat" />
 	<bean id="FormatTXT" class="io.bigsense.format.TabDelimitedFormat" />
 	<bean id="FormatCSV" class="io.bigsense.format.CSVFormat" />
 	<bean id="FormatFLAT.XML" class="io.bigsense.format.FlatXMLFormat" />
