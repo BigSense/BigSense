@@ -37,7 +37,7 @@ libraryDependencies ++= Seq(
     "commons-io" % "commons-io" % "2.4",
     "net.sourceforge.jtds" % "jtds" % "1.2.4",
     "com.jolbox" % "bonecp" % "0.7.1.RELEASE",
-    "org.slf4j" % "slf4j-log4j12" % "1.6.1",
+    "org.slf4j" % "slf4j-log4j12" % "1.7.12",
     "org.scalaj" %% "scalaj-collection" % "1.5",
     "bouncycastle" % "bcprov-jdk15" % "140",
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
