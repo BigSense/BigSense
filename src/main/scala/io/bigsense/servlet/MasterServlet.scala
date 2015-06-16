@@ -24,7 +24,6 @@ import io.bigsense.format.NoFormat
 import io.bigsense.util.WebAppInfo
 import io.bigsense.security.SecurityManagerTrait
 import io.bigsense.security.SecurityManagerException
-import scala.Some
 
 
 class MasterServlet extends HttpServlet {
