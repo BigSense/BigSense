@@ -7,18 +7,16 @@
  */
 package io.bigsense.action {
 
-import scala.reflect.BeanProperty
+import io.bigsense.spring.MySpring
+
 import io.bigsense.db.ServiceDataHandlerTrait
 import io.bigsense.validation.ValidatorTrait
-//import com.escalatesoft.subcut.inject.Injectable
 
 trait ActionTrait  {
 
-    @BeanProperty var dbHandler : ServiceDataHandlerTrait = _
-    //val dbHandler = inject[ServiceDataHandlerTrait]
-  	  
-    @BeanProperty var validator : ValidatorTrait = _
-    //qval validator = inject[ValidatorTrait]
+    val dbHandler : ServiceDataHandlerTrait = MySpring.serviceDataHandler
+
+    var validator : ValidatorTrait = _
   
     def runAction(aReq : ActionRequest) : Response
 

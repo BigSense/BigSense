@@ -60,7 +60,7 @@ class Configuration(args : Array[String]) {
     }
     catch {
       case e:NumberFormatException => err("httpPort must be an integer",3)
-      case e:Exception => err("Error loading configuration %s".format(e.getMessage),2)
+      case e:Exception => {log.fatal("",e);err("Error loading configuration %s".format(e.getMessage),2) }
     }
   }
 

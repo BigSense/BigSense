@@ -20,8 +20,8 @@ object BulkBZip2DataLoader {
 
   def load(file : String, chunkSize : Long, minYear : Option[Int] = None)  {
 
-    val loader = MySpring.getObject("FormatAGRA.XML").asInstanceOf[FormatTrait]
-    val db     = MySpring.getObject("serviceDataHandler").asInstanceOf[ServiceDataHandlerTrait]
+    val loader = MySpring.getFormat("sense.xml").get
+    val db     = MySpring.serviceDataHandler
 
     val bzin = new TarArchiveInputStream(new BZip2CompressorInputStream(new BufferedInputStream(new FileInputStream(file))))
     val models = new ListBuffer[ModelTrait]()

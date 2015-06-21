@@ -11,10 +11,10 @@ class DBUpdateListener extends ServletContextListener {
   /**
    * Checks the current version of the database schema and update it if necessary.
    */
-  def contextInitialized(context: ServletContextEvent): Unit = {
-    val db = MySpring.getObject("dboDataHandler").asInstanceOf[DBOHandlerTrait].updateSchema()
+  def contextInitialized(context: ServletContextEvent) {
+    MySpring.dboDataHandler.updateSchema()
   }
 
-  def contextDestroyed(content: ServletContextEvent): Unit = {}
+  def contextDestroyed(content: ServletContextEvent) {}
 
 }

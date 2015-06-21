@@ -23,16 +23,12 @@ import java.text.SimpleDateFormat
 
 trait DataHandlerTrait {
 
-  @BeanProperty
   var ds : DataSource = _
 
-  @BeanProperty
-  var converters : scala.collection.mutable.Map[String,ConverterTrait] = _
+  var converters : Map[String,ConverterTrait] = _
 
-  @BeanProperty
   var sqlCommands : EProperties = _
 
-  @BeanProperty
   var dbDialect : String = _
 
   val DB_MSSQL = "mssql"

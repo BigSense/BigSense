@@ -6,7 +6,6 @@ class AggregateAction extends ActionTrait {
 
   def runAction(aReq: ActionRequest): Response = {
 
-
     aReq.method match {
       case "GET" => {
 
@@ -24,7 +23,6 @@ class AggregateAction extends ActionTrait {
             end = TimeHelper.convertDateArgument(aReq.args(4), aReq.parameters)
           }
         }
-
 
         new StringResponse(
           aReq.format.renderModels(dbHandler.aggregate(start, end, Integer.parseInt(aReq.args(5)), {

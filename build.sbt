@@ -1,3 +1,6 @@
+import com.typesafe.sbt.SbtAspectj._
+
+aspectjSettings
 
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(DebianPlugin)
@@ -88,4 +91,8 @@ rpmLicense := Some("GPL-3.0")
 
 rpmGroup := Some("bigsense")
 
+// AspectJ
 
+javaOptions in run <++= AspectjKeys.weaverOptions in Aspectj
+
+products in Compile <++= products in Aspectj

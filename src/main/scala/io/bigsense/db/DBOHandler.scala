@@ -1,9 +1,6 @@
 package io.bigsense.db
 
-import java.io.{InputStream, File}
-import scala.collection.mutable.ArrayBuffer
-import scala.reflect.BeanProperty
-import org.apache.commons.io.IOUtils
+import java.io.InputStream
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.io.Resource
 import io.bigsense.server.BigSenseServer
@@ -14,7 +11,6 @@ class DBOHandler extends DBOHandlerTrait {
   /**
    * class resource path to DDL files.
    */
-  @BeanProperty
   var ddlResource : String = ""
     
   
@@ -69,10 +65,11 @@ class DBOHandler extends DBOHandlerTrait {
   private def getDDLList() : Map[Int,Resource] = {
     val retval =  scala.collection.mutable.Map[Int,Resource]()
 
+    log.debug(s"DDL Resources: $ddlResource")
     for(resource <- new PathMatchingResourcePatternResolver().getResources(ddlResource)) {
 
       val parts = resource.getFilename().split("-")
-      log.trace("File " + resource.getFilename)
+      log.debug(s"DDL File ${resource.getFilename}")
 
       if(parts(0).toInt != 0) { //skip 000, bootstrap file me be installed manually
           retval.put(parts(0).toInt,resource)
