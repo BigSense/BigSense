@@ -304,7 +304,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
             case Some(l:LocationModel) => List(TimeHelper.timestampToDate(set.timestamp),relayId,
               dbDialect match {
                 case DB_PGSQL => new PGgeometry(new Point(l.x, l.y))
-                case DB_MYSQL => None //TODO: implement
+                case DB_MYSQL => s"POINT(${l.x} ${l.y})"
                 case DB_MSSQL => None //TODO: implement
               }
               ,l.accuracy,l.altitude)
