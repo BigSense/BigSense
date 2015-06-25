@@ -93,6 +93,8 @@ rpmGroup := Some("bigsense")
 
 // AspectJ
 
-javaOptions in run <++= AspectjKeys.weaverOptions in Aspectj
+AspectjKeys.inputs in Aspectj <+= compiledClasses
 
-products in Compile <++= products in Aspectj
+products in Compile <<= products in Aspectj
+
+products in Runtime <<= products in Compile
