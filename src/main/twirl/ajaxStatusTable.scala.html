@@ -16,6 +16,7 @@
                 if(r(c) match {
                   case e:Double => e > threshold
                   case e:Long => e > threshold
+                  case e:Integer => e > threshold
                 } ) { "rClass" }
                 else { "gClass" }
               }
