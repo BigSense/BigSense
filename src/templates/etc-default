@@ -18,7 +18,7 @@
 # Custom for default cofiguration
 
  --config /etc/${{app_name}}/bigsense.conf
- -Dbigsense.log4jconfig=/etc/${{app_name}}/log4j.properties
+ -Dlogback.configurationFile=/etc/${{app_name}}/logback.xml
 
 # Setting -Xmx and -Xms in Megabyte
 # -mem 1024
