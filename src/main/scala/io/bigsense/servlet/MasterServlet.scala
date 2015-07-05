@@ -11,10 +11,10 @@ import javax.servlet.http.{HttpServletRequest => HSReq, HttpServletResponse => H
 import io.bigsense.server.BigSenseServer
 import io.bigsense.spring.MySpring
 import io.bigsense.action._
+import org.slf4j.LoggerFactory
 import scala.collection.JavaConversions.mapAsScalaMap
 import io.bigsense.format.FormatTrait
 import io.bigsense.util.HttpUtil
-import org.apache.log4j.Logger
 import io.bigsense.model.DataModel
 import io.bigsense.db.DatabaseException
 import io.bigsense.validation.ValidationError
@@ -27,7 +27,7 @@ class MasterServlet extends HttpServlet {
 
   override def service(req : HSReq, resp: HSResp) = {    
     
-    val log : Logger = Logger.getLogger(this.getClass())
+    val log = LoggerFactory.getLogger(this.getClass())
 
     def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
 

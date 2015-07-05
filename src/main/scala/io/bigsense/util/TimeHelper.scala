@@ -2,8 +2,6 @@ package io.bigsense.util
 import java.text.SimpleDateFormat
 import java.util.{Calendar, TimeZone, SimpleTimeZone}
 import java.sql.Timestamp
-import org.apache.log4j.Logger
-
 
 object TimeHelper {
   
@@ -61,7 +59,6 @@ object TimeHelper {
         0,0,0
       )
 
-      Logger.getLogger(TimeHelper.getClass()).info("Calendar" + cal.toString())
     }
 
     new java.sql.Timestamp(cal.getTimeInMillis())

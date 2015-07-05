@@ -2,25 +2,23 @@ package io.bigsense.server
 
 import java.net.InetAddress
 
-import org.apache.log4j.Logger
 import io.bigsense.spring.BigSensePropertyLocation
 import io.bigsense.util.BulkBZip2DataLoader
 import io.bigsense.servlet.DBUpdateListener
+import org.slf4j.LoggerFactory
 
 /**
  * Created by sumit on 4/28/14.
  */
 object BigSenseServer extends App {
 
-  val log : Logger = Logger.getLogger(BigSenseServer.getClass)
+  val log = LoggerFactory.getLogger(BigSenseServer.getClass)
 
   lazy val config = new Configuration(args)
 
   lazy val webRoot = config.options("webRoot")
 
   lazy val contentRoot = config.options("contentRoot")
-
-  new LoggingConfiguration()
 
   if(config.params.showDDL.isSupplied) {
 
@@ -56,14 +54,14 @@ object BigSenseServer extends App {
       case "tomcat" => new TomcatServer().startServer()
       case "jetty" => new JettyServer().startServer()
       case _ => {
-        log.fatal("Unknown server type: %s. (Was expecting tomcat or jetty)")
+        log.error("Unknown server type: %s. (Was expecting tomcat or jetty)")
         System.exit(4)
       }
     }
   }
   catch {
     case e:Exception => {
-      log.fatal("Unexpected error",e)
+      log.error("Unexpected error",e)
       System.exit(5)
     }
   }

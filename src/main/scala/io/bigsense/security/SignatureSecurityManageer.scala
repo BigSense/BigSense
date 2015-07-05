@@ -1,19 +1,12 @@
 package io.bigsense.security
+import java.io.StringReader
+import java.security.{KeyPair, PublicKey, Security, Signature}
+import javax.xml.bind.DatatypeConverter
+
 import io.bigsense.action.ActionRequest
-import java.io.BufferedInputStream
-import java.security.spec.X509EncodedKeySpec
-import java.security.KeyFactory
-import java.security.PublicKey
-import java.security.Signature
-import org.apache.log4j.Logger
-import java.security.Security
+import io.bigsense.model.DataModel
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.openssl.PEMReader
-import java.io.InputStreamReader
-import java.security.KeyPair
-import javax.xml.bind.DatatypeConverter
-import io.bigsense.model.DataModel
-import java.io.StringReader
 
 class SignatureSecurityManageer extends SecurityManagerTrait {
 

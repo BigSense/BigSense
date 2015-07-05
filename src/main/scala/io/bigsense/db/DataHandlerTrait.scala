@@ -6,9 +6,9 @@
  * @author Sumit Khanna <sumit@penguindreams.org>
  */
 package io.bigsense.db
-import scala.reflect.BeanProperty
+
+import org.slf4j.LoggerFactory
 import net.jmatrix.eproperties.EProperties
-import org.apache.log4j.Logger
 import javax.sql.DataSource
 import io.bigsense.conversion.ConverterTrait
 import scala.collection.mutable.ListBuffer
@@ -35,7 +35,7 @@ trait DataHandlerTrait {
   val DB_MYSQL = "mysql"
   val DB_PGSQL = "pgsql"
 
-  protected var log = Logger.getLogger(getClass())
+  protected var log = LoggerFactory.getLogger(getClass())
 
   //Taken From: http://zcox.wordpress.com/2009/08/17/simple-jdbc-queries-in-scala/
   protected def using[Closeable <: {def close(): Unit}, B](closeable: Closeable)(getB: Closeable => B): B =

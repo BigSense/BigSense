@@ -1,7 +1,7 @@
 package io.bigsense.server
 
-import org.apache.log4j.Logger
 import org.rogach.scallop.{ScallopOption, ScallopConf}
+import org.slf4j.LoggerFactory
 import scala.collection.JavaConverters._
 import io.bigsense.spring.BigSensePropertyLocation
 
@@ -10,7 +10,7 @@ import io.bigsense.spring.BigSensePropertyLocation
  */
 class Configuration(args : Array[String]) {
 
-  val log : Logger = Logger.getLogger(this.getClass)
+  val log = LoggerFactory.getLogger(this.getClass)
 
   val requiredProperties = List("dbms","dbHostname","dbDatabase","dbPort",
     "dbUser","dbPass","dboUser","dboPass")
@@ -46,7 +46,7 @@ class Configuration(args : Array[String]) {
   lazy val options : Map[String,String]  = {
 
     def err(msg : String, exit : Int) = {
-      log.fatal(msg)
+      log.error(msg)
       System.exit(exit)
       Map[String,String]() //makes the compiler happy
     }
@@ -60,7 +60,7 @@ class Configuration(args : Array[String]) {
     }
     catch {
       case e:NumberFormatException => err("httpPort must be an integer",3)
-      case e:Exception => {log.fatal("",e);err("Error loading configuration %s".format(e.getMessage),2) }
+      case e:Exception => {log.error("",e);err("Error loading configuration %s".format(e.getMessage),2) }
     }
   }
 

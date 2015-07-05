@@ -1,11 +1,12 @@
 package io.bigsense;
 
-import org.apache.log4j.Logger;
-import org.aspectj.lang.ProceedingJoinPoint;
 
+import org.aspectj.lang.ProceedingJoinPoint;
 import java.beans.MethodDescriptor;
 import java.io.FileWriter;
 import java.lang.reflect.Array;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public aspect AspectLogger {
 
@@ -14,13 +15,13 @@ public aspect AspectLogger {
   pointcut conn() : call(public * io.bigsense..*(..)) && !within(AspectLogger) && !within(io.bigsense.server.*);
 
   before() : conn() {
-    Logger log = Logger.getLogger(thisJoinPoint.getSignature().getDeclaringType());
-    log.trace("start " + thisJoinPoint.getSignature().getName() +
+    Logger log = LoggerFactory.getLogger(thisJoinPoint.getSignature().getDeclaringType());
+    log.debug("start " + thisJoinPoint.getSignature().getName() +
         formatArgs(thisJoinPoint.getArgs()));
   }
 
   after() returning(Object r) : conn() {
-    Logger log = Logger.getLogger(thisJoinPoint.getSignature().getDeclaringType());
+    Logger log = LoggerFactory.getLogger(thisJoinPoint.getSignature().getDeclaringType());
 
     String returnFmt = "";
 
@@ -34,11 +35,11 @@ public aspect AspectLogger {
       returnFmt = r.toString();
     }
 
-    log.trace("exit (" + returnFmt + ") " + thisJoinPoint.getSignature().getName());
+    log.debug("exit (" + returnFmt + ") " + thisJoinPoint.getSignature().getName());
   }
 
   after() throwing(Throwable t) : conn() {
-    Logger log = Logger.getLogger(t.getClass());
+    Logger log = LoggerFactory.getLogger(t.getClass());
     log.warn("throw " + t.getMessage(), t);
   }
 

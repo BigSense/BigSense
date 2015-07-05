@@ -11,7 +11,6 @@ package io.bigsense.db
 import io.bigsense.model._
 import org.postgis.{PGgeometry, Point}
 import scala.collection.mutable.ListBuffer
-import org.apache.log4j.Logger
 import java.sql.Timestamp
 import java.sql.Statement
 import java.text.SimpleDateFormat
@@ -272,8 +271,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   
   
   def loadData(sets : List[DataModel]) : List[Int] = {
-    
-    val log = Logger.getLogger(this.getClass())
+
     var generatedIds : ListBuffer[Int] = new ListBuffer()
     
     using(ds.getConnection()) { conn =>

@@ -1,8 +1,5 @@
 package io.bigsense.util
-import org.apache.log4j.Logger
 import net.jmatrix.eproperties.EProperties
-import java.net.URL
-import scala.reflect.BeanProperty
 
 
 

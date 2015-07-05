@@ -1,10 +1,11 @@
 package io.bigsense.servlet
 
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpServlet}
-import org.apache.log4j.Logger
 import javax.activation.FileTypeMap
 import com.google.common.io.ByteStreams
 import java.net.URLConnection
+
+import org.slf4j.LoggerFactory
 
 /**
  * needed to serve static resources for Tomcat. Not needed for Jetty
@@ -13,7 +14,7 @@ import java.net.URLConnection
  */
 class StaticContentServlet extends HttpServlet {
 
-  val log : Logger = Logger.getLogger(this.getClass())
+  val log = LoggerFactory.getLogger(this.getClass())
 
   override def doGet(req : HttpServletRequest, resp : HttpServletResponse) {
 
