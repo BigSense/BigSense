@@ -50,7 +50,8 @@ aggregationForInterval = "SELECT
       sns.unique_id AS sensor,  
       pak.ival AS time,
       ${compoundFormula} AS sensor_data,
-      MAX(sns.units) AS sensor_units
+      MAX(sns.units) AS sensor_units,
+      MAX(typ.name) AS sensor_type
       FROM sensor_data dat
        LEFT OUTER JOIN (
          SELECT *,from_unixtime(FLOOR(unix_timestamp(rtime) / (60*?)) * 60 * ?) as ival

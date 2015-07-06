@@ -50,7 +50,8 @@ aggregationForInterval = "SELECT
       sns.unique_id AS sensor,  
       pak.interval AS time,      
       ${compoundFormula} AS sensor_data,
-      MAX(sns.units) AS sensor_units
+      MAX(sns.units) AS sensor_units,
+      MAX(typ.name) AS sensor_type
       FROM sensor_data dat
        LEFT OUTER JOIN (
          SELECT *,dateadd(MINUTE, datediff(MINUTE, 0, rtime) / ? * ?, 0) as interval

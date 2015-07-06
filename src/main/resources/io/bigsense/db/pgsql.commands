@@ -50,7 +50,8 @@ aggregationForInterval = "SELECT
       sns.unique_id AS sensor,
       intervals.start_time AS time,
       ${compoundFormula} AS sensor_data,
-      MAX(sns.units) AS sensor_units
+      MAX(sns.units) AS sensor_units,
+      MAX(typ.name) AS sensor_type
       FROM sensor_data dat
        LEFT OUTER JOIN data_package pak ON dat.package_id = pak.id
        LEFT OUTER JOIN relays rel ON pak.relay_id = rel.id

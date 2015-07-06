@@ -197,8 +197,8 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   def aggregate(start: java.sql.Timestamp, end : java.sql.Timestamp, stepping : Int, aggType : AggregateType, constraints : Map[String,Array[Any]]) : List[FlatModel] = {
     var model = new FlatModel()
     using(ds.getConnection()) { conn => 
-      model.headers = List("TimeZone","RelayID","SensorID","Interval","Total","Units")
-      model.cols = List("timezone","relay","sensor","time","sensor_data","sensor_units")
+      model.headers = List("TimeZone","RelayID","SensorID","SensorType","Interval","Total","Units")
+      model.cols = List("timezone","relay","sensor","sensor_type","time","sensor_data","sensor_units")
       
       
       var req : DBRequest = new DBRequest(conn,aggType.sql)
