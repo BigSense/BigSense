@@ -41,7 +41,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     using( ds.getConnection() ) { conn =>
       ret.headers = List("RelayID","PublicKey")
       ret.cols = List("unique_id","public_key")
-      var req = new DBRequest(conn,"listRelays")
+      val req = new DBRequest(conn,"listRelays")
       ret.rows = runQuery(req).results  
     }
     List(ret)
@@ -52,7 +52,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     ret.headers = List("SensorID","RelayID","Units","SensorType")
     ret.cols = List("sensor_id","relay_id","units","sensor_type")
     using(ds.getConnection()) { conn =>
-        var req = new DBRequest(conn,"listSensors")
+        val req = new DBRequest(conn,"listSensors")
     	ret.rows = runQuery(req).results  
     }
     List(ret)
@@ -64,7 +64,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
     ret.cols = List("relay_id","last_report_time","time_since_last_report","sensor_unique_id","sensor_type")
     using(ds.getConnection()) {
       conn => {
-        var req = new DBRequest(conn,"sensorAliveStatus")
+        val req = new DBRequest(conn,"sensorAliveStatus")
         ret.rows = runQuery(req).results
       }
     }
@@ -72,11 +72,11 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
    }
   
   def retrieveLatestSensorData(limit : Int, constraints: Map[String,Array[Any]]) : List[FlatModel] = {
-    var model = new FlatModel()
+    val model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = standardFlatHeaders 
        model.cols = standardFlatColumns
-       var req : DBRequest = new DBRequest(conn,"readPackages")
+       val req : DBRequest = new DBRequest(conn,"readPackages")
        req.maxRows = limit
        req.constraints = constraints
        req.order = Some("orderByPackDesc")
@@ -86,13 +86,13 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   }
   
   def retrieveDateRange(start : java.sql.Timestamp, end : java.sql.Timestamp, constraints: Map[String,Array[Any]]) : List[FlatModel] = {
-    var model = new FlatModel()
+    val model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = standardFlatHeaders
        model.cols = standardFlatColumns
-       var req : DBRequest = new DBRequest(conn,"readPackages")
+       val req : DBRequest = new DBRequest(conn,"readPackages")
               
-       var htemp = scala.collection.mutable.Map(constraints.toSeq: _*)
+       val htemp = scala.collection.mutable.Map(constraints.toSeq: _*)
        htemp("PackTimeAbove") = Array(start)
        htemp("PackTimeBelow") = Array(end)
        
@@ -104,11 +104,11 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   }
   
   def retrieveLatestImageInfo(limit : Int, constraints : Map[String,Array[Any]]) : List[FlatModel] = {
-    var model = new FlatModel()
+    val model = new FlatModel()
     using(ds.getConnection()) { conn =>
       model.headers = imageFlatHeaders
       model.cols = imageFlatColumns
-      var req : DBRequest = new DBRequest(conn,"listImages")
+      val req : DBRequest = new DBRequest(conn,"listImages")
       
       req.maxRows = limit      
       req.constraints = constraints
@@ -121,13 +121,13 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   }
   
   def retrieveImageInfoRange(start: java.sql.Timestamp, end: java.sql.Timestamp, constraints : Map[String,Array[Any]] ) : List[FlatModel] = {
-    var model = new FlatModel()
+    val model = new FlatModel()
     using(ds.getConnection()) { conn =>
        model.headers = imageFlatHeaders
        model.cols = imageFlatColumns
-       var req : DBRequest = new DBRequest(conn,"listImages")
+       val req : DBRequest = new DBRequest(conn,"listImages")
               
-       var htemp = scala.collection.mutable.Map(constraints.toSeq: _*)
+       val htemp = scala.collection.mutable.Map(constraints.toSeq: _*)
        htemp("PackTimeAbove") = Array(start)
        htemp("PackTimeBelow") = Array(end)
        
@@ -142,7 +142,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
  def retrieveImage(id : Int) : Option[Array[Byte]] = {
    
    using(ds.getConnection()) { conn =>
-     var req : DBRequest = new DBRequest(conn,"pullImage")
+     val req : DBRequest = new DBRequest(conn,"pullImage")
      req.args = List (id)
      val results = runQuery(req).results
      results.length match {
@@ -182,10 +182,10 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   }
   
   def retrieveData(ids : List[Int]): List[DataModel] = {
-    var retlist = new ListBuffer[DataModel]
+    val retlist = new ListBuffer[DataModel]
     using(ds.getConnection()) { conn =>
 	   ids.foreach( id => {
-	      var req : DBRequest = new DBRequest(conn,"readPackage")
+	      val req : DBRequest = new DBRequest(conn,"readPackage")
           req.args = List(id)
 	      val ret : DBResult = runQuery(req)
 	      retlist.appendAll((getDataModels(ret)))
@@ -195,15 +195,15 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   }
   
   def aggregate(start: java.sql.Timestamp, end : java.sql.Timestamp, stepping : Int, aggType : AggregateType, constraints : Map[String,Array[Any]]) : List[FlatModel] = {
-    var model = new FlatModel()
+    val model = new FlatModel()
     using(ds.getConnection()) { conn => 
       model.headers = List("TimeZone","RelayID","SensorID","SensorType","Interval","Total","Units")
       model.cols = List("timezone","relay","sensor","sensor_type","time","sensor_data","sensor_units")
       
       
-      var req : DBRequest = new DBRequest(conn,aggType.sql)
+      val req : DBRequest = new DBRequest(conn,aggType.sql)
       
-      var htemp = scala.collection.mutable.Map(constraints.toSeq: _*)
+      val htemp = scala.collection.mutable.Map(constraints.toSeq: _*)
       htemp("IntervalAbove") = Array(start)
       htemp("IntervalBelow") = Array(end)
       htemp("NumericData") = Array(true)
@@ -221,7 +221,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   
   private def getDataModels(results : DBResult) : List[DataModel] = {
         
-    var ret = new ListBuffer[DataModel]
+    val ret = new ListBuffer[DataModel]
     var prev : Long = -1;
     if( results.results.length > 0) {
       prev = Numbers.toLong(results.results.head("package_id"))
@@ -253,7 +253,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
       }
       else None
 
-	    var sensorListBuf = new ListBuffer[SensorModel]
+	    val sensorListBuf = new ListBuffer[SensorModel]
 	    for( senrow <- results.results) {
 	      var smodel : SensorModel = new SensorModel()
 	      smodel.uniqueId = senrow("sensor").toString()
