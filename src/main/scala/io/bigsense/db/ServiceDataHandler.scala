@@ -28,8 +28,8 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   
 
   
-  private val standardFlatHeaders = List("PackageID","TimeStamp","TimeZone","RelayID","SensorID","SensorType","Units","Data") 
-  private val standardFlatColumns = List("package_id","time","timezone","relay","sensor","sensor_type","sensor_units","sensor_data")
+  private val standardFlatHeaders = List("PackageID","TimeStamp","TimeZone","RelayID","SensorID","SensorType","Units","Data","Longitude","Latitude","Altitude","LocationAccuracy")
+  private val standardFlatColumns = List("package_id","time","timezone","relay","sensor","sensor_type","sensor_units","sensor_data","longitude","latitude","altitude","accuracy")
   
   private val imageFlatHeaders = List("ImageID","PackageID","TimeStamp","TimeZone","RelayID","SensorID","PhotoURL","SensorType","Units","Data")
   private val imageFlatColumns = List("image_id","package_id","time","timezone","relay","sensor","photo_url","sensor_type","sensor_units","sensor_data")

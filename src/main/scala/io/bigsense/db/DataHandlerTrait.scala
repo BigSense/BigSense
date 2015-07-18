@@ -69,7 +69,26 @@ trait DataHandlerTrait {
         for (l <- list) {
           consBuilder.append(whereAnd)
           consBuilder.append(con)
-          paramList.append(l)
+          para match {
+            case "WithinMetersFrom" => {
+
+              // format: WithinMetersFrom=x10y10r2 - x, y, radius
+
+              val regex = """([a-zA-Z]+)([\d]+)""".r
+              val loc = regex.findAllIn(l.toString).map( s => {
+                s match {
+                  case regex(as, ns) => Some(as, ns.toInt)
+                  case _             => None
+                }
+              }).filter(_.isDefined).map(_.get).toMap
+              paramList.append(loc("x"))
+              paramList.append(loc("y"))
+              paramList.append(loc("r"))
+            }
+            case _ => {
+              paramList.append(l)
+            }
+          }
           whereAnd = " AND "
         }
       }

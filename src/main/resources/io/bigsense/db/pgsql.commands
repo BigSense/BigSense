@@ -115,6 +115,10 @@ constraintRelayID = " rel.unique_id=? "
 constraintSensorType = " typ.name=? "
 constraintSensorID = " sns.unique_id=? "
 
+#Spacial Constraints
+constraintWithinMetersFrom = ST_DWithin(pak.location::geography, ST_GeographyFromText('SRID=4326;POINT(' || ? || ' ' || ? || ')'), ?)
+constraintWithinBox = ""
+
 #Internal Constraints
 constraintPackTimeAbove = " pak.rtime > ? "
 constraintPackTimeBelow = " pak.rtime < ? "
