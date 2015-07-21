@@ -300,9 +300,9 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		      req.args = set.location match {
             case Some(l:LocationModel) => List(TimeHelper.timestampToDate(set.timestamp),relayId,
               dbDialect match {
-                case DB_PGSQL => new PGgeometry(new Point(l.x, l.y))
-                case DB_MYSQL => s"POINT(${l.x} ${l.y})"
-                case DB_MSSQL => s"POINT(${l.x} ${l.y})"
+                case DB_PGSQL => new PGgeometry(new Point(l.longitude, l.latitude))
+                case DB_MYSQL => s"POINT(${l.longitude} ${l.latitude})"
+                case DB_MSSQL => s"POINT(${l.longitude} ${l.latitude})"
               }
               ,l.accuracy,l.altitude)
             case None => List(TimeHelper.timestampToDate(set.timestamp),relayId,null,null,null)

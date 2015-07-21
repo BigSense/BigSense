@@ -81,8 +81,8 @@ trait DataHandlerTrait {
                   case _             => None
                 }
               }).filter(_.isDefined).map(_.get).toMap
-              paramList.append(loc("x"))
-              paramList.append(loc("y"))
+              paramList.append(loc("long"))
+              paramList.append(loc("lat"))
               paramList.append(loc("r"))
             }
             case _ => {
