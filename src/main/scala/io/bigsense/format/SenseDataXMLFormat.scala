@@ -22,7 +22,7 @@ class SenseDataXMLFormat extends FormatTrait {
             for (pack <- model.asInstanceOf[List[DataModel]]) yield {
               <package id={pack.uniqueId} timestamp={pack.timestamp}> {
                 pack.location match {
-                  case Some(loc: LocationModel) => <location x={loc.x.toString} y={loc.y.toString}
+                  case Some(loc: LocationModel) => <location longitude={loc.longitude.toString} latitudqe={loc.latitude.toString}
                                                              accurary={loc.accuracy.toString}
                                                              altitude={loc.altitude.toString} />
                   case None => {}
@@ -89,8 +89,8 @@ class SenseDataXMLFormat extends FormatTrait {
 
       model.location = location.size match {
         case 0 => None
-        case 1 => Some(new LocationModel((location \ "@x").toString.toDouble,
-          (location \ "@y").toString.toDouble,
+        case 1 => Some(new LocationModel((location \ "@longitude").toString.toDouble,
+          (location \ "@latitude").toString.toDouble,
           (location \ "@accuracy").toString.toDouble,
           (location \ "@altitude").toString.toDouble))
         case _ => None //TODO .. return an error?
