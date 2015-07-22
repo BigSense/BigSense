@@ -103,6 +103,13 @@ constraintRelayID = " rel.unique_id=? "
 constraintSensorType = " typ.name=? "
 constraintSensorID = " sns.unique_id=? "
 
+#Spacial Constraints
+constraintWithinMetersFrom = " GEOGRAPHY::STGeomFromText('POINT('+
+                                         convert(nvarchar(20), ?)+' '+
+                                         convert( nvarchar(20), ?)+')', 4326)
+                                     .STBuffer(?).STIntersects(location) = 1"
+constraintWithinBox = ""
+
 #Internal Constraints
 constraintPackTimeAbove = " pak.rtime > ? "
 constraintPackTimeBelow = " pak.rtime < ? "
