@@ -18,4 +18,12 @@ end $$
 
 delimiter ;
 
-GRANT EXECUTE ON PROCEDURE @{database}.isnumeric TO '@dbUser'@@'@serverHost'
+drop function if exists `earth_dt`;
+create function `earth_dt` (p1 Geometry, p2long Double, p2lat Double) returns double deterministic
+  return 6371000 * acos (
+      cos ( radians(Y(p1)) )
+      * cos( radians( p2lat ) )
+      * cos( radians( p2long ) - radians(X(p1)) )
+      + sin ( radians(Y(p1)) )
+      * sin( radians( p2lat ) )
+    );
