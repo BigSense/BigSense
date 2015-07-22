@@ -16,7 +16,7 @@ public aspect AspectLogger {
 
   before() : conn() {
     Logger log = LoggerFactory.getLogger(thisJoinPoint.getSignature().getDeclaringType());
-    log.debug("start " + thisJoinPoint.getSignature().getName() +
+    log.trace("start " + thisJoinPoint.getSignature().getName() +
         formatArgs(thisJoinPoint.getArgs()));
   }
 
@@ -35,7 +35,7 @@ public aspect AspectLogger {
       returnFmt = r.toString();
     }
 
-    log.debug("exit (" + returnFmt + ") " + thisJoinPoint.getSignature().getName());
+    log.trace("exit (" + returnFmt + ") " + thisJoinPoint.getSignature().getName());
   }
 
   after() throwing(Throwable t) : conn() {
