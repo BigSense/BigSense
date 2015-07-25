@@ -23,13 +23,18 @@ import org.apache.commons.codec.binary.Base64
 import io.bigsense.util.{Numbers, WebAppInfo, TimeHelper}
 import java.sql.Blob
 import java.sql.Clob
+import java.sql.Types
 
 class ServiceDataHandler extends ServiceDataHandlerTrait {
   
 
   
-  private val standardFlatHeaders = List("PackageID","TimeStamp","TimeZone","RelayID","SensorID","SensorType","Units","Data","Longitude","Latitude","Altitude","LocationAccuracy")
-  private val standardFlatColumns = List("package_id","time","timezone","relay","sensor","sensor_type","sensor_units","sensor_data","longitude","latitude","altitude","accuracy")
+  private val standardFlatHeaders = List("PackageID","TimeStamp","TimeZone","RelayID","SensorID","SensorType","Units","Data",
+    "Longitude","Latitude","Altitude","Speed","Climb", "Track",
+    "LongitudeError", "LatitudeError", "AltitudeError", "SpeedError", "ClimbError", "TrackError")
+  private val standardFlatColumns = List("package_id","time","timezone","relay","sensor","sensor_type","sensor_units","sensor_data",
+    "longitude","latitude","altitude","speed","climb","track","longitude_error","latitude_error","altitude_error",
+    "speed_error","climb_error","track_error")
   
   private val imageFlatHeaders = List("ImageID","PackageID","TimeStamp","TimeZone","RelayID","SensorID","PhotoURL","SensorType","Units","Data")
   private val imageFlatColumns = List("image_id","package_id","time","timezone","relay","sensor","photo_url","sensor_type","sensor_units","sensor_data")
@@ -242,13 +247,34 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
       }
 	    dmodel.uniqueId  = row("relay").toString()
 
-      //All or nothing
-      dmodel.location = if (row("latitude") != null && row("longitude") != null && row("accuracy") != null && row("altitude") != null) {
-        Some(new LocationModel(
-          row("latitude").toString.toDouble,
+      //A GPS has a minimum of a location. We need all three to build a model
+      dmodel.gps = if (row("latitude") != null && row("longitude") != null && row("altitude") != null) {
+        Some(new GPSModel(
+          new LocationModel(
           row("longitude").toString.toDouble,
-          row("accuracy").toString.toDouble,
+          row("latitude").toString.toDouble,
           row("altitude").toString.toDouble
+          ),
+          if (row("speed") != null && row("climb") != null && row("track") != null) {
+           Some(new DeltaModel(
+             row("speed").toString.toDouble,
+             row("climb").toString.toDouble,
+             row("track").toString.toDouble
+           ))
+          }
+          else None,
+          if (row("latitude_error") != null && row("longitude_error") != null && row("altitude_error") != null &&
+            row("speed_error") != null && row("climb_error") != null && row("track_error") != null) {
+            Some(new AccuracyModel(
+              row("longitude_error").toString.toDouble,
+              row("latitude_error").toString.toDouble,
+              row("altitude_error").toString.toDouble,
+              row("speed_error").toString.toDouble,
+              row("climb_error").toString.toDouble,
+              row("track_error").toString.toDouble
+            ))
+          }
+          else None
         ))
       }
       else None
@@ -296,21 +322,36 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		      }
 		      
 		      req = new DBRequest(conn,"addDataPackage")
-
-		      req.args = set.location match {
-            case Some(l:LocationModel) => List(TimeHelper.timestampToDate(set.timestamp),relayId,
-              dbDialect match {
-                case DB_PGSQL => new PGgeometry(new Point(l.longitude, l.latitude))
-                case DB_MYSQL => s"POINT(${l.longitude} ${l.latitude})"
-                case DB_MSSQL => s"POINT(${l.longitude} ${l.latitude})"
-              }
-              ,l.accuracy,l.altitude)
-            case None => List(TimeHelper.timestampToDate(set.timestamp),relayId,null,null,null)
-          }
+          req.args = List(TimeHelper.timestampToDate(set.timestamp),relayId)
 		      val packageId = runQuery(req)
 		         .generatedKeys(0)
 		         .asInstanceOf[Int]
 		      generatedIds += packageId //We will pull data in GET via packageId      
+
+          //location
+          set.gps match {
+            case Some(gps : GPSModel) => {
+              req = new DBRequest(conn,"addLocation")
+              req.args = List(packageId,
+                dbDialect match {
+                  case DB_PGSQL => new PGgeometry(new Point(gps.location.longitude, gps.location.latitude))
+                  case DB_MYSQL => s"POINT(${gps.location.longitude} ${gps.location.latitude})"
+                  case DB_MSSQL => s"POINT(${gps.location.longitude} ${gps.location.latitude})"
+                }, gps.location.altitude) ++
+              (gps.delta match {
+                case Some(d : DeltaModel) => List(d.speed, d.climb, d.track)
+                case None => List(NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE))
+              }) ++
+              (gps.accuracy match {
+                case Some(acc : AccuracyModel) => List(acc.longitudeError, acc.latitudeError, acc.altitudeError,
+                acc.speedError, acc.climbError, acc.trackError)
+                case None => List(NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE),
+                  NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE))
+              })
+              runQuery(req)
+            }
+            case None => {}
+          }
 
 		      var sensorId : java.lang.Integer = -1
 		      set.sensors.foreach( sensor => {

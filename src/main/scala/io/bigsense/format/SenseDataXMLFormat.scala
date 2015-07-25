@@ -21,10 +21,22 @@ class SenseDataXMLFormat extends FormatTrait {
           return <sensedata> {
             for (pack <- model.asInstanceOf[List[DataModel]]) yield {
               <package id={pack.uniqueId} timestamp={pack.timestamp}> {
-                pack.location match {
-                  case Some(loc: LocationModel) => <location longitude={loc.longitude.toString} latitudqe={loc.latitude.toString}
-                                                             accurary={loc.accuracy.toString}
-                                                             altitude={loc.altitude.toString} />
+                pack.gps match {
+                  case Some(gps: GPSModel) => <gps>
+                    <location longitude={gps.location.longitude.toString} latitudqe={gps.location.latitude.toString} altitude={gps.location.altitude.toString} />
+                    {
+                      gps.delta match {
+                        case Some(del : DeltaModel) => <delta speed={del.speed.toString} climb={del.climb.toString} track={del.track.toString} />
+                        case None => {}
+                      }
+                      gps.accuracy match {
+                        case Some(acc : AccuracyModel) => <accuracy longitude={acc.longitudeError.toString} latitude={acc.latitudeError.toString}
+                                                                    altitude={acc.altitudeError.toString} speed={acc.speedError.toString}
+                                                                    climb={acc.speedError.toString} track={acc.trackError.toString} />
+                        case None => {}
+                      }
+                    }
+                  </gps>
                   case None => {}
                 }
               }{
@@ -82,17 +94,38 @@ class SenseDataXMLFormat extends FormatTrait {
 
       val sensors = pack \ "sensors"
       val errors = pack \ "errors"
-      val location = pack \ "location"
+      val gps = pack \ "gps"
 
       model.timestamp = (pack \ "@timestamp").text.trim()
       model.uniqueId = (pack \ "@id").text.trim()
 
-      model.location = location.size match {
+      model.gps = gps.size match {
         case 0 => None
-        case 1 => Some(new LocationModel((location \ "@longitude").toString.toDouble,
-          (location \ "@latitude").toString.toDouble,
-          (location \ "@accuracy").toString.toDouble,
-          (location \ "@altitude").toString.toDouble))
+        case 1 => Some(new GPSModel(
+              new LocationModel(
+                (gps \ "location" \ "@longitude").toString.toDouble ,
+                (gps \ "location" \ "@latitude").toString.toDouble ,
+                (gps \ "location" \ "@altitude").toString.toDouble
+              ),
+              (gps \ "delta" ).size match {
+                case 0 => None
+                case 1 => Some(new DeltaModel(
+                  (gps \ "delta" \ "@speed").toString.toDouble,
+                  (gps \ "delta" \ "@climb").toString.toDouble,
+                  (gps \ "delta" \ "@track").toString.toDouble
+                ))
+              },
+              (gps \ "accuracy" ).size match {
+                case 0 => None
+                case 1 => Some(new AccuracyModel(
+                  (gps \ "accuracy" \ "@longitude").toString.toDouble,
+                  (gps \ "accuracy" \ "@latitude").toString.toDouble,
+                  (gps \ "accuracy" \ "@altitude").toString.toDouble,
+                  (gps \ "accuracy" \ "@speed").toString.toDouble,
+                  (gps \ "accuracy" \ "@climb").toString.toDouble,
+                  (gps \ "accuracy" \ "@track").toString.toDouble
+                ))
+              }))
         case _ => None //TODO .. return an error?
                        // We can't have multiple locations,
                        // but validation should be taken care of elsewhere

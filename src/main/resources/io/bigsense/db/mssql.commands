@@ -11,14 +11,21 @@ getSensorRecord = SELECT * FROM sensors WHERE relay_id=? AND unique_id=?
 addSensorRecord = "INSERT INTO sensors(unique_id,relay_id,sensor_type,units) 
   VALUES(?,?,( SELECT id FROM sensor_types WHERE name=? ),?)"
   
-addDataPackage = INSERT INTO data_package (rtime,relay_id, location, accuracy, altitude) VALUES(?,?,?,?,?)
+addDataPackage = INSERT INTO data_package (rtime,relay_id) VALUES(?,?)
+
+addLocation = "INSERT INTO package_location(package_id, location, altitude, speed, climb, track,
+    longitude_error, latitude_error, altitude_error, speed_error, climb_error, track_error) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)"
 
 addSensorData = INSERT INTO sensor_data(package_id,sensor_id,data) VALUES (?,?,?)
 
 readPackages = "SELECT 'UTC' AS timezone, pak.id AS package_id, rel.unique_id AS relay, sns.unique_id AS sensor, pak.rtime AS time,
        sns.units AS sensor_units, typ.name AS sensor_type, dat.data AS sensor_data,
-       pak.altitude AS altitude, pak.accuracy AS accuracy, pak.location.Lat AS latitude, pak.location.Long as longitude
+       loc.altitude AS altitude, loc.location.Lat AS latitude, loc.location.Long as longitude,
+       loc.speed as speed, loc.climb as climb, loc.track as track,
+       loc.longitude_error as longitude_error, loc.latitude_error as latitude_error, loc.altitude_error as altitude_error,
+       loc.speed_error as speed_error, loc.climb_error as climb_error, loc.track_error as track_error
        FROM sensor_data dat
+       LEFT OUTER JOIN package_location loc on loc.package_id = dat.package_id
        LEFT OUTER JOIN data_package pak ON dat.package_id = pak.id
        LEFT OUTER JOIN relays rel ON pak.relay_id = rel.id
        LEFT OUTER JOIN sensors sns ON dat.sensor_id = sns.id
@@ -107,7 +114,7 @@ constraintSensorID = " sns.unique_id=? "
 constraintWithinMetersFrom = " GEOGRAPHY::STGeomFromText('POINT('+
                                          convert(nvarchar(20), ?)+' '+
                                          convert( nvarchar(20), ?)+')', 4326)
-                                     .STBuffer(?).STIntersects(location) = 1"
+                                     .STBuffer(?).STIntersects(loc.location) = 1"
 constraintWithinBox = ""
 
 #Internal Constraints

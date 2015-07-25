@@ -12,14 +12,12 @@ import net.jmatrix.eproperties.EProperties
 import javax.sql.DataSource
 import io.bigsense.conversion.ConverterTrait
 import scala.collection.mutable.ListBuffer
-import java.sql.Statement
-import java.sql.Date
-import java.sql.Time
-import java.sql.Timestamp
+import java.sql._
 import java.io.ByteArrayInputStream
 import java.util.{TimeZone, Calendar}
 import java.text.SimpleDateFormat
 
+case class NullParameter(val nullType : Int)
 
 trait DataHandlerTrait {
 
@@ -125,6 +123,9 @@ trait DataHandlerTrait {
         paramList.foreach(a => {
           log.debug("Parameter %s: %s".format(x, a))
           a.asInstanceOf[AnyRef] match {
+            case s: NullParameter => {
+               stmt.setNull(x, s.nullType)
+            }
             case s: java.lang.Integer => {
               stmt.setInt(x, s)
             }
