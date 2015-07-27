@@ -247,37 +247,44 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
       }
 	    dmodel.uniqueId  = row("relay").toString()
 
-      //A GPS has a minimum of a location. We need all three to build a model
-      dmodel.gps = if (row("latitude") != null && row("longitude") != null && row("altitude") != null) {
-        Some(new GPSModel(
-          new LocationModel(
-          row("longitude").toString.toDouble,
-          row("latitude").toString.toDouble,
-          row("altitude").toString.toDouble
-          ),
-          if (row("speed") != null && row("climb") != null && row("track") != null) {
-           Some(new DeltaModel(
-             row("speed").toString.toDouble,
-             row("climb").toString.toDouble,
-             row("track").toString.toDouble
-           ))
-          }
-          else None,
-          if (row("latitude_error") != null && row("longitude_error") != null && row("altitude_error") != null &&
-            row("speed_error") != null && row("climb_error") != null && row("track_error") != null) {
-            Some(new AccuracyModel(
-              row("longitude_error").toString.toDouble,
-              row("latitude_error").toString.toDouble,
-              row("altitude_error").toString.toDouble,
-              row("speed_error").toString.toDouble,
-              row("climb_error").toString.toDouble,
-              row("track_error").toString.toDouble
-            ))
-          }
-          else None
-        ))
-      }
-      else None
+      // GPS/Location
+      val location_map = mapRowDoubleList(List("latitude","longitude","altitude"), row)
+      val delta_map    = mapRowDoubleList(List("speed","climb","track"), row)
+      val acc_map      = mapRowDoubleList(List("latitude_error","longitude_error","altitude_error","speed_error","climb_error","track_error"), row)
+
+      dmodel.gps = if( location_map.values.exists(_ == Some) || delta_map.values.exists(_ == Some) || acc_map.values.exists(_ == Some)) {
+          Some(new GPSModel(
+            if (location_map.values.exists(_ == Some)) {
+              Some(new LocationModel(
+                location_map("longitude"),
+                location_map("latitude"),
+                location_map("altitude")
+              ))
+            }
+            else None,
+            if (delta_map.values.exists(_ == Some)) {
+              Some(new DeltaModel(
+                delta_map("speed"),
+                delta_map("climb"),
+                delta_map("track")
+              ))
+            }
+            else None,
+            if (acc_map.values.exists(_ == Some)) {
+              Some(new AccuracyModel(
+                acc_map("longitude_error"),
+                acc_map("latitude_error"),
+                acc_map("altitude_error"),
+                acc_map("speed_error"),
+                acc_map("climb_error"),
+                acc_map("track_error")
+              ))
+            }
+            else None
+          ))
+        }
+        else None
+
 
 	    val sensorListBuf = new ListBuffer[SensorModel]
 	    for( senrow <- results.results) {
@@ -332,12 +339,28 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
           set.gps match {
             case Some(gps : GPSModel) => {
               req = new DBRequest(conn,"addLocation")
-              req.args = List(packageId,
-                dbDialect match {
-                  case DB_PGSQL => new PGgeometry(new Point(gps.location.longitude, gps.location.latitude))
-                  case DB_MYSQL => s"POINT(${gps.location.longitude} ${gps.location.latitude})"
-                  case DB_MSSQL => s"POINT(${gps.location.longitude} ${gps.location.latitude})"
-                }, gps.location.altitude) ++
+              req.args = List(packageId) ++
+                // Long and Latitude must be set ot make a point
+                (gps.location match {
+                  case Some(loc : LocationModel) => {
+                    loc.longitude match {
+                      case Some(long : Double) => {
+                        loc.latitude match {
+                          case Some(lat : Double) => {
+                            List(dbDialect match {
+                              case DB_PGSQL => new PGgeometry(new Point(long, lat))
+                              case DB_MYSQL => s"POINT(${long} ${lat})"
+                              case DB_MSSQL => s"POINT(${long} ${lat})"
+                            },loc.altitude)
+                          }
+                          case None => None
+                        }
+                      }
+                      case None => None
+                    }
+                  }
+                  case None => None
+                }) ++
               (gps.delta match {
                 case Some(d : DeltaModel) => List(d.speed, d.climb, d.track)
                 case None => List(NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE))

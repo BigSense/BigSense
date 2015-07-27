@@ -13,6 +13,13 @@ import scala.collection.mutable.ListBuffer
 
 class SenseDataXMLFormat extends FormatTrait {
 
+
+  private def ndeDouble(o : NodeSeq) = if (o.toString.isEmpty) None else Some(o.toString.toDouble)
+  private def optDouble(o : Option[Double]) = o match {
+    case Some(o) => o.toString
+    case None => ""
+  }
+
   def renderModels(model: List[ModelTrait]): String = {
 
     if (model.length > 0) {
@@ -23,16 +30,19 @@ class SenseDataXMLFormat extends FormatTrait {
               <package id={pack.uniqueId} timestamp={pack.timestamp}> {
                 pack.gps match {
                   case Some(gps: GPSModel) => <gps>
-                    <location longitude={gps.location.longitude.toString} latitudqe={gps.location.latitude.toString} altitude={gps.location.altitude.toString} />
                     {
+                      gps.location match {
+                        case Some(loc: LocationModel) => <location longitude={optDouble(loc.longitude)} latitudqe={optDouble(loc.latitude)} altitude={optDouble(loc.altitude)} />
+                        case None => {}
+                      }
                       gps.delta match {
-                        case Some(del : DeltaModel) => <delta speed={del.speed.toString} climb={del.climb.toString} track={del.track.toString} />
+                        case Some(del : DeltaModel) => <delta speed={optDouble(del.speed)} climb={optDouble(del.climb)} track={optDouble(del.track)} />
                         case None => {}
                       }
                       gps.accuracy match {
-                        case Some(acc : AccuracyModel) => <accuracy longitude={acc.longitudeError.toString} latitude={acc.latitudeError.toString}
-                                                                    altitude={acc.altitudeError.toString} speed={acc.speedError.toString}
-                                                                    climb={acc.speedError.toString} track={acc.trackError.toString} />
+                        case Some(acc : AccuracyModel) => <accuracy longitude={optDouble(acc.longitudeError)} latitude={optDouble(acc.latitudeError)}
+                                                                    altitude={optDouble(acc.altitudeError)} speed={optDouble(acc.speedError)}
+                                                                    climb={optDouble(acc.speedError)} track={optDouble(acc.trackError)} />
                         case None => {}
                       }
                     }
@@ -102,28 +112,31 @@ class SenseDataXMLFormat extends FormatTrait {
       model.gps = gps.size match {
         case 0 => None
         case 1 => Some(new GPSModel(
-              new LocationModel(
-                (gps \ "location" \ "@longitude").toString.toDouble ,
-                (gps \ "location" \ "@latitude").toString.toDouble ,
-                (gps \ "location" \ "@altitude").toString.toDouble
-              ),
+              (gps \ "location" ).size match {
+                case 0 => None
+                case 1 => Some(new LocationModel(
+                ndeDouble(gps \ "location" \ "@longitude"),
+                ndeDouble(gps \ "location" \ "@latitude"),
+                ndeDouble(gps \ "location" \ "@altitude")
+              ))
+              },
               (gps \ "delta" ).size match {
                 case 0 => None
                 case 1 => Some(new DeltaModel(
-                  (gps \ "delta" \ "@speed").toString.toDouble,
-                  (gps \ "delta" \ "@climb").toString.toDouble,
-                  (gps \ "delta" \ "@track").toString.toDouble
+                  ndeDouble(gps \ "delta" \ "@speed"),
+                  ndeDouble(gps \ "delta" \ "@climb"),
+                  ndeDouble(gps \ "delta" \ "@track")
                 ))
               },
               (gps \ "accuracy" ).size match {
                 case 0 => None
                 case 1 => Some(new AccuracyModel(
-                  (gps \ "accuracy" \ "@longitude").toString.toDouble,
-                  (gps \ "accuracy" \ "@latitude").toString.toDouble,
-                  (gps \ "accuracy" \ "@altitude").toString.toDouble,
-                  (gps \ "accuracy" \ "@speed").toString.toDouble,
-                  (gps \ "accuracy" \ "@climb").toString.toDouble,
-                  (gps \ "accuracy" \ "@track").toString.toDouble
+                  ndeDouble(gps \ "accuracy" \ "@longitude"),
+                  ndeDouble(gps \ "accuracy" \ "@latitude"),
+                  ndeDouble(gps \ "accuracy" \ "@altitude"),
+                  ndeDouble(gps \ "accuracy" \ "@speed"),
+                  ndeDouble(gps \ "accuracy" \ "@climb"),
+                  ndeDouble(gps \ "accuracy" \ "@track")
                 ))
               }))
         case _ => None //TODO .. return an error?

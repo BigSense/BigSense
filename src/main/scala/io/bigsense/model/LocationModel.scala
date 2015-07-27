@@ -7,15 +7,15 @@
  */
 package io.bigsense.model
 
-class GPSModel(val location : LocationModel,
+class GPSModel(val location : Option[LocationModel],
                val delta : Option[DeltaModel],
                val accuracy : Option[AccuracyModel])
 
-class LocationModel(val longitude : Double, val latitude : Double,
-                    val altitude : Double)
+class LocationModel(val longitude : Option[Double], val latitude : Option[Double],
+                    val altitude : Option[Double])
 
-class DeltaModel(val speed : Double, val climb : Double, val track : Double)
+class DeltaModel(val speed : Option[Double], val climb : Option[Double], val track : Option[Double])
 
-class AccuracyModel(val longitudeError: Double, val latitudeError: Double,
-                     val altitudeError: Double, val speedError: Double, val climbError: Double,
-                     val trackError: Double)
+class AccuracyModel(val longitudeError: Option[Double], val latitudeError: Option[Double],
+                     val altitudeError: Option[Double], val speedError: Option[Double], val climbError: Option[Double],
+                     val trackError: Option[Double])

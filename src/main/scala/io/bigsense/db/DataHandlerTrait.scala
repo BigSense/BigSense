@@ -17,6 +17,8 @@ import java.io.ByteArrayInputStream
 import java.util.{TimeZone, Calendar}
 import java.text.SimpleDateFormat
 
+import scala.util.Try
+
 case class NullParameter(val nullType : Int)
 
 trait DataHandlerTrait {
@@ -43,6 +45,8 @@ trait DataHandlerTrait {
       try { closeable.close() } catch { case e:Exception => {  } }
     }
 
+
+  protected def mapRowDoubleList(fields : List[String], row : Map[String,Any]) = fields.map( l => l -> Try { row(l).toString.toDouble }.toOption  ).toMap
 
   protected def runQuery(req: DBRequest): DBResult = {
 
@@ -123,30 +127,24 @@ trait DataHandlerTrait {
         paramList.foreach(a => {
           log.debug("Parameter %s: %s".format(x, a))
           a.asInstanceOf[AnyRef] match {
-            case s: NullParameter => {
-               stmt.setNull(x, s.nullType)
-            }
-            case s: java.lang.Integer => {
+            case s: NullParameter =>
+              stmt.setNull(x, s.nullType)
+            case Some(s : Double) =>
+              stmt.setDouble(x, s)
+            case s: java.lang.Integer =>
               stmt.setInt(x, s)
-            }
-            case s: String => {
+            case s: String =>
               stmt.setString(x, s)
-            }
-            case s: Date => {
+            case s: Date =>
               stmt.setDate(x, s, Calendar.getInstance(TimeZone.getTimeZone("UTC")))
-            }
-            case s: Time => {
+            case s: Time =>
               stmt.setTime(x, s)
-            }
-            case s: Timestamp => {
+            case s: Timestamp =>
               stmt.setTimestamp(x, s, Calendar.getInstance(TimeZone.getTimeZone("UTC")))
-            }
-            case s: ByteArrayInputStream => {
+            case s: ByteArrayInputStream =>
               stmt.setBinaryStream(x, s, s.available())
-            }
-            case s => {
+            case s =>
               stmt.setObject(x, s)
-            }
           }
           x += 1
         })
