@@ -248,36 +248,36 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 	    dmodel.uniqueId  = row("relay").toString()
 
       // GPS/Location
-      val location_map = mapRowDoubleList(List("latitude","longitude","altitude"), row)
-      val delta_map    = mapRowDoubleList(List("speed","climb","track"), row)
-      val acc_map      = mapRowDoubleList(List("latitude_error","longitude_error","altitude_error","speed_error","climb_error","track_error"), row)
+      val locationMap = mapRowDoubleList(List("latitude","longitude","altitude"), row)
+      val deltaMap    = mapRowDoubleList(List("speed","climb","track"), row)
+      val accMap      = mapRowDoubleList(List("latitude_error","longitude_error","altitude_error","speed_error","climb_error","track_error"), row)
 
-      dmodel.gps = if( location_map.values.exists(_ == Some) || delta_map.values.exists(_ == Some) || acc_map.values.exists(_ == Some)) {
+      dmodel.gps = if( locationMap.values.exists(_.isDefined) || deltaMap.values.exists(_.isDefined) || accMap.values.exists(_.isDefined)) {
           Some(new GPSModel(
-            if (location_map.values.exists(_ == Some)) {
+            if (locationMap.values.exists(_.isDefined)) {
               Some(new LocationModel(
-                location_map("longitude"),
-                location_map("latitude"),
-                location_map("altitude")
+                locationMap("longitude"),
+                locationMap("latitude"),
+                locationMap("altitude")
               ))
             }
             else None,
-            if (delta_map.values.exists(_ == Some)) {
+            if (deltaMap.values.exists(_.isDefined)) {
               Some(new DeltaModel(
-                delta_map("speed"),
-                delta_map("climb"),
-                delta_map("track")
+                deltaMap("speed"),
+                deltaMap("climb"),
+                deltaMap("track")
               ))
             }
             else None,
-            if (acc_map.values.exists(_ == Some)) {
+            if (accMap.values.exists(_.isDefined)) {
               Some(new AccuracyModel(
-                acc_map("longitude_error"),
-                acc_map("latitude_error"),
-                acc_map("altitude_error"),
-                acc_map("speed_error"),
-                acc_map("climb_error"),
-                acc_map("track_error")
+                accMap("longitude_error"),
+                accMap("latitude_error"),
+                accMap("altitude_error"),
+                accMap("speed_error"),
+                accMap("climb_error"),
+                accMap("track_error")
               ))
             }
             else None
@@ -343,7 +343,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
                 // Long and Latitude must be set ot make a point
                 (gps.location match {
                   case Some(loc : LocationModel) => {
-                    loc.longitude match {
+                    (loc.longitude match {
                       case Some(long : Double) => {
                         loc.latitude match {
                           case Some(lat : Double) => {
@@ -351,23 +351,33 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
                               case DB_PGSQL => new PGgeometry(new Point(long, lat))
                               case DB_MYSQL => s"POINT(${long} ${lat})"
                               case DB_MSSQL => s"POINT(${long} ${lat})"
-                            },loc.altitude)
+                            })
                           }
-                          case None => None
+                          case None => List(NullParameter(Types.NULL))
                         }
                       }
-                      case None => None
-                    }
+                      case None => List(NullParameter(Types.NULL))
+                    }) ++
+                    List(doubleOrNone(loc.altitude))
                   }
-                  case None => None
+                  case None => List(NullParameter(Types.NULL), NullParameter(Types.DOUBLE))
                 }) ++
               (gps.delta match {
-                case Some(d : DeltaModel) => List(d.speed, d.climb, d.track)
+                case Some(d : DeltaModel) => List(
+                  doubleOrNone(d.speed),
+                  doubleOrNone(d.climb),
+                  doubleOrNone(d.track))
                 case None => List(NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE))
               }) ++
               (gps.accuracy match {
-                case Some(acc : AccuracyModel) => List(acc.longitudeError, acc.latitudeError, acc.altitudeError,
-                acc.speedError, acc.climbError, acc.trackError)
+                case Some(acc : AccuracyModel) => List(
+                  doubleOrNone(acc.longitudeError),
+                  doubleOrNone(acc.latitudeError),
+                  doubleOrNone(acc.altitudeError),
+                  doubleOrNone(acc.speedError),
+                  doubleOrNone(acc.climbError),
+                  doubleOrNone(acc.trackError)
+                )
                 case None => List(NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE),
                   NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE), NullParameter(Types.DOUBLE))
               })

@@ -28,24 +28,27 @@ class SenseDataXMLFormat extends FormatTrait {
           return <sensedata> {
             for (pack <- model.asInstanceOf[List[DataModel]]) yield {
               <package id={pack.uniqueId} timestamp={pack.timestamp}> {
+              }{
                 pack.gps match {
                   case Some(gps: GPSModel) => <gps>
                     {
-                      gps.location match {
-                        case Some(loc: LocationModel) => <location longitude={optDouble(loc.longitude)} latitudqe={optDouble(loc.latitude)} altitude={optDouble(loc.altitude)} />
-                        case None => {}
-                      }
-                      gps.delta match {
-                        case Some(del : DeltaModel) => <delta speed={optDouble(del.speed)} climb={optDouble(del.climb)} track={optDouble(del.track)} />
-                        case None => {}
-                      }
-                      gps.accuracy match {
-                        case Some(acc : AccuracyModel) => <accuracy longitude={optDouble(acc.longitudeError)} latitude={optDouble(acc.latitudeError)}
-                                                                    altitude={optDouble(acc.altitudeError)} speed={optDouble(acc.speedError)}
-                                                                    climb={optDouble(acc.speedError)} track={optDouble(acc.trackError)} />
-                        case None => {}
-                      }
+                    gps.location match {
+                      case Some(loc: LocationModel) => <location longitude={optDouble(loc.longitude)} latitudqe={optDouble(loc.latitude)} altitude={optDouble(loc.altitude)}/>
+                      case None => {}
                     }
+                  }{
+                    gps.delta match {
+                      case Some(del: DeltaModel) => <delta speed={optDouble(del.speed)} climb={optDouble(del.climb)} track={optDouble(del.track)}/>
+                      case None => {}
+                    }
+                  }{
+                    gps.accuracy match {
+                      case Some(acc : AccuracyModel) => <accuracy longitude={optDouble(acc.longitudeError)} latitude={optDouble(acc.latitudeError)}
+                                                              altitude={optDouble(acc.altitudeError)} speed={optDouble(acc.speedError)}
+                                                              climb={optDouble(acc.speedError)} track={optDouble(acc.trackError)} />
+                      case None => {}
+                    }
+                  }
                   </gps>
                   case None => {}
                 }
@@ -131,12 +134,12 @@ class SenseDataXMLFormat extends FormatTrait {
               (gps \ "accuracy" ).size match {
                 case 0 => None
                 case 1 => Some(new AccuracyModel(
-                  ndeDouble(gps \ "accuracy" \ "@longitude"),
-                  ndeDouble(gps \ "accuracy" \ "@latitude"),
-                  ndeDouble(gps \ "accuracy" \ "@altitude"),
-                  ndeDouble(gps \ "accuracy" \ "@speed"),
-                  ndeDouble(gps \ "accuracy" \ "@climb"),
-                  ndeDouble(gps \ "accuracy" \ "@track")
+                  ndeDouble(gps \ "accuracy" \ "@longitude_error"),
+                  ndeDouble(gps \ "accuracy" \ "@latitude_error"),
+                  ndeDouble(gps \ "accuracy" \ "@altitude_error"),
+                  ndeDouble(gps \ "accuracy" \ "@speed_error"),
+                  ndeDouble(gps \ "accuracy" \ "@climb_error"),
+                  ndeDouble(gps \ "accuracy" \ "@track_error")
                 ))
               }))
         case _ => None //TODO .. return an error?

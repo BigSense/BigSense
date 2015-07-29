@@ -17,7 +17,7 @@ class DataModel extends ModelTrait {
   var errors : ListBuffer[String] = new ListBuffer()
   var gps : Option[GPSModel] = None
   
-  override def toString() : String = "[Relay ID: %s, Timestamp: %s, Sensors: %s]".format(
-      uniqueId,timestamp,sensors)
+  override def toString() : String = "[Relay ID: %s, Timestamp: %s, Sensors: %s, GPS: %s]".format(
+      uniqueId,timestamp,sensors, gps)
   
 }

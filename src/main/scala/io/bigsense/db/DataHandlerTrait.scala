@@ -48,6 +48,11 @@ trait DataHandlerTrait {
 
   protected def mapRowDoubleList(fields : List[String], row : Map[String,Any]) = fields.map( l => l -> Try { row(l).toString.toDouble }.toOption  ).toMap
 
+  protected def doubleOrNone(o : Option[Double]) = o match {
+    case Some(d : Double) => d
+    case None => NullParameter(Types.DOUBLE)
+  }
+
   protected def runQuery(req: DBRequest): DBResult = {
 
     val retval = new DBResult()
