@@ -12,14 +12,13 @@ import io.bigsense.server.BigSenseServer
 import io.bigsense.spring.MySpring
 import io.bigsense.action._
 import org.slf4j.LoggerFactory
+import play.twirl.api.TxtFormat
 import scala.collection.JavaConversions.mapAsScalaMap
-import io.bigsense.format.FormatTrait
+import io.bigsense.format._
 import io.bigsense.util.HttpUtil
 import io.bigsense.model.DataModel
 import io.bigsense.db.DatabaseException
 import io.bigsense.validation.ValidationError
-import io.bigsense.format.UnsupportedFormatException
-import io.bigsense.format.NoFormat
 import io.bigsense.util.WebAppInfo
 
 
@@ -99,10 +98,18 @@ class MasterServlet extends HttpServlet {
                       resp.addHeader("Location",
                         WebAppInfo.servletPath + '/' + aReq.args(0) + '/' + loc + '.' + getExtension(req))
                     }
-                    aResp.contentType match {
-                      case Some(contentType: String) => {resp.setContentType(contentType)}
-                      case None => {}
+
+                    // Had to do some back peddling. The format should have always defined
+                    // the content type. If there is a format, use that content type, else
+                    // drop to the response's format type
+                    aReq.format match {
+                      case (n : NoFormat) => aResp.contentType match {
+                        case Some(contentType: String) => {resp.setContentType(contentType)}
+                        case None => {}
+                      }
+                      case (s : FormatTrait) => resp.setContentType(s.mimeType)
                     }
+
 
                     //Body
                     aResp match {

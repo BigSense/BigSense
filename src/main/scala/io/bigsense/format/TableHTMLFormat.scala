@@ -7,7 +7,9 @@ class TableHTMLFormat extends FlatFormatTrait {
   override protected def renderRow(row :List[String]) : String = row.mkString("<tr><td>","</td><td>","</td></tr>")
   
   override protected def renderHeader(row:List[String]) : String = row.mkString("<thead><tr><th>","</th><th>","</th></tr></thead>")
-  
+
+  override def mimeType = "text/html"
+
   override def renderModels(model : List[ModelTrait]) : String = 
     """<!DOCTYPE html><html>
        <head>

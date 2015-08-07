@@ -20,6 +20,8 @@ class SenseDataXMLFormat extends FormatTrait {
     case None => ""
   }
 
+  override def mimeType = "text/xml"
+
   def renderModels(model: List[ModelTrait]): String = {
 
     if (model.length > 0) {

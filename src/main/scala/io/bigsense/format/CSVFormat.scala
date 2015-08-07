@@ -13,5 +13,5 @@ import io.bigsense.model._
 class CSVFormat extends FlatFormatTrait {
 
    protected override def renderRow(row :List[String]) = row.reduceLeft[String] { (a,b) => a + "," + b } + "\n"
-
+   override def mimeType = "text/csv"
 }

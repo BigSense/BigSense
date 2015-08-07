@@ -12,5 +12,5 @@ trait FormatTrait {
 
   def renderModels(model : List[ModelTrait]) : String
   def loadModels(data: String) : List[ModelTrait]
-  
+  def mimeType = "text/plain"
 }
