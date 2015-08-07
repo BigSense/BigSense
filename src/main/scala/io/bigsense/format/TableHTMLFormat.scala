@@ -14,10 +14,10 @@ class TableHTMLFormat extends FlatFormatTrait {
     """<!DOCTYPE html><html>
        <head>
        <title>BigSense :: Data Table</title>
-       <script type="text/javascript" src="%s/js/jquery-1.7.1.min.js"></script>
-       <script type="text/javascript" src="%s/js/jquery.tablesorter.min.js"></script>
-       <script type="text/javascript" src="%s/js/jquery.timer.js"></script>
-       <link rel="StyleSheet" type="text/css" href="%s/js/jquery.tablesorter.theme.blue/style.css" />
+       <script type="text/javascript" src="%s/static/js/jquery-1.7.1.min.js"></script>
+       <script type="text/javascript" src="%s/static/js/jquery.tablesorter.min.js"></script>
+       <script type="text/javascript" src="%s/static/js/jquery.timer.js"></script>
+       <link rel="StyleSheet" type="text/css" href="%s/static/js/jquery.tablesorter.theme.blue/style.css" />
 	   <script type="text/javascript">
 	    $(document).ready(function () {
 		  $("#dataTable").tablesorter();
