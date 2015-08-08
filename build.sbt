@@ -60,7 +60,7 @@ maintainer := "Sumit Khanna<sumit@penguindreams.org>"
 fork in run := true
 
 linuxPackageMappings ++= Seq (
-  packageMapping(file("conf/log4j.properties") -> "/etc/bigsense/log4j.properties") withPerms("0644"),
+  packageMapping(file("conf/logback.xml") -> "/etc/bigsense/logback.xml") withPerms("0644"),
   packageMapping(file("conf/mysql.example.properties") -> "/etc/bigsense/examples/bigsense-mysql.conf") withPerms("0644"),
   packageMapping(file("conf/mssql.example.properties") -> "/etc/bigsense/examples/bigsense-mssql.conf") withPerms("0644"),
   packageMapping(file("conf/pgsql.example.properties") -> "/etc/bigsense/examples/bigsense-pgsql.conf") withPerms("0644")

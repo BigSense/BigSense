@@ -10,7 +10,7 @@
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
             <maxIndex>5</maxIndex>
-            <FileNamePattern>/tmp/bigsense.log.%i</FileNamePattern>
+            <FileNamePattern>/var/log/bigsense/bigsense.log.%i</FileNamePattern>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
             <MaxFileSize>10000KB</MaxFileSize>
@@ -21,7 +21,7 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="io.bigsense" level="trace">
+    <logger name="io.bigsense" level="debug">
         <appender-ref ref="fileAppender"/>
     </logger>
     <root level="info">
