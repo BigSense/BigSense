@@ -34,7 +34,9 @@ class MasterServlet extends HttpServlet {
         //main entry point - bootstrapping
 
         //Setup basic hostname info for use downsteram
-        WebAppInfo.contextPath = if(req.isSecure()) "https" else "http" + "://" + 
+        WebAppInfo.contextPath =
+          (if(Option[String](req.getHeader("X-Forwarded-Proto")).getOrElse("") == "https" ||
+             req.isSecure()) "https" else "http") + "://" +
 	    		    req.getServerName + 
 	    		    (if (req.getServerPort != 80) ":%s".format(req.getServerPort()) else "")  +
 	    		    req.getContextPath() 
