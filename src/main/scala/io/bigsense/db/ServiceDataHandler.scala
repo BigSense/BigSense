@@ -24,6 +24,7 @@ import io.bigsense.util.{Numbers, WebAppInfo, TimeHelper}
 import java.sql.Blob
 import java.sql.Clob
 import java.sql.Types
+import io.bigsense.util.IO.using
 
 class ServiceDataHandler extends ServiceDataHandlerTrait {
   
@@ -44,9 +45,10 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   def listRelays() : List[FlatModel] = {
     val ret = new FlatModel()
     using( ds.getConnection() ) { conn =>
-      ret.headers = List("RelayID","PublicKey")
-      ret.cols = List("unique_id","public_key")
+      ret.headers = List("RelayID","KeyPem")
+      ret.cols = List("unique_id","key_pem")
       val req = new DBRequest(conn,"listRelays")
+      req.constraints = req.constraints ++ Map("Keys" -> Array[Any](""))
       ret.rows = runQuery(req).results  
     }
     List(ret)
@@ -161,14 +163,14 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
    }
  }
  
-  def retrievePemForRelay(relayId : String) : Option[String] = {
+  def retrievePemForRelay(relayName : String) : Option[String] = {
     using(ds.getConnection()) { conn =>
-      var req : DBRequest = new DBRequest(conn,"pemForRelay")
-      req.args = List(relayId)
+      val req : DBRequest = new DBRequest(conn,"getRelayPem")
+      req.args = List(relayName)
       val results = runQuery(req).results
       results.length match {
         case 1 => {
-          results(0)("data_keys_pem") match {
+          results(0)("key_pem") match {
             //MS SQL returns TEXT fields as CLOBs
             case clob:Clob => {
               Some(clob.getSubString(1,clob.length().asInstanceOf[Int]))
@@ -177,12 +179,35 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
             case str:String => {
               Some(str)
             }
+            case null => None
           }
 
         }
         case 0 => { None }
         case _ => { throw new DatabaseException("Multiple Results For Unique ID") }
       }
+    }
+  }
+
+  def setPemForRelay(relayName: String, privatePem: String)  {
+    using(ds.getConnection()) { conn =>
+      conn.setAutoCommit(false)
+
+      val req = new DBRequest(conn,"getRelayId")
+      req.args = List(relayName)
+
+      if(runQuery(req).results.length == 0) {
+        val req : DBRequest = new DBRequest(conn,"insertRelayPem")
+        req.args = List(relayName, privatePem)
+        runQuery(req).results
+      }
+      else {
+        val req : DBRequest = new DBRequest(conn,"updateRelayPem")
+        req.args = List(privatePem, relayName)
+        runQuery(req).results
+      }
+
+      conn.setAutoCommit(true)
     }
   }
   

@@ -47,9 +47,9 @@ pullImage = "SELECT si.image AS image FROM sensor_images si WHERE si.id = ?"
 
 addError = "INSERT INTO sensor_errors(package_id,error) VALUES(?,?)"
 
-pemForRelay = "SELECT data_keys_pem FROM sites s
-  LEFT JOIN site_relays sr ON s.id=sr.site_id
-  WHERE sr.relay_unique_id = ?"
+getRelayPem = "SELECT key_pem FROM relays WHERE unique_id=?"
+updateRelayPem = "UPDATE relays SET key_pem=? WHERE unique_id=?"
+insertRelayPem = "INSERT INTO relays(unique_id, key_pem) VALUES(?,?)"
 
 aggregationForInterval = "SELECT
       'UTC' AS timezone,
@@ -81,7 +81,7 @@ averageDataForInterval={
   
 readPackage = ${readPackages} WHERE pak.id=?
 
-listRelays = SELECT unique_id,public_key FROM relays
+listRelays = SELECT unique_id,key_pem FROM relays
 
 listSensors = "SELECT sen.unique_id AS sensor_id , r.unique_id AS relay_id,
    sen.units AS units, t.name sensor_type

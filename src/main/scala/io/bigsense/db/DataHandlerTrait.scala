@@ -16,6 +16,7 @@ import java.sql._
 import java.io.ByteArrayInputStream
 import java.util.{TimeZone, Calendar}
 import java.text.SimpleDateFormat
+import io.bigsense.util.IO.using
 
 import scala.util.Try
 
@@ -36,15 +37,6 @@ trait DataHandlerTrait {
   val DB_PGSQL = "pgsql"
 
   protected var log = LoggerFactory.getLogger(getClass())
-
-  //Taken From: http://zcox.wordpress.com/2009/08/17/simple-jdbc-queries-in-scala/
-  protected def using[Closeable <: {def close(): Unit}, B](closeable: Closeable)(getB: Closeable => B): B =
-    try {
-      getB(closeable)
-    } finally {
-      try { closeable.close() } catch { case e:Exception => {  } }
-    }
-
 
   protected def mapRowDoubleList(fields : List[String], row : Map[String,Any]) = fields.map( l => l -> Try { row(l).toString.toDouble }.toOption  ).toMap
 

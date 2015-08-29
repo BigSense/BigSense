@@ -1,10 +1,12 @@
 package io.bigsense.server
 
 import java.net.InetAddress
+import java.security.Security
 
-import io.bigsense.spring.BigSensePropertyLocation
+import io.bigsense.spring.{MySpring, BigSensePropertyLocation}
 import io.bigsense.util.BulkBZip2DataLoader
 import io.bigsense.servlet.DBUpdateListener
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.slf4j.LoggerFactory
 
 /**
@@ -13,6 +15,8 @@ import org.slf4j.LoggerFactory
 object BigSenseServer extends App {
 
   val log = LoggerFactory.getLogger(BigSenseServer.getClass)
+
+  Security.addProvider(new BouncyCastleProvider())
 
   lazy val config = new Configuration(args)
 
@@ -35,6 +39,28 @@ object BigSenseServer extends App {
         config.options("dbPass")
     ))
 
+    System.exit(0)
+  }
+
+  if(config.params.key.isSupplied) {
+
+    val relayName : String = config.params.relayName.get match {
+      case Some(rn : String) => rn
+      case None => {
+        log.error("RelayName must be specified for -k|--key operations")
+        System.exit(14)
+        "" //makes compiler happy
+      }
+    }
+
+    val cmd = config.params.key.get.getOrElse("")
+
+    val lines = cmd match {
+      case "import" => scala.io.Source.stdin.getLines.mkString("\n")
+      case _ => ""
+    }
+
+    MySpring.commandLineSignatureManager.runCommand(cmd,relayName,lines,config.params.forceKey.get.getOrElse(false))
     System.exit(0)
   }
 

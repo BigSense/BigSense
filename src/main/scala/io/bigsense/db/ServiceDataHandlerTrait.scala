@@ -30,6 +30,8 @@ trait ServiceDataHandlerTrait extends DataHandlerTrait {
   def aggregate(start: java.sql.Timestamp, end : java.sql.Timestamp, stepping : Int, aggType : AggregateType, constraints : Map[String,Array[Any]]) : List[FlatModel]
   
   def retrievePemForRelay(relayId : String) : Option[String]
+
+  def setPemForRelay(relayId: String, privatePem: String)
   
   //def addPhoto(package_id : Int, photo : Image) : Int
 

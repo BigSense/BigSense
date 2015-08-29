@@ -4,6 +4,7 @@ import java.io.InputStream
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.core.io.Resource
 import io.bigsense.server.BigSenseServer
+import io.bigsense.util.IO.using
 
 
 class DBOHandler extends DBOHandlerTrait {

@@ -8,7 +8,7 @@ import io.bigsense.model.DataModel
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.openssl.PEMReader
 
-class SignatureSecurityManageer extends SecurityManagerTrait {
+class SignatureSecurityManager extends SecurityManagerTrait {
 
   
     def loadPublicKey(relayId : String) : PublicKey = {
@@ -18,12 +18,9 @@ class SignatureSecurityManageer extends SecurityManagerTrait {
         case None => throw new SecurityManagerException("No Key Found for Relay ID " + relayId)
         case Some(string) => {}
       }
-      
-	  Security.addProvider(new BouncyCastleProvider());
-	  val pemReader : PEMReader = new PEMReader(new StringReader(pemKey.get))
-	  pemReader.readObject().asInstanceOf[KeyPair].getPublic();
-      
-      
+
+	    val pemReader = new PEMReader(new StringReader(pemKey.get))
+	    pemReader.readObject().asInstanceOf[KeyPair].getPublic()
     }
       
     def securityFilter(req : ActionRequest) : Boolean = {
@@ -31,7 +28,7 @@ class SignatureSecurityManageer extends SecurityManagerTrait {
       if( req.method.equals("POST") ) {
      
         if(req.models.length != 1) {
-          throw new SecurityManagerException("Only single model POST requests are supported with signature verificaiton")
+          throw new SecurityManagerException("Only single model POST requests are supported with signature verification")
         }
         if(!req.models(0).isInstanceOf[DataModel]) {
           throw new SecurityManagerException("Only data models are supported for verification")

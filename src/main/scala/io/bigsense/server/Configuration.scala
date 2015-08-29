@@ -18,7 +18,9 @@ class Configuration(args : Array[String]) {
   class Conf(args : Array[String]) extends ScallopConf(args) {
     val name = io.bigsense.BuildInfo.name
     version(f"$name%s ${io.bigsense.BuildInfo.version}%s")
-    banner(f"""Usage: $name%s [-c|--config <file>] [-l|--list-config] [-b|--bulk-load <file> (-s) <chunk size> (-y) <min year>]
+    banner(f"""Usage: $name%s [-c|--config <file>] [-l|--list-config]
+             |                [-b|--bulk-load <file> (-s) <chunk size> (-y) <min year>]
+             |                [-k|--key (generate|import|export) (-f) <relay_name>]
              |
              |$name%s is web service for storing and retrieving sensor network data.
              |
@@ -31,8 +33,13 @@ class Configuration(args : Array[String]) {
     val bulkLoad:ScallopOption[String] = opt[String]("bulk-load",descr = "Loads a Bzip2 archive of sensor.xml files and exits", argName="file")
     val chunkSize:ScallopOption[Long] = opt[Long]("block-size", short='s',descr="Number of records to load before database write for bulk loading",argName="chunk size",default=Some(10000))
     val minYear:ScallopOption[Int] = opt[Int]("min-year",short = 'y', descr="Timestamp must be greater or equal to year in bulk processing", argName="min year")
+    val key:ScallopOption[String] = opt[String]("key",short = 'k', descr="Generate, Import or Export a verification key for the given relay", argName="relay_id")
+    val forceKey:ScallopOption[Boolean] = opt[Boolean]("force",short ='f', descr="Force overwriting existing key for generate/import")
+    val relayName = trailArg[String](name="relayName", required=false, descr="Relay name for used with -k|--key commands")
     dependsOnAny(chunkSize,List(bulkLoad))
     dependsOnAny(minYear,List(bulkLoad))
+    dependsOnAny(forceKey, List(key))
+    //TODO: command line constraints / maybe tests?
   }
 
   /**

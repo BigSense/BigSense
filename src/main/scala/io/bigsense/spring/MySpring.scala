@@ -13,11 +13,11 @@ import java.io.FileInputStream
 import java.util.Properties
 import com.jolbox.bonecp.BoneCPDataSource
 import io.bigsense.action._
-import io.bigsense.conversion.{ConverterTrait, TimezoneConverter, UnitsConverter}
+import io.bigsense.conversion.{KeyPemConverter, ConverterTrait, TimezoneConverter, UnitsConverter}
 import io.bigsense.db.{DBOHandler, ServiceDataHandler}
 import io.bigsense.format._
-import io.bigsense.security.{DisabledSecurityManager, SignatureSecurityManageer}
-import io.bigsense.util.SQLProperties
+import io.bigsense.security.{DisabledSecurityManager, SignatureSecurityManager}
+import io.bigsense.util.{CommandLineSignatureManager, SQLProperties}
 import io.bigsense.validation._
 import io.bigsense.server.BigSenseServer
 
@@ -47,7 +47,9 @@ object MySpring {
 
   private lazy val sqlCommandProps = new SQLProperties(s"/io/bigsense/db/${config("dbms")}.commands")
 
-  private lazy val converterMap: Map[String, ConverterTrait] = Map("Units" -> new UnitsConverter, "Timezone" -> new TimezoneConverter)
+  private lazy val converterMap: Map[String, ConverterTrait] = Map("Units" -> new UnitsConverter, "Timezone" -> new TimezoneConverter, "Keys" -> new KeyPemConverter)
+
+  lazy val commandLineSignatureManager = new CommandLineSignatureManager(serviceDataHandler)
 
   lazy val serviceDataHandler = new ServiceDataHandler {
     ds = dataSource(config("dbUser"), config("dbPass"))
@@ -119,7 +121,7 @@ object MySpring {
   // Security
 
   lazy val securityManager = config("securityManager") match {
-    case "Signature" => new SignatureSecurityManageer {dbHandler = serviceDataHandler}
+    case "Signature" => new SignatureSecurityManager {dbHandler = serviceDataHandler}
     case "Disabled" => new DisabledSecurityManager
   }
 }
