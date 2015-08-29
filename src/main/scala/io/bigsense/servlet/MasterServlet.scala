@@ -8,6 +8,7 @@
 package io.bigsense.servlet
 
 import javax.servlet.http.{HttpServletRequest => HSReq, HttpServletResponse => HSResp, HttpServlet}
+import io.bigsense.security.SecurityManagerException
 import io.bigsense.server.BigSenseServer
 import io.bigsense.spring.MySpring
 import io.bigsense.action._
@@ -155,6 +156,11 @@ class MasterServlet extends HttpServlet {
        case e:UnsupportedFormatException => {
          log.warn("Request Made for Unsupported Format",e)
          resp.setStatus(HSResp.SC_BAD_REQUEST)
+         err(e.getMessage)
+       }
+       case e:SecurityManagerException => {
+         log.warn(s"Security manager exception ${e.getMessage}")
+         resp.setStatus(HSResp.SC_UNAUTHORIZED)
          err(e.getMessage)
        }
        case e:Throwable => {
