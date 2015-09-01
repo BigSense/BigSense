@@ -2,6 +2,8 @@ import com.typesafe.sbt.SbtAspectj._
 
 aspectjSettings
 
+oneJarSettings
+
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(DebianPlugin)
 enablePlugins(RpmPlugin)
