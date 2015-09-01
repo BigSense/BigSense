@@ -42,10 +42,10 @@ class CommandLineSignatureManager(val db : ServiceDataHandlerTrait) {
     keyPairForRelay(relayName) match {
       case Some(keys : KeyPair) => {
         if(keys.getPrivate != null) {
-          log.info(keyToPem(keys.getPrivate))
+          Console.println(keyToPem(keys.getPrivate))
         }
         else if(keys.getPublic != null) {
-          log.info(keyToPem(keys.getPublic))
+          Console.println(keyToPem(keys.getPublic))
         }
         else {
           log.error(s"Keys found for $relayName, but PEM does not contain a public or private key.")
