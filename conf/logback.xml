@@ -16,15 +16,15 @@
             <MaxFileSize>10000KB</MaxFileSize>
         </triggeringPolicy>
     </appender>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="stderr" class="ch.qos.logback.core.ConsoleAppender" target="System.err" withJansi="true">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
-    <logger name="io.bigsense" level="debug">
+    <logger name="io.bigsense" level="trace" additivity="false">
         <appender-ref ref="fileAppender"/>
     </logger>
-    <root level="info">
-        <appender-ref ref="STDOUT" />
-    </root>
+    <logger name="io.bigsense" level="warn" additivity="false">
+        <appender-ref ref="stderr"/>
+    </logger>
 </configuration>

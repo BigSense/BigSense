@@ -24,7 +24,7 @@
     <logger name="io.bigsense" level="trace" additivity="false">
         <appender-ref ref="fileAppender"/>
     </logger>
-    <root level="error">
-        <appender-ref ref="stderr" />
-    </root>
+    <logger name="io.bigsense" level="warn" additivity="false">
+        <appender-ref ref="stderr"/>
+    </logger>
 </configuration>
