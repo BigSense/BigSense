@@ -5,6 +5,7 @@ import java.security.{Key, KeyPairGenerator, KeyPair}
 import io.bigsense.db.ServiceDataHandlerTrait
 import io.bigsense.server.BigSenseServer
 import io.bigsense.util.IO.using
+import org.bouncycastle.jce.provider.{JCERSAPublicKey, JCEDHPublicKey, JCEDHPrivateKey}
 import org.bouncycastle.openssl.{PEMWriter, PEMReader}
 import org.slf4j.LoggerFactory
 
@@ -62,7 +63,10 @@ class CommandLineSignatureManager(val db : ServiceDataHandlerTrait) {
   def keyPairFromPem(pemKey : String) : Option[KeyPair] = {
     using(new StringReader(pemKey)) { sReader =>
       using(new PEMReader(sReader)) { pemReader =>
-        Some(pemReader.readObject().asInstanceOf[KeyPair])
+        pemReader.readObject() match {
+          case k : KeyPair => Some(k)
+          case k : JCERSAPublicKey => Some(new KeyPair(k,null))
+        }
       }
     }
   }
@@ -90,7 +94,7 @@ class CommandLineSignatureManager(val db : ServiceDataHandlerTrait) {
     val keys = keyGen.generateKeyPair()
     val pemOut = keyToPem(keys.getPrivate)
     db.setPemForRelay(relayId,pemOut)
-    log.info(pemOut)
+    Console.println(pemOut)
   }
 
   def importPrivateKey(relayName : String, privatePem : String) = {
@@ -98,10 +102,11 @@ class CommandLineSignatureManager(val db : ServiceDataHandlerTrait) {
       using(new PEMReader(sReader)) { pemReader =>
         using(new StringWriter()) { sWriter =>
           using(new PEMWriter(sWriter)) { pemWriter =>
-            pemWriter.writeObject(pemReader.readObject().asInstanceOf[KeyPair].getPrivate)
+            pemWriter.writeObject(pemReader.readObject())
             pemWriter.flush
             db.setPemForRelay(relayName, sWriter.toString)
             log.info(s"Key successfully imported for $relayName")
+            Console.println(s"Key successfully imported for $relayName")
           }
         }
       }

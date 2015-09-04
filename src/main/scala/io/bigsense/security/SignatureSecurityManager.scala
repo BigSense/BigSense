@@ -5,7 +5,7 @@ import javax.xml.bind.DatatypeConverter
 
 import io.bigsense.action.ActionRequest
 import io.bigsense.model.DataModel
-import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.bouncycastle.jce.provider.{JCERSAPublicKey, BouncyCastleProvider}
 import org.bouncycastle.openssl.PEMReader
 
 class SignatureSecurityManager extends SecurityManagerTrait {
@@ -20,7 +20,10 @@ class SignatureSecurityManager extends SecurityManagerTrait {
       }
 
 	    val pemReader = new PEMReader(new StringReader(pemKey.get))
-	    pemReader.readObject().asInstanceOf[KeyPair].getPublic()
+      pemReader.readObject() match {
+        case k : KeyPair => k.getPublic
+        case k : JCERSAPublicKey => k
+      }
     }
       
     def securityFilter(req : ActionRequest) : Boolean = {
