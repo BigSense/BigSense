@@ -5,7 +5,13 @@ package io.bigsense.server
  */
 trait ServerTrait {
 
-  lazy val httpPort = BigSenseServer.config.options("httpPort").toInt
+  lazy val httpPort = try {
+    BigSenseServer.config.options("httpPort").toInt
+  }
+  catch {
+    case e: NumberFormatException => Exit.invalidHttpPort
+    0 //makes compiler happy
+  }
 
   def startServer()
   def stopServer()

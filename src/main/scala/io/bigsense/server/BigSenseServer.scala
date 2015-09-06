@@ -39,7 +39,7 @@ object BigSenseServer extends App {
         config.options("dbPass")
     ))
 
-    System.exit(0)
+    Exit.clean()
   }
 
   if(config.params.key.isSupplied) {
@@ -47,8 +47,7 @@ object BigSenseServer extends App {
     val relayName : String = config.params.relayName.get match {
       case Some(rn : String) => rn
       case None => {
-        log.error("RelayName must be specified for -k|--key operations")
-        System.exit(14)
+        Exit.noRelayNameForKey()
         "" //makes compiler happy
       }
     }
@@ -61,35 +60,29 @@ object BigSenseServer extends App {
     }
 
     MySpring.commandLineSignatureManager.runCommand(cmd,relayName,lines,config.params.forceKey.get.getOrElse(false))
-    System.exit(0)
+    Exit.clean()
   }
 
   if(config.params.bulkLoad.isSupplied) {
     new DBUpdateListener().contextInitialized(null)
     BulkBZip2DataLoader.load(config.params.bulkLoad(),config.params.chunkSize(),config.params.minYear.get)
-    System.exit(0)
+    Exit.clean()
   }
 
   if(config.params.listConfig.isSupplied) {
     new BigSensePropertyLocation().printProperties
-    System.exit(0)
+    Exit.clean()
   }
 
   try {
     config.options("server") match {
       case "tomcat" => new TomcatServer().startServer()
       case "jetty" => new JettyServer().startServer()
-      case _ => {
-        log.error("Unknown server type: %s. (Was expecting tomcat or jetty)")
-        System.exit(4)
-      }
+      case _ => Exit.unknownServer(_)
     }
   }
   catch {
-    case e:Exception => {
-      log.error("Unexpected error",e)
-      System.exit(5)
-    }
+    case e:Exception => Exit.unexpected(e)
   }
 
 }

@@ -3,7 +3,7 @@ package io.bigsense.util
 import java.io.{StringWriter, StringReader}
 import java.security.{Key, KeyPairGenerator, KeyPair}
 import io.bigsense.db.ServiceDataHandlerTrait
-import io.bigsense.server.BigSenseServer
+import io.bigsense.server.{Exit, BigSenseServer}
 import io.bigsense.util.IO.using
 import org.bouncycastle.jce.provider.{JCERSAPublicKey, JCEDHPublicKey, JCEDHPrivateKey}
 import org.bouncycastle.openssl.{PEMWriter, PEMReader}
@@ -18,21 +18,16 @@ class CommandLineSignatureManager(val db : ServiceDataHandlerTrait) {
     val existing = db.retrievePemForRelay(relayName)
 
     if( cmd != "export" && (existing.nonEmpty && !force)) {
-      log.error(s"Relay $relayName has existing keys. force (-f) flag required for $cmd.")
-      System.exit(12)
+      Exit.existingKeys(relayName, cmd)
     }
 
     cmd match {
       case "generate" => generateKey(relayName)
       case "import" => importPrivateKey(relayName, pem)
       case "export" => printKey(relayName)
-      case _ => {
-        log.error(s"Invalid key command $cmd")
-        System.exit(13)
-      }
-
+      case _ => Exit.invalidKeyCommand(cmd)
     }
-    System.exit(0)
+    Exit.clean()
   }
 
   /**
@@ -48,15 +43,9 @@ class CommandLineSignatureManager(val db : ServiceDataHandlerTrait) {
         else if(keys.getPublic != null) {
           Console.println(keyToPem(keys.getPublic))
         }
-        else {
-          log.error(s"Keys found for $relayName, but PEM does not contain a public or private key.")
-          System.exit(18)
-        }
+        else Exit.pemContainsNoPublicPrivate(relayName)
       }
-      case None => {
-        log.error(s"No keys found for Relay $relayName")
-        System.exit(17)
-      }
+      case None => Exit.pemNoKeysFound(relayName)
     }
   }
 

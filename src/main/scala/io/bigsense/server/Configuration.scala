@@ -52,12 +52,6 @@ class Configuration(args : Array[String]) {
    */
   lazy val options : Map[String,String]  = {
 
-    def err(msg : String, exit : Int) = {
-      log.error(msg)
-      System.exit(exit)
-      Map[String,String]() //makes the compiler happy
-    }
-
     try{
       val p = new BigSensePropertyLocation().properties
       requiredProperties.foreach( req => {
@@ -66,11 +60,11 @@ class Configuration(args : Array[String]) {
       p.asScala.toMap
     }
     catch {
-      case e:NumberFormatException => err("httpPort must be an integer",3)
-      case e:Exception => {log.error("",e);err("Error loading configuration %s".format(e.getMessage),2) }
+      case e:Exception => {
+        Exit.configError(e.getMessage)
+        Map[String,String]() //makes the compiler happy
+      }
     }
   }
-
-
 
 }
