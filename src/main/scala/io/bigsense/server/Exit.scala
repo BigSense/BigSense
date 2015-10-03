@@ -11,7 +11,7 @@ object Exit {
   private def exit(code : Int, message : String, exception : Option[Throwable] = None) {
     val log = LoggerFactory.getLogger(new Exception().getStackTrace()(2).getClassName)
     exception match {
-      case Some(t : Throwable) => log.error(message, log)
+      case Some(t : Throwable) => log.error(message, t)
       case None => log.error(message)
     }
     System.exit(code)
