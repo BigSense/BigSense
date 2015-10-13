@@ -71,9 +71,9 @@ trait DataHandlerTrait {
           para match {
             case "WithinMetersFrom" => {
 
-              // format: WithinMetersFrom=x10y10r2 - x, y, radius
+              // format: WithinMetersFrom=long10lat10r2 - x, y, radius
 
-              val regex = """([a-zA-Z]+)([\d]+)""".r
+              val regex = """([a-zA-Z]+)(-?[\d]+)""".r
               val loc = regex.findAllIn(l.toString).map( s => {
                 s match {
                   case regex(as, ns) => Some(as, ns.toInt)
