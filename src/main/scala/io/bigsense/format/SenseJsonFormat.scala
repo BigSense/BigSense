@@ -10,5 +10,5 @@ class SenseJsonFormat extends FormatTrait {
   override def renderModels(model: List[ModelTrait]): String = ""
   override def loadModels(data: String): List[ModelTrait] = null
 
-  override def mimeType = "application/bigsense+json"
+  override def mimeType = "application/io.bigsense.sensedata+json"
 }
