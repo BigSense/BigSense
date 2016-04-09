@@ -13,7 +13,7 @@ name := "bigsense"
 
 version := Process("git" , Seq("describe" , "--dirty")).!!.trim() 
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.8"
 
 //sbt-build info
 buildInfoSettings
@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
     "org.springframework" % "spring-core" % "3.0.5.RELEASE",
     "net.sourceforge.jtds" % "jtds" % "1.2.4",
     "com.jolbox" % "bonecp" % "0.8.0.RELEASE",
-    "org.scalaj" %% "scalaj-collection" % "1.5",
+    "org.scalaj" %% "scalaj-collection" % "1.6",
     "ch.qos.logback" % "logback-classic" % "1.1.3",
     "commons-codec" % "commons-codec" % "1.6",
     "bouncycastle" % "bcprov-jdk15" % "140",
@@ -42,7 +42,7 @@ libraryDependencies ++= Seq(
     "org.eclipse.jetty" % "jetty-server" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-webapp" % "9.1.4.v20140401",
-    "org.rogach" %% "scallop" % "0.9.5",
+    "org.rogach" %% "scallop" % "1.0.0",
     "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,  //JSP (remove?)
