@@ -42,7 +42,7 @@ libraryDependencies ++= Seq(
     "org.eclipse.jetty" % "jetty-server" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
     "org.eclipse.jetty" % "jetty-webapp" % "9.1.4.v20140401",
-    "org.rogach" %% "scallop" % "1.0.0",
+    "org.rogach" %% "scallop" % "0.9.5",
     "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,  //JSP (remove?)
