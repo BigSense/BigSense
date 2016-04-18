@@ -47,9 +47,7 @@ libraryDependencies ++= Seq(
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,  //JSP (remove?)
     "org.apache.commons" % "commons-compress" % "1.6",
-    "io.circe" %% "circe-core" % "0.3.0",
-    "io.circe" %% "circe-generic" % "0.3.0",
-    "io.circe" %% "circe-parser" % "0.3.0"
+    "com.typesafe.play" % "play-json_2.11" % "2.5.2"
 )
 
 licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))

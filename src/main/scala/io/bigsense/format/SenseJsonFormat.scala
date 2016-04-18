@@ -1,10 +1,7 @@
 package io.bigsense.format
 
-import io.bigsense.model.{RelayModel, SensorModel, ModelTrait}
-import io.circe._
-import io.circe.generic.auto._
-import io.circe.parser._
-import io.circe.syntax._
+import io.bigsense.model.{DataModel, RelayModel, SensorModel, ModelTrait}
+import play.api.libs.json._
 
 import scala.collection.immutable.List
 
@@ -13,15 +10,19 @@ import scala.collection.immutable.List
   */
 class SenseJsonFormat extends FormatTrait {
 
-  implicit val modelEncoder: Encoder[ModelTrait] = Encoder.instance(a => a match {
-    case s:SensorModel => s.asJson
-    case r:RelayModel => r.asJson
-    case _ => null
-  })
 
-  override def renderModels(model: List[ModelTrait]): String = model.asJson.noSpaces
+  override def renderModels(model: List[ModelTrait]): String = {
+    model.map( m =>
+      m match {
+        case relay : RelayModel => Json.obj( "id" -> relay.id , "identifier" -> relay.identifier, "public_key" -> relay.publicKey)
+        case data : DataModel => Json.obj( "package" ->  data.uniqueId )
+      }
+    )
+    ""
+  }
 
   def loadModels(data: String): List[ModelTrait] = {
+    val json = Json.parse(data)
     throw new UnsupportedFormatException("Importing From JSON Not Supported")
   }
 

@@ -7,8 +7,4 @@
  */
 package io.bigsense.model
 
-class RelayModel extends ModelTrait {
-  var id : Int = -1 
-  var identifier : String = "Unknown"
-  var public_key : String = "NONE"  
-}
+case class RelayModel(id : Int = -1, identifier : String = "Unknown", publicKey : String = "NONE") extends ModelTrait

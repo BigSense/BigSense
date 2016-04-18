@@ -152,13 +152,13 @@ class SenseDataXMLFormat extends FormatTrait {
       var sbList = new ListBuffer[SensorModel]()
 
       for (node <- sensors \ "sensor") yield {
-        var sensorData = new SensorModel()
-        sensorData.uniqueId = (node \ "@id").text.trim()
-        sensorData.stype = (node \ "@type").text.trim()
-        sensorData.units = (node \ "@units").text.trim()
-        sensorData.timestamp = (node \ "@timestamp").text.trim()
-        sensorData.data = (node \ "data").text.trim()
-        sbList += sensorData
+        sbList += new SensorModel(
+          (node \ "@id").text.trim(),
+          (node \ "@type").text.trim(),
+          (node \ "@units").text.trim(),
+          (node \ "data").text.trim(),
+          (node \ "@timestamp").text.trim()
+        )
       }
       for (err <- errors \ "error") yield {
         model.errors.append(err.text.trim())
