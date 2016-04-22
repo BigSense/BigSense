@@ -1,6 +1,6 @@
 package io.bigsense.format
 
-import io.bigsense.model.{DataModel, RelayModel, SensorModel, ModelTrait}
+import io.bigsense.model._
 import play.api.libs.json._
 
 import scala.collection.immutable.List
@@ -14,11 +14,11 @@ class SenseJsonFormat extends FormatTrait {
   override def renderModels(model: List[ModelTrait]): String = {
     model.map( m =>
       m match {
-        case relay : RelayModel => Json.obj( "id" -> relay.id , "identifier" -> relay.identifier, "public_key" -> relay.publicKey)
-        case data : DataModel => Json.obj( "package" ->  data.uniqueId )
+        case relay : RelayModel => "TODO: implement" //Json.obj( "id" -> relay.id , "identifier" -> relay.identifier, "public_key" -> relay.publicKey)
+        case data : DataModel => "TODO: implement" // Json.obj( "package" ->  data.uniqueId )
+        case flat : FlatModel => flat.rows.map( row => row.map( (str,ney) => "") )
       }
-    )
-    ""
+    ).toString()
   }
 
   def loadModels(data: String): List[ModelTrait] = {
