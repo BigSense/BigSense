@@ -13,7 +13,7 @@ name := "bigsense"
 
 version := Process("git" , Seq("describe" , "--dirty")).!!.trim() 
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.8"
 
 //sbt-build info
 buildInfoSettings
@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
     "org.springframework" % "spring-core" % "3.0.5.RELEASE",
     "net.sourceforge.jtds" % "jtds" % "1.2.4",
     "com.jolbox" % "bonecp" % "0.8.0.RELEASE",
-    "org.scalaj" %% "scalaj-collection" % "1.5",
+    "org.scalaj" %% "scalaj-collection" % "1.6",
     "ch.qos.logback" % "logback-classic" % "1.1.3",
     "commons-codec" % "commons-codec" % "1.6",
     "bouncycastle" % "bcprov-jdk15" % "140",
@@ -46,7 +46,8 @@ libraryDependencies ++= Seq(
     "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,  //JSP (remove?)
-    "org.apache.commons" % "commons-compress" % "1.6"
+    "org.apache.commons" % "commons-compress" % "1.6",
+    "com.typesafe.play" % "play-json_2.11" % "2.5.2"
 )
 
 licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))

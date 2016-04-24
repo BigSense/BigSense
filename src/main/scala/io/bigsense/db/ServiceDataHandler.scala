@@ -313,12 +313,13 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 
 	    val sensorListBuf = new ListBuffer[SensorModel]
 	    for( senrow <- results.results) {
-	      var smodel : SensorModel = new SensorModel()
-	      smodel.uniqueId = senrow("sensor").toString()
-	      smodel.units = senrow("sensor_units").toString()
-	      smodel.stype = senrow("sensor_type").toString()
-	      smodel.data = senrow("sensor_data").toString()
-	      sensorListBuf.append(smodel)
+	      sensorListBuf.append(new SensorModel(
+          senrow("sensor").toString(),
+          senrow("sensor_units").toString(),
+          senrow("sensor_type").toString(),
+          senrow("sensor_data").toString(),
+          senrow("time").toString()
+        ))
 	    }
 	    dmodel.sensors = sensorListBuf.toList
 	  }
