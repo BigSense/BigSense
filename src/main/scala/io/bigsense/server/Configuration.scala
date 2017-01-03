@@ -18,7 +18,7 @@ class Configuration(args : Array[String]) {
   class Conf(args : Array[String]) extends ScallopConf(args) {
     val name = io.bigsense.BuildInfo.name
     version(f"$name%s ${io.bigsense.BuildInfo.version}%s")
-    banner(f"""Usage: $name%s [-c|--config <file>] [-l|--list-config]
+    banner(f"""Usage: $name%s [-c|--config <file>] [-l|--list-config] [-e|--env]
              |                [-b|--bulk-load <file> (-s) <chunk size> (-y) <min year>]
              |                [-k|--key (generate|import|export) (-f) <relay_name>]
              |
@@ -27,7 +27,8 @@ class Configuration(args : Array[String]) {
              |Options:
              |""".stripMargin)
     footer("\nGNU GPL v3 :: http://bigsense.io")
-    val configFile:ScallopOption[String] = opt[String]("config",descr="BigSense Configuration Property File",required = true, argName="file")
+    val configFile:ScallopOption[String] = opt[String]("config",descr="BigSense Configuration Property File", argName="file")
+    val useEnvironmentVars : ScallopOption[Boolean] = opt[Boolean]("env", descr = "Override configuration file using environment variables")
     val listConfig:ScallopOption[Boolean] = opt[Boolean]("list-config",descr="Prints current configuration and exits")
     val showDDL:ScallopOption[Boolean] = opt[Boolean]("ddl", descr="Prints the initial DDL for the database and exits")
     val bulkLoad:ScallopOption[String] = opt[String]("bulk-load",descr = "Loads a Bzip2 archive of sensor.xml files and exits", argName="file")

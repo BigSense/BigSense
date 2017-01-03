@@ -11,15 +11,17 @@ package io.bigsense.spring
 
 import java.io.FileInputStream
 import java.util.Properties
+
 import com.jolbox.bonecp.BoneCPDataSource
 import io.bigsense.action._
-import io.bigsense.conversion.{KeyPemConverter, ConverterTrait, TimezoneConverter, UnitsConverter}
+import io.bigsense.conversion.{ConverterTrait, KeyPemConverter, TimezoneConverter, UnitsConverter}
 import io.bigsense.db.{DBOHandler, ServiceDataHandler}
 import io.bigsense.format._
 import io.bigsense.security.{DisabledSecurityManager, SignatureSecurityManager}
 import io.bigsense.util.{CommandLineSignatureManager, SQLProperties}
 import io.bigsense.validation._
 import io.bigsense.server.BigSenseServer
+import org.slf4j.LoggerFactory
 
 
 object MySpring {
@@ -130,12 +132,43 @@ object MySpring {
 
 class BigSensePropertyLocation {
 
-  def printProperties = properties.list(System.out)
+  private val log = LoggerFactory.getLogger(this.getClass)
+
+  def printProperties() = properties.list(System.out)
+
+  val environmentVarMap = Map("DBMS" -> "dbms",
+    "DB_HOSTNAME" -> "dbHostname",
+    "DB_DATABASE" -> "dbDatabase",
+    "DB_PORT" -> "dbPort",
+    "DB_USER" -> "dbUser",
+    "DB_PASS" -> "dbPass",
+    "DBO_USER" -> "dboUser",
+    "DBO_PASS" -> "dboPass",
+    "SECURITY_MANAGER" -> "securityManager",
+    "SERVER" -> "server",
+    "HTTP_PORT" -> "httpPort")
 
   lazy val properties = {
     val p = new Properties()
     p.load(getClass.getResourceAsStream("/io/bigsense/spring/defaults.properties"))
-    p.load(new FileInputStream(BigSenseServer.config.params.configFile()))
+
+    if(!BigSenseServer.config.params.configFile.supplied  && !BigSenseServer.config.params.useEnvironmentVars.supplied) {
+      log.warn("Neither configuration file (-c) or environment variable settings (-e) was defined. Using default settings.")
+    }
+    if(BigSenseServer.config.params.configFile.supplied) {
+      p.load(new FileInputStream(BigSenseServer.config.params.configFile()))
+    }
+    if(BigSenseServer.config.params.useEnvironmentVars.supplied) {
+      environmentVarMap.foreach( e =>
+        sys.env.get(e._1) match {
+          case Some(value : String) => {
+            log.info(s"Loading environment variable ${e._1}. Setting ${e._2} to $value")
+            p.setProperty(e._2, value)
+          }
+          case None => Unit
+        }
+      )
+    }
     p
   }
 

@@ -8,8 +8,11 @@ enablePlugins(JavaServerAppPackaging)
 enablePlugins(DebianPlugin)
 enablePlugins(RpmPlugin)
 enablePlugins(SbtTwirl)
+enablePlugins(sbtdocker.DockerPlugin)
 
 name := "bigsense"
+
+organization := "bigsense.io"
 
 version := Process("git" , Seq("describe" , "--dirty")).!!.trim() 
 
@@ -94,3 +97,14 @@ AspectjKeys.inputs in Aspectj <+= compiledClasses
 products in Compile <<= products in Aspectj
 
 products in Runtime <<= products in Compile
+
+dockerfile in docker := {
+    val appDir: File = stage.value
+    val targetDir = "/app"
+
+    new Dockerfile {
+        from("java")
+        entryPoint(s"$targetDir/bin/${executableScriptName.value}", "-e")
+        copy(appDir, targetDir)
+    }
+}
