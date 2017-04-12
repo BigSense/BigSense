@@ -15,7 +15,7 @@ import java.util.Properties
 import com.jolbox.bonecp.BoneCPDataSource
 import io.bigsense.action._
 import io.bigsense.conversion.{ConverterTrait, KeyPemConverter, TimezoneConverter, UnitsConverter}
-import io.bigsense.db.{DBOHandler, ServiceDataHandler}
+import io.bigsense.db.ServiceDataHandler
 import io.bigsense.format._
 import io.bigsense.security.{DisabledSecurityManager, SignatureSecurityManager}
 import io.bigsense.util.{CommandLineSignatureManager, SQLProperties}
@@ -30,15 +30,17 @@ object MySpring {
 
   // Database
 
+  lazy val jdbcURL = dbConnectionString(
+    config("dbms"),
+    config("dbHostname"),
+    config("dbDatabase"),
+    config("dbPort")
+  )
+
   private def dataSource(username: String, password: String) = {
     val ds = new BoneCPDataSource()
     ds.setDriverClass(dbDriver(config("dbms")))
-    ds.setJdbcUrl(dbConnectionString(
-      config("dbms"),
-      config("dbHostname"),
-      config("dbDatabase"),
-      config("dbPort")
-    ))
+    ds.setJdbcUrl(jdbcURL)
     ds.setMaxConnectionsPerPartition(config("dbPoolMaxPerPart").toInt)
     ds.setMinConnectionsPerPartition(config("dbPoolMinPerPart").toInt)
     ds.setPartitionCount(config("dbPoolPartitions").toInt)
@@ -55,14 +57,6 @@ object MySpring {
 
   lazy val serviceDataHandler = new ServiceDataHandler {
     ds = dataSource(config("dbUser"), config("dbPass"))
-    sqlCommands = sqlCommandProps
-    dbDialect = config("dbms")
-    converters = converterMap
-  }
-
-  lazy val dboDataHandler = new DBOHandler {
-    ds = dataSource(config("dboUser"), config("dboPass"))
-    ddlResource = s"/io/bigsense/db/ddl/${config("dbms")}/*"
     sqlCommands = sqlCommandProps
     dbDialect = config("dbms")
     converters = converterMap
@@ -130,7 +124,7 @@ object MySpring {
   }
 }
 
-class BigSensePropertyLocation {
+object BigSensePropertyLocation {
 
   private val log = LoggerFactory.getLogger(this.getClass)
 

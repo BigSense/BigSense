@@ -1,1 +1,0 @@
-ALTER TABLE relays CHANGE COLUMN public_key key_pem TEXT;

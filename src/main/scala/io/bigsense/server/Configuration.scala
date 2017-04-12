@@ -19,6 +19,7 @@ class Configuration(args : Array[String]) {
     val name = io.bigsense.BuildInfo.name
     version(f"$name%s ${io.bigsense.BuildInfo.version}%s")
     banner(f"""Usage: $name%s [-c|--config <file>] [-l|--list-config] [-e|--env]
+             |                [-u|--upgradedb]
              |                [-b|--bulk-load <file> (-s) <chunk size> (-y) <min year>]
              |                [-k|--key (generate|import|export) (-f) <relay_name>]
              |
@@ -29,6 +30,7 @@ class Configuration(args : Array[String]) {
     footer("\nGNU GPL v3 :: http://bigsense.io")
     val configFile:ScallopOption[String] = opt[String]("config",descr="BigSense Configuration Property File", argName="file")
     val useEnvironmentVars : ScallopOption[Boolean] = opt[Boolean]("env", descr = "Override configuration file using environment variables")
+    val upgradeDb : ScallopOption[Boolean] = opt[Boolean]("upgradedb", descr = "Upgrade database from BigSense <= 0.3.0")
     val listConfig:ScallopOption[Boolean] = opt[Boolean]("list-config",descr="Prints current configuration and exits")
     val showDDL:ScallopOption[Boolean] = opt[Boolean]("ddl", descr="Prints the initial DDL for the database and exits")
     val bulkLoad:ScallopOption[String] = opt[String]("bulk-load",descr = "Loads a Bzip2 archive of sensor.xml files and exits", argName="file")
@@ -54,7 +56,7 @@ class Configuration(args : Array[String]) {
   lazy val options : Map[String,String]  = {
 
     try{
-      val p = new BigSensePropertyLocation().properties
+      val p = BigSensePropertyLocation.properties
       requiredProperties.foreach( req => {
         if(p.getProperty(req) == null) { throw new Exception("Required property %s is missing".format(req)) }
       })

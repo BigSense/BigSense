@@ -1,7 +1,7 @@
 package io.bigsense.server
 
 import org.apache.catalina.startup.Tomcat
-import io.bigsense.servlet.{StaticContentServlet, DBUpdateListener, MasterServlet}
+import io.bigsense.servlet.{StaticContentServlet, MasterServlet}
 import java.io.File
 
 
@@ -17,8 +17,6 @@ class TomcatServer extends ServerTrait {
   val ctx = tomcat.addContext(BigSenseServer.webRoot,tmp.getAbsolutePath)
   Tomcat.addServlet(ctx,"bigsense",new MasterServlet())
   ctx.addServletMapping("/*","bigsense")
-
-  new DBUpdateListener().contextInitialized(null)
 
   val cCtx = tomcat.addContext(BigSenseServer.contentRoot,tmp.getAbsolutePath)
   Tomcat.addServlet(cCtx,"static",new StaticContentServlet)

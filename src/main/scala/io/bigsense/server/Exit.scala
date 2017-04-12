@@ -26,6 +26,7 @@ object Exit {
   def noRelayNameForKey() = exit(14, "RelayName must be specified for -k|--key operations")
   def pemNoKeysFound(relayName: String) = exit(17, s"No keys found for Relay $relayName")
   def pemContainsNoPublicPrivate(relayName: String) = exit(18, s"Keys found for $relayName, but PEM does not contain a public or private key.")
+  def migrationFailure(msg : String, e : Option[Throwable] = None) = exit(19, msg, e)
   def unexpected(exception : Throwable) = exit(99, "Unexpected Error", Some(exception))
 
 }

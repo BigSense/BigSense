@@ -1,7 +1,25 @@
+DROP ROLE IF EXISTS ${dbUser};
+CREATE ROLE ${dbUser} LOGIN PASSWORD '${dbPass}';
+
+GRANT ALL ON DATABASE ${dbDatabase} to ${dbUser};
+
+CREATE EXTENSION postgis;
+
+CREATE OR REPLACE FUNCTION isnumeric(text) RETURNS BOOLEAN AS $$
+DECLARE x NUMERIC;
+BEGIN
+    x = $1::NUMERIC;
+    RETURN TRUE;
+EXCEPTION WHEN others THEN
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+
 CREATE TABLE relays (
   id SERIAL PRIMARY KEY,
   unique_id VARCHAR(36),
-  public_key VARCHAR(500)
+  key_pem TEXT
 );
 
 
@@ -55,30 +73,44 @@ CREATE TABLE sensor_data (
 GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_data TO ${dbUser};
 GRANT USAGE ON SEQUENCE sensor_data_id_seq TO ${dbUser};
 
-CREATE TABLE meta_data_types (
+CREATE TABLE sensor_errors (
+  package_id BIGINT,
+  error VARCHAR(255),
+  CONSTRAINT fk_sensor_errors_package_id FOREIGN KEY ( package_id ) REFERENCES data_package(id)
+);
+
+GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_errors TO ${dbUser};
+
+CREATE TABLE sensor_images (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100)
-);
-
-GRANT SELECT,INSERT,UPDATE,DELETE ON meta_data_types TO ${dbUser};
-GRANT USAGE ON SEQUENCE meta_data_types_id_seq TO ${dbUser};
-
-CREATE TABLE relay_meta_data (
-  relay_id BIGINT,
-  meta_data_type_id BIGINT,
-  val VARCHAR(255),
-  CONSTRAINT fk_relay_meta_data_type_id FOREIGN KEY ( meta_data_type_id ) REFERENCES meta_data_types(id),
-  CONSTRAINT fk_relay_meta_data_relays_id FOREIGN KEY ( relay_id ) REFERENCES relays(id)
-);
-
-GRANT SELECT,INSERT,UPDATE,DELETE ON relay_meta_data TO ${dbUser};
-
-CREATE TABLE sensor_meta_data (
+  package_id BIGINT,
   sensor_id BIGINT,
-  meta_data_type_id BIGINT,
-  val VARCHAR(255),
-  CONSTRAINT fk_sensor_meta_data_type_id FOREIGN KEY ( meta_data_type_id ) REFERENCES meta_data_types(id),
-  CONSTRAINT fk_sensor_meta_data_sensors_id FOREIGN KEY ( sensor_id ) REFERENCES sensors(id)
+  image BYTEA,
+  itime TIMESTAMP WITHOUT TIME ZONE,
+  CONSTRAINT fk_sensor_images_package_id FOREIGN KEY ( package_id ) REFERENCES data_package(id),
+  CONSTRAINT fk_sensor_image_sensor_id FOREIGN KEY ( sensor_id ) REFERENCES sensors(id)
+
 );
 
-GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_meta_data TO ${dbUser};
+GRANT SELECT,INSERT,UPDATE,DELETE ON sensor_images TO ${dbUser};
+GRANT USAGE ON SEQUENCE sensor_images_id_seq TO ${dbUser};
+
+INSERT INTO sensor_types (id,name) VALUES(5,'Image');
+
+CREATE TABLE package_location (
+    package_id INTEGER PRIMARY KEY,
+    location geography(POINT),
+    altitude double precision,
+    speed double precision,
+    climb double precision,
+    track double precision,
+    longitude_error double precision,
+    latitude_error double precision,
+    altitude_error double precision,
+    speed_error double precision,
+    climb_error double precision,
+    track_error double precision,
+    CONSTRAINT fk_data_package_id FOREIGN KEY ( package_id ) REFERENCES data_package(id)
+);
+
+GRANT SELECT,INSERT,UPDATE,DELETE ON package_location TO ${dbUser};
