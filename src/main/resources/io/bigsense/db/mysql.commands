@@ -111,7 +111,8 @@ constraintSensorType = " typ.name=? "
 constraintSensorID = " sns.unique_id=? "
 
 #Spacial Constraints
-constraintWithinMetersFrom = " earth_dt(loc.location, ?, ?) < ? "
+#constraintWithinMetersFrom = " earth_dt(loc.location, ?, ?) < ? "
+constraintWithinMetersFrom = " ST_Distance_Sphere(loc.location, ST_GeomFromText(?)) < ? "
 
 #Internal Constraints
 constraintPackTimeAbove = " pak.rtime > ? "

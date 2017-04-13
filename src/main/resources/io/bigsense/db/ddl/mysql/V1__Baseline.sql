@@ -14,18 +14,6 @@ delimiter ;
 
 GRANT EXECUTE ON FUNCTION ${dbDatabase}.isnumeric TO '${dbUser}'@'%';
 
-drop function if exists ${dbDatabase}.earth_dt;
-create function ${dbDatabase}.earth_dt (p1 Geometry, p2long Double, p2lat Double) returns double deterministic
-  return 6371000 * acos (
-      cos ( radians(Y(p1)) )
-      * cos( radians( p2lat ) )
-      * cos( radians( p2long ) - radians(X(p1)) )
-      + sin ( radians(Y(p1)) )
-      * sin( radians( p2lat ) )
-    );
-
-GRANT EXECUTE ON FUNCTION ${dbDatabase}.earth_dt TO '${dbUser}'@'%';
-
 CREATE TABLE relays (
   id BIGINT auto_increment PRIMARY KEY,
   unique_id VARCHAR(36),

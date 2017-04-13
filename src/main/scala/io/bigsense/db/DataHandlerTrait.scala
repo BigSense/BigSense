@@ -80,8 +80,13 @@ trait DataHandlerTrait {
                   case _             => None
                 }
               }).filter(_.isDefined).map(_.get).toMap
-              paramList.append(loc("long"))
-              paramList.append(loc("lat"))
+              if(dbDialect == DB_MYSQL) {
+                paramList.append(s"POINT (${loc("long")} ${loc("lat")})")
+              }
+              else {
+                paramList.append(loc("long"))
+                paramList.append(loc("lat"))
+              }
               paramList.append(loc("r"))
             }
             case _ => {

@@ -375,8 +375,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
                           case Some(lat : Double) => {
                             List(dbDialect match {
                               case DB_PGSQL => new PGgeometry(new Point(long, lat))
-                              case DB_MYSQL => s"POINT(${long} ${lat})"
-                              case DB_MSSQL => s"POINT(${long} ${lat})"
+                              case DB_MYSQL | DB_MSSQL => s"POINT($long $lat)"
                             })
                           }
                           case None => List(NullParameter(Types.NULL))
