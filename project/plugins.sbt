@@ -10,4 +10,4 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-aspectj" % "0.10.2")
 
 addSbtPlugin("org.scala-sbt.plugins" % "sbt-onejar" % "0.8")
 
-addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.4.0")
+addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.4.1")
