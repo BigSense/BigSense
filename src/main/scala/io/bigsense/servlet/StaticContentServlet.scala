@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 /**
  * needed to serve static resources for Tomcat. Not needed for Jetty
  *
- * Created by cassius on 29/04/14.
+ * Created by Sumit Khanna<sumit@penguindreams.org> on 29/04/14.
  */
 class StaticContentServlet extends HttpServlet {
 

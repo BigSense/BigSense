@@ -6,7 +6,7 @@ import play.api.libs.json._
 import scala.collection.immutable.List
 
 /**
-  * Created by cassius on 6/04/16.
+  * Created by Sumit Khanna<sumit@penguindreams.org> on 6/04/16.
   */
 class SenseJsonFormat extends FormatTrait {
 
