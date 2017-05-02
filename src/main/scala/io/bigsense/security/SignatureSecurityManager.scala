@@ -38,7 +38,7 @@ class SignatureSecurityManager extends SecurityManagerTrait {
         }
         
         val sg = Signature.getInstance("SHA1withRSA");
-        sg.initVerify(loadPublicKey(req.models(0).uniqueId))
+        sg.initVerify(loadPublicKey(req.models(0).id))
 
         req.signature match {
           case None => throw new SecurityManagerException("No Signature Found")

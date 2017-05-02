@@ -29,7 +29,7 @@ class SenseDataXMLFormat extends FormatTrait {
         case x: DataModel => {
           return <sensedata> {
             for (pack <- model.asInstanceOf[List[DataModel]]) yield {
-              <package id={pack.uniqueId} timestamp={pack.timestamp}> {
+              <package id={pack.id} timestamp={pack.timestamp.toString}> {
               }{
                 pack.gps match {
                   case Some(gps: GPSModel) => <gps>
@@ -57,22 +57,14 @@ class SenseDataXMLFormat extends FormatTrait {
               }{
                 <sensors> {
                   for (sensor <- pack.sensors) yield {
-                  <sensor id={sensor.uniqueId} type={sensor.stype} units={sensor.units} timestamp={sensor.timestamp}>
+                  <sensor id={sensor.id} type={sensor.`type`} units={sensor.units}>
                     <data>
                       {sensor.data}
                     </data>
                   </sensor>
                   }
                 }
-                </sensors> <errors>
-                {
-                  for (error <- pack.errors) yield {
-                    <error>
-                      {error}
-                    </error>
-                  }
-                }
-              </errors>
+                </sensors>
               } </package>
             }}
           </sensedata>.toString()
@@ -101,25 +93,21 @@ class SenseDataXMLFormat extends FormatTrait {
 
     val xml: Elem = XML.loadString(data)
 
-    var models = new ListBuffer[DataModel]
-
     for (pack <- xml \\ "package") yield {
-
-      var model = new DataModel()
 
       val sensors = pack \ "sensors"
       val errors = pack \ "errors"
       val gps = pack \ "gps"
 
-      model.timestamp = (pack \ "@timestamp").text.trim()
-      model.uniqueId = (pack \ "@id").text.trim()
+      val timestamp = (pack \ "@timestamp").text.trim()
+      val uniqueId = (pack \ "@id").text.trim()
 
-      model.gps = gps.size match {
+      val gpsmodel = gps.size match {
         case 0 => None
-        case 1 => Some(new GPSModel(
+        case 1 => Some(GPSModel(
               (gps \ "location" ).size match {
                 case 0 => None
-                case 1 => Some(new LocationModel(
+                case 1 => Some(LocationModel(
                 ndeDouble(gps \ "location" \ "@longitude"),
                 ndeDouble(gps \ "location" \ "@latitude"),
                 ndeDouble(gps \ "location" \ "@altitude")
@@ -127,7 +115,7 @@ class SenseDataXMLFormat extends FormatTrait {
               },
               (gps \ "delta" ).size match {
                 case 0 => None
-                case 1 => Some(new DeltaModel(
+                case 1 => Some(DeltaModel(
                   ndeDouble(gps \ "delta" \ "@speed"),
                   ndeDouble(gps \ "delta" \ "@climb"),
                   ndeDouble(gps \ "delta" \ "@track")
@@ -135,7 +123,7 @@ class SenseDataXMLFormat extends FormatTrait {
               },
               (gps \ "accuracy" ).size match {
                 case 0 => None
-                case 1 => Some(new AccuracyModel(
+                case 1 => Some(AccuracyModel(
                   ndeDouble(gps \ "accuracy" \ "@longitude_error"),
                   ndeDouble(gps \ "accuracy" \ "@latitude_error"),
                   ndeDouble(gps \ "accuracy" \ "@altitude_error"),
@@ -149,24 +137,17 @@ class SenseDataXMLFormat extends FormatTrait {
                        // but validation should be taken care of elsewhere
       }
 
-      var sbList = new ListBuffer[SensorModel]()
-
-      for (node <- sensors \ "sensor") yield {
-        sbList += new SensorModel(
+      val smodels = for (node <- sensors \ "sensor") yield {
+        SensorModel(
           (node \ "@id").text.trim(),
           (node \ "@type").text.trim(),
           (node \ "@units").text.trim(),
-          (node \ "data").text.trim(),
-          (node \ "@timestamp").text.trim()
+          (node \ "data").text.trim()
         )
       }
-      for (err <- errors \ "error") yield {
-        model.errors.append(err.text.trim())
-      }
-      model.sensors = sbList.toList
-      models += model
+
+      DataModel(timestamp, uniqueId, smodels.toList, gpsmodel)
     }
-    models.toList
-  }
+  }.toList
 
 }

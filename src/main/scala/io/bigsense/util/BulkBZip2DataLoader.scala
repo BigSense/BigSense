@@ -40,7 +40,7 @@ object BulkBZip2DataLoader {
               .filter( p => p.isInstanceOf[DataModel])
               .filter( q => {
                 minYear match {
-                  case Some(year) => TimeHelper.yearFromTimestamp(q.asInstanceOf[DataModel].timestamp)>= year
+                  case Some(year) => TimeHelper.yearFromTimestamp(q.asInstanceOf[DataModel].timestamp.toString)>= year
                   case None => true
                 }
               })

@@ -249,83 +249,67 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
   }
   
   
-  private def getDataModels(results : DBResult) : List[DataModel] = {
-        
-    val ret = new ListBuffer[DataModel]
-    var prev : Long = -1;
-    if( results.results.length > 0) {
-      prev = Numbers.toLong(results.results.head("package_id"))
-    }
-    var dmodel : DataModel = new DataModel()
-	  for( row <- results.results) {
-      //TODO: Should these three really be Ints instead of Longs? Why did this break anyway?
-	    if( Numbers.toLong(row("package_id")) != prev) {
-	      ret.append(dmodel)
-	      dmodel = new DataModel()
-	      log.debug("Changing Model from relay %s to %s".format(prev,row("package_id").asInstanceOf[Long]))
-	    }
-	    prev = Numbers.toLong(row("package_id"))
-	  
-	    dmodel.timestamp = row("time") match {
-        case e:Timestamp => e.getTime().toString()
-        case s:String => s
+  private def getDataModels(results : DBResult) : List[DataModel] =
+    results.results.groupBy( id => Numbers.toLong(id("package_id")) ).map { groupedRow =>
+
+      // Table Join / these fields will be identical
+      val row = groupedRow._2.head
+
+      val timestamp = row("time") match {
+        case e: Timestamp => e.getTime.toString
+        case s: String => s
       }
-	    dmodel.uniqueId  = row("relay").toString()
+      val uniqueId = row("relay").toString
 
       // GPS/Location
-      val locationMap = mapRowDoubleList(List("latitude","longitude","altitude"), row)
-      val deltaMap    = mapRowDoubleList(List("speed","climb","track"), row)
-      val accMap      = mapRowDoubleList(List("latitude_error","longitude_error","altitude_error","speed_error","climb_error","track_error"), row)
+      val locationMap = mapRowDoubleList(List("latitude", "longitude", "altitude"), row)
+      val deltaMap = mapRowDoubleList(List("speed", "climb", "track"), row)
+      val accMap = mapRowDoubleList(List("latitude_error", "longitude_error", "altitude_error", "speed_error", "climb_error", "track_error"), row)
 
-      dmodel.gps = if( locationMap.values.exists(_.isDefined) || deltaMap.values.exists(_.isDefined) || accMap.values.exists(_.isDefined)) {
-          Some(new GPSModel(
-            if (locationMap.values.exists(_.isDefined)) {
-              Some(new LocationModel(
-                locationMap("longitude"),
-                locationMap("latitude"),
-                locationMap("altitude")
-              ))
-            }
-            else None,
-            if (deltaMap.values.exists(_.isDefined)) {
-              Some(new DeltaModel(
-                deltaMap("speed"),
-                deltaMap("climb"),
-                deltaMap("track")
-              ))
-            }
-            else None,
-            if (accMap.values.exists(_.isDefined)) {
-              Some(new AccuracyModel(
-                accMap("longitude_error"),
-                accMap("latitude_error"),
-                accMap("altitude_error"),
-                accMap("speed_error"),
-                accMap("climb_error"),
-                accMap("track_error")
-              ))
-            }
-            else None
-          ))
-        }
-        else None
-
-
-	    val sensorListBuf = new ListBuffer[SensorModel]
-	    for( senrow <- results.results) {
-	      sensorListBuf.append(new SensorModel(
-          senrow("sensor").toString(),
-          senrow("sensor_units").toString(),
-          senrow("sensor_type").toString(),
-          senrow("sensor_data").toString(),
-          senrow("time").toString()
+      val gps = if (locationMap.values.exists(_.isDefined) || deltaMap.values.exists(_.isDefined) || accMap.values.exists(_.isDefined)) {
+        Some(GPSModel(
+          if (locationMap.values.exists(_.isDefined)) {
+            Some(LocationModel(
+              locationMap("longitude"),
+              locationMap("latitude"),
+              locationMap("altitude")
+            ))
+          }
+          else None,
+          if (deltaMap.values.exists(_.isDefined)) {
+            Some(DeltaModel(
+              deltaMap("speed"),
+              deltaMap("climb"),
+              deltaMap("track")
+            ))
+          }
+          else None,
+          if (accMap.values.exists(_.isDefined)) {
+            Some(AccuracyModel(
+              accMap("longitude_error"),
+              accMap("latitude_error"),
+              accMap("altitude_error"),
+              accMap("speed_error"),
+              accMap("climb_error"),
+              accMap("track_error")
+            ))
+          }
+          else None
         ))
-	    }
-	    dmodel.sensors = sensorListBuf.toList
-	  }
-    ret.append(dmodel)
-    ret.toList
-  }
+      }
+      else None
+
+      val sensors = groupedRow._2.map { row =>
+        SensorModel(
+          row("sensor").toString,
+          row("sensor_units").toString,
+          row("sensor_type").toString,
+          row("sensor_data").toString
+        )
+      }
+      
+      DataModel(timestamp, uniqueId, sensors, gps)
+    }.toList
   
   
   def loadData(sets : List[DataModel]) : List[Int] = {
@@ -341,13 +325,13 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		    
 		    sets.foreach( set => {
 		      req = new DBRequest(conn,"getRelayId")
-		      req.args = List(set.uniqueId)
+		      req.args = List(set.id)
 		      val rid : DBResult = runQuery(req)
 		      
 		      var relayId : java.lang.Integer = null
 		      if(rid.results.length == 0) {
 		        req = new DBRequest(conn,"registerRelay")
-		        req.args = List(set.uniqueId)
+		        req.args = List(set.id)
 		        relayId = runQuery(req).generatedKeys(0).asInstanceOf[Int]
 		      }
 		      else {
@@ -355,7 +339,7 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		      }
 		      
 		      req = new DBRequest(conn,"addDataPackage")
-          req.args = List(TimeHelper.timestampToDate(set.timestamp),relayId)
+          req.args = List(TimeHelper.timestampToDate(set.timestamp.toString),relayId)
 		      val packageId = runQuery(req)
 		         .generatedKeys(0)
 		         .asInstanceOf[Int]
@@ -414,11 +398,11 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		      var sensorId : java.lang.Integer = -1
 		      set.sensors.foreach( sensor => {
 		         req = new DBRequest(conn,"getSensorRecord")
-		         req.args = List(relayId,sensor.uniqueId)
+		         req.args = List(relayId,sensor.id)
 		         val sid : DBResult = runQuery(req)
 		         if(sid.results.length == 0) {
 		           req = new DBRequest(conn,"addSensorRecord")
-		           req.args = List(sensor.uniqueId,relayId,sensor.stype,sensor.units)
+		           req.args = List(sensor.id,relayId,sensor.`type`,sensor.units)
 		           sensorId = runQuery(req).generatedKeys(0).toString().toInt
 		         }
 		         else {
@@ -428,24 +412,6 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		         req.args = List(packageId,sensorId,sensor.data)
 		         runQuery(req)
 		      })
-		      set.processed.foreach( pro => {
-		        pro.units match {
-		          case "NImageU" => {
-		            req = new DBRequest(conn,"addImage")
-		            req.args = List(packageId, sensorId, new ByteArrayInputStream(Base64.decodeBase64(pro.data)))
-		            runQuery(req)
-		          }
-		          case "NCounterU" => { /*TODO: Implement Me*/}
-		          case _ => { set.errors.append("Unknown Processed Unit Type %s for Sensor %s With Data %s at Time %s"
-		              .format(pro.units,pro.uniqueId,pro.data,pro.timestamp)) }
-		        }
-		      })	      
-		      set.errors.foreach( error => {
-		        req = new DBRequest(conn,"addError")
-		        req.args = List(packageId,error)
-		        runQuery(req)
-		      })
-	
 		    })
 		    conn.commit()
 	    }

@@ -26,7 +26,7 @@ trait FlatFormatTrait extends FormatTrait {
           ret.append( renderRow( List("TimeStamp","TimeZone","RelayID","SensorID","SensorType","Units","Data") ))
           for( m <- model) {
 	          for( sen <- m.asInstanceOf[DataModel].sensors) {
-	            ret.append( renderRow( List(x.timestamp,"UTC",x.uniqueId,sen.uniqueId,sen.stype,sen.units,sen.data)))
+	            ret.append( renderRow( List(x.timestamp.toString,"UTC",x.id,sen.id,sen.`type`,sen.units,sen.data)))
 	          }            
           }
         }

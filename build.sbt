@@ -50,7 +50,8 @@ libraryDependencies ++= Seq(
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
     "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,  //JSP (remove?)
     "org.apache.commons" % "commons-compress" % "1.6",
-    "com.typesafe.play" % "play-json_2.11" % "2.5.2",
+    "com.propensive" %% "rapture" % "2.0.0-M7",
+    "org.spire-math" %% "jawn-parser" % "0.9.0",
     "org.flywaydb" % "flyway-core" % "4.0.3"
 )
 
