@@ -11,34 +11,34 @@ trait ValidatorTrait {
   
   protected def checkInt(obj : Any) : Boolean = {
     try {
-      obj.toString().toInt
-      return true
+      obj.toString.toInt
+      true
     }
     catch {
-      case e:NumberFormatException => return false
+      case e:NumberFormatException => false
     }
   }
 
   protected def checkLong(obj : Any) : Boolean = {
     try {
-      obj.toString().toLong
-      return true
+      obj.toString.toLong
+      true
     }
     catch {
-      case e:NumberFormatException => return false
+      case e:NumberFormatException => false
     }
   }
 
   protected def checkDate(obj : String) : Boolean = {
     
     var sdf : SimpleDateFormat = new SimpleDateFormat()
-	sdf.applyPattern("yyyyMMdd");
+	sdf.applyPattern("yyyyMMdd")
     try {
       sdf.parse(obj)
-      return true
+      true
     }
     catch {
-      case e:java.text.ParseException => return false
+      case e:java.text.ParseException => false
     }
   }
   
