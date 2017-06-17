@@ -3,7 +3,6 @@ package io.bigsense.format
 import scala.collection.immutable.List
 import io.bigsense.model.ModelTrait
 import io.bigsense.model.DataModel
-import io.bigsense.model.RelayModel
 import io.bigsense.model.FlatModel
 import scala.collection.mutable.ListBuffer
 
@@ -18,9 +17,9 @@ trait FlatFormatTrait extends FormatTrait {
   
   def renderModels(model : List[ModelTrait]) : String = {
 
-    var ret = new StringBuilder()
+    val ret = new StringBuilder()
     
-    if(model.length > 0) {
+    if(model.nonEmpty) {
       model.head match {
         case x:DataModel => {
           ret.append( renderRow( List("TimeStamp","TimeZone","RelayID","SensorID","SensorType","Units","Data") ))
@@ -30,17 +29,17 @@ trait FlatFormatTrait extends FormatTrait {
 	          }            
           }
         }
-        case x:FlatModel => {
+        case _:FlatModel => {
           for( m <- model) {
-            var cast = m.asInstanceOf[FlatModel]
+            val cast = m.asInstanceOf[FlatModel]
             //headers
             ret.append(renderHeader(cast.headers))
             //rows
             for(row <- cast.rows) {
-              var ll = new ListBuffer[String]
+              val ll = new ListBuffer[String]
               for( c <- cast.cols) {
                 //row mapping
-                if(row(c) != null) ll.append(row(c).toString()) else ll.append("")
+                if(row(c) != null) ll.append(row(c).toString) else ll.append("")
               }
               ret.append(renderRow(ll.toList))
             }
@@ -54,7 +53,7 @@ trait FlatFormatTrait extends FormatTrait {
         }
       }      
     }
-    ret.toString()
+    ret.toString
   }
 
   def loadModels(data: String): List[ModelTrait] = { 
