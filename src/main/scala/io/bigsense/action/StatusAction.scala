@@ -9,7 +9,7 @@ import io.bigsense.server.{BigSenseServer, JettyServer}
 class StatusAction extends ActionTrait {
 
   private def setParam(aReq: ActionRequest, param : String) : Int = {
-    //TODO: defaults in web.xml
+    //TODO: defaults in property file
     if (aReq.parameters.contains(param)) aReq.parameters(param)(0).toString.toInt else 10
   }
 
@@ -18,13 +18,13 @@ class StatusAction extends ActionTrait {
     aReq.method match {
       case "GET" => {
         if (aReq.args.length == 1) {
-          new ViewResponse(html.status(BigSenseServer.webRoot,BigSenseServer.contentRoot,setParam(aReq,"threshold"),setParam(aReq,"refresh")))
+          ViewResponse(html.status(BigSenseServer.webRoot,BigSenseServer.contentRoot,setParam(aReq,"threshold"),setParam(aReq,"refresh")))
         }
         else {
           aReq.args(1) match {
             case "ajaxStatusTable" => {
               val dbStatus: FlatModel = dbHandler.sensorAliveStatus()
-              new ViewResponse(html.ajaxStatusTable(dbStatus.headers,dbStatus.cols,dbStatus.rows,setParam(aReq,"threshold")))
+              ViewResponse(html.ajaxStatusTable(dbStatus.headers,dbStatus.cols,dbStatus.rows,setParam(aReq,"threshold")))
             }
           }
         }

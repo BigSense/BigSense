@@ -14,16 +14,14 @@ class SensorAction extends ActionTrait {
   def runAction(aReq: ActionRequest): Response = {
 
     aReq.method match {
-      case "POST" => {
-        new StringResponse("", HttpServletResponse.SC_CREATED, newLocations = this.dbHandler.loadData(aReq.models))
-      }
+      case "POST" => StringResponse("", HttpServletResponse.SC_CREATED, newLocations = this.dbHandler.loadData(aReq.models))
       case "GET" => {
         val models = dbHandler.retrieveData(List(aReq.args(1).toInt))
-        if (models.length == 0) {
-          new StringResponse("Record could not be found", HttpServletResponse.SC_NOT_FOUND)
+        if (models.isEmpty) {
+          StringResponse("Record could not be found", HttpServletResponse.SC_NOT_FOUND)
         }
         else {
-          new StringResponse(aReq.format.renderModels(models))
+          StringResponse(aReq.format.renderModels(models))
         }
       }
     }

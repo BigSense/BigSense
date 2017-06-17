@@ -14,18 +14,18 @@ class ImageAction extends ActionTrait {
             aReq.args(2) match {
               case "Latest" => {
                 val limit: Int = aReq.args(3).toInt
-                new StringResponse(aReq.format.renderModels(dbHandler.retrieveLatestImageInfo(limit, aReq.parameters)))
+                StringResponse(aReq.format.renderModels(dbHandler.retrieveLatestImageInfo(limit, aReq.parameters)))
               }
               case "TimestampRange" => {
                 val start = TimeHelper.timestampToDate(aReq.args(3))
                 val end = TimeHelper.timestampToDate(aReq.args(4))
-                new StringResponse(aReq.format.renderModels(dbHandler.retrieveImageInfoRange(start, end, aReq.parameters)))
+                StringResponse(aReq.format.renderModels(dbHandler.retrieveImageInfoRange(start, end, aReq.parameters)))
               }
               case "DateRange" => {
                 //Convert Timezone if nescessary
                 val start = TimeHelper.convertDateArgument(aReq.args(3), aReq.parameters)
                 val end = TimeHelper.convertDateArgument(aReq.args(4), aReq.parameters)
-                new StringResponse(aReq.format.renderModels(dbHandler.retrieveDateRange(start, end, aReq.parameters)))
+                StringResponse(aReq.format.renderModels(dbHandler.retrieveDateRange(start, end, aReq.parameters)))
               }
             } //End match List types
           }
@@ -33,10 +33,10 @@ class ImageAction extends ActionTrait {
             val image = dbHandler.retrieveImage(aReq.args(2).toInt)
             image match {
               case Some(imgBytes: Array[Byte]) => {
-                new BinaryResponse(imgBytes, HttpServletResponse.SC_OK, Some("image/jpeg"))
+                BinaryResponse(imgBytes, HttpServletResponse.SC_OK, Some("image/jpeg"))
               }
               case None => {
-                new StringResponse("Image Not Found", HttpServletResponse.SC_NOT_FOUND)
+                StringResponse("Image Not Found", HttpServletResponse.SC_NOT_FOUND)
               }
             }
           }

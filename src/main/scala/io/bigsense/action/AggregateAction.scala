@@ -24,7 +24,7 @@ class AggregateAction extends ActionTrait {
           }
         }
 
-        new StringResponse(
+        StringResponse(
           aReq.format.renderModels(dbHandler.aggregate(start, end, Integer.parseInt(aReq.args(5)), {
             aReq.args(1) match {
               case "Sum" => AggregateSum
