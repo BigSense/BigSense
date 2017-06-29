@@ -1,7 +1,7 @@
 package io.bigsense.model
 
-class FlatModel extends ModelTrait {
-  val headers : List[String] = List()
-  val rows : List[Map[String,Any]] = List()
-  val cols : List[String] = List()
-}
+case class FlatModel(
+  headers : List[String],
+  cols : List[String],
+  rows : List[Map[String,Any]]
+) extends ModelTrait
