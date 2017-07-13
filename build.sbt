@@ -33,7 +33,7 @@ resolvers += "couchbase" at "http://files.couchbase.com/maven2/"
 
 libraryDependencies ++= Seq(
     "org.springframework" % "spring-core" % "3.0.5.RELEASE",
-    "net.sourceforge.jtds" % "jtds" % "1.2.4",
+    "net.sourceforge.jtds" % "jtds" % "1.3.1",
     "com.jolbox" % "bonecp" % "0.8.0.RELEASE",
     "org.scalaj" %% "scalaj-collection" % "1.6",
     "ch.qos.logback" % "logback-classic" % "1.1.3",

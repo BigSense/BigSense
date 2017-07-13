@@ -310,7 +310,11 @@ class ServiceDataHandler extends ServiceDataHandlerTrait {
 		      }
 		      
 		      req = new DBRequest(conn,"addDataPackage")
-          req.args = List(TimeHelper.timestampToDate(set.timestamp.toString),relayId)
+          val time = TimeHelper.timestampToDate(set.timestamp.toString)
+          req.args = List(dbDialect match {
+            case DB_PGSQL | DB_MYSQL => time
+            case DB_MSSQL => time.toString //MSSQL Rounds the time incorrectly if using a Timestamp
+          }, relayId)
 		      val packageId = runQuery(req)
 		         .generatedKeys(0)
 		         .asInstanceOf[Int]

@@ -2,11 +2,14 @@ package io.bigsense.server
 
 import java.net.InetAddress
 import java.security.Security
+import java.util.TimeZone
+
 import io.bigsense.spring.{BigSensePropertyLocation, MySpring}
 import io.bigsense.util.BulkBZip2DataLoader
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.flywaydb.core.Flyway
 import org.slf4j.LoggerFactory
+
 import scala.collection.JavaConversions.mapAsJavaMap
 
 /**
@@ -15,6 +18,8 @@ import scala.collection.JavaConversions.mapAsJavaMap
 object BigSenseServer extends App {
 
   val log = LoggerFactory.getLogger(BigSenseServer.getClass)
+
+  TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
   Security.addProvider(new BouncyCastleProvider())
 

@@ -1,0 +1,1 @@
+ALTER TABLE data_package ALTER COLUMN rtime DATETIME2(3)

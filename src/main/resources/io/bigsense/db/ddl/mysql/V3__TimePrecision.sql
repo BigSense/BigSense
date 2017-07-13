@@ -1,0 +1,1 @@
+ALTER TABLE data_package MODIFY rtime DATETIME(6);
