@@ -25,15 +25,15 @@ Then add the appropriate repository based on the init system used in your distri
 ```
 # Upstart (Ubuntu 14.04 Trusty, Ubuntu 14.10 Utopic, etc.)
 
-sudo add-apt-repository 'deb https://repo.bigsense.io/debs upstart nightly'
+sudo add-apt-repository 'deb https://repo.bigsense.io/debs upstart stable'
 
 # systemv (Debian 7 Wheezy, Devuan, etc.)
 
-sudo add-apt-repository 'deb https://repo.bigsense.io/debs systemv nightly'
+sudo add-apt-repository 'deb https://repo.bigsense.io/debs systemv stable'
 
 # systemd (Debian 8+, Ubuntu 15+, most current distributions)
 
-sudo add-apt-repository 'deb https://repo.bigsense.io/debs systemd nightly'
+sudo add-apt-repository 'deb https://repo.bigsense.io/debs systemd stable'
 
 ```
 
@@ -108,6 +108,8 @@ docker run -d --name bigsense-web --network bigsense -p 8080:8080 \
 
 ### Docker Environment Variables
 
+| Variable        | Description           |
+| ------------- |:-------------:|
 | DB_HOSTNAME | hostname or ip address for database server |
 | DB_DATABASE | database name |
 | DB_PORT | database port |
