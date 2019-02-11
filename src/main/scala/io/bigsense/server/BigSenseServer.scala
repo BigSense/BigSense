@@ -25,6 +25,8 @@ object BigSenseServer extends App {
 
   lazy val config = new Configuration(args)
 
+  config.params.verify()
+
   lazy val webRoot = config.options("webRoot")
 
   lazy val contentRoot = config.options("contentRoot")
@@ -99,6 +101,9 @@ object BigSenseServer extends App {
     }
   }
 
+  log.info("Starting Server")
+  log.debug("Debug Test")
+  log.trace("Trace Test")
 
   try {
     config.options("server") match {

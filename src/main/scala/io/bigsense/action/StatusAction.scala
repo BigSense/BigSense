@@ -1,10 +1,7 @@
 package io.bigsense.action
 
 import io.bigsense.model.FlatModel
-import scalaj.collection.Imports._
-import scala.collection.JavaConversions._
-import javax.servlet.http.HttpServletResponse
-import io.bigsense.server.{BigSenseServer, JettyServer}
+import io.bigsense.server.BigSenseServer
 
 class StatusAction extends ActionTrait {
 

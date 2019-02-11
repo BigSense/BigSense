@@ -1,31 +1,31 @@
-import com.typesafe.sbt.SbtAspectj._
-
-aspectjSettings
-
-oneJarSettings
-
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(DebianPlugin)
 enablePlugins(RpmPlugin)
 enablePlugins(SbtTwirl)
 enablePlugins(sbtdocker.DockerPlugin)
+enablePlugins(BuildInfoPlugin)
 
 name := "bigsense"
 
 organization := "bigsense.io"
 
-version := Process("git" , Seq("describe" , "--dirty")).!!.trim() 
+version := scala.sys.process.Process("git" , Seq("describe" , "--dirty")).!!.trim()
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.8"
 
 //sbt-build info
-buildInfoSettings
-
-sourceGenerators in Compile <+= buildInfo
-
-buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
-
-buildInfoPackage := "io.bigsense"
+lazy val root = (project in file(".")).
+  enablePlugins(BuildInfoPlugin).
+  settings(
+      buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+      buildInfoPackage := "io.bigsense"
+  ).
+  enablePlugins(SbtAspectj).
+  settings(
+    aspectjInputs in Aspectj += (aspectjCompiledClasses in Aspectj).value,
+    products in Compile := (products in Aspectj).value,
+    products in Runtime := (products in Compile).value
+  )
 
 //dependencies
 
@@ -35,7 +35,6 @@ libraryDependencies ++= Seq(
     "org.springframework" % "spring-core" % "5.1.4.RELEASE",
     "net.sourceforge.jtds" % "jtds" % "1.3.1",
     "com.jolbox" % "bonecp" % "0.8.0.RELEASE",
-    "org.scalaj" %% "scalaj-collection" % "1.6", //no in 2.12. Should be removed?
     "ch.qos.logback" % "logback-classic" % "1.2.3",
     "commons-codec" % "commons-codec" % "1.11",
     "bouncycastle" % "bcprov-jdk16" % "140",
@@ -45,14 +44,14 @@ libraryDependencies ++= Seq(
     "org.eclipse.jetty" % "jetty-server" % "9.4.14.v20181114",
     "org.eclipse.jetty" % "jetty-servlet" % "9.4.14.v20181114",
     "org.eclipse.jetty" % "jetty-webapp" % "9.4.14.v20181114",
-    "org.rogach" %% "scallop" % "0.9.5", //Latest is 3.1.5 / There is a 2.12 version
+    "org.rogach" %% "scallop" % "3.1.5",
     "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" , // Version 9.0.16 fails to listen on socket
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
-    //"org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "9.0.16" ,  //JSP (remove?)
     "org.apache.commons" % "commons-compress" % "1.18",
-    "com.propensive" %% "rapture" % "2.0.0-M7", //2.0.0-M9 is 2.12
-    "org.typelevel" %% "jawn-parser" % "0.14.1", //there is a 2.12 version
-    "org.flywaydb" % "flyway-core" % "5.2.4"
+    "org.flywaydb" % "flyway-core" % "5.2.4",
+    "io.circe" %% "circe-core" % "0.11.1",
+    "io.circe" %% "circe-generic" % "0.11.1",
+    "io.circe" %% "circe-parser" % "0.11.1"
 )
 
 licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))
@@ -91,14 +90,6 @@ rpmRelease := "1"
 rpmLicense := Some("GPL-3.0")
 
 rpmGroup := Some("bigsense")
-
-// AspectJ
-
-AspectjKeys.inputs in Aspectj <+= compiledClasses
-
-products in Compile <<= products in Aspectj
-
-products in Runtime <<= products in Compile
 
 dockerfile in docker := {
     val appDir: File = stage.value

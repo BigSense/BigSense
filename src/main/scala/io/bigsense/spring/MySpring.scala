@@ -146,13 +146,13 @@ object BigSensePropertyLocation {
     val p = new Properties()
     p.load(getClass.getResourceAsStream("/io/bigsense/spring/defaults.properties"))
 
-    if(!BigSenseServer.config.params.configFile.supplied  && !BigSenseServer.config.params.useEnvironmentVars.supplied) {
+    if(!BigSenseServer.config.params.configFile.isSupplied  && !BigSenseServer.config.params.useEnvironmentVars.isSupplied) {
       log.warn("Neither configuration file (-c) or environment variable settings (-e) was defined. Using default settings.")
     }
-    if(BigSenseServer.config.params.configFile.supplied) {
+    if(BigSenseServer.config.params.configFile.isSupplied) {
       p.load(new FileInputStream(BigSenseServer.config.params.configFile()))
     }
-    if(BigSenseServer.config.params.useEnvironmentVars.supplied) {
+    if(BigSenseServer.config.params.useEnvironmentVars.isSupplied) {
       environmentVarMap.foreach( e =>
         sys.env.get(e._1) match {
           case Some(value : String) => {
