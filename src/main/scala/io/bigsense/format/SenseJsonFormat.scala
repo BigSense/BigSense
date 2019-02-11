@@ -1,8 +1,7 @@
 package io.bigsense.format
 
 import io.bigsense.model._
-import rapture.json._, jsonBackends.jawn._
-import formatters.compact
+import io.circe._, io.circe.generic.auto._, io.circe.parser._, io.circe.syntax._
 
 import scala.collection.immutable.List
 
@@ -13,12 +12,13 @@ class SenseJsonFormat extends FormatTrait {
 
 
   override def renderModels(model: List[ModelTrait]): String = model match {
-    case d : List[DataModel] => Json.format(Json(d))
+    case d : List[DataModel] => d.asJson.noSpaces
     case _ => """{"error" : "unknown model"}"""
   }
 
   def loadModels(data: String): List[ModelTrait] =
-    Json.parse(data).as[List[DataModel]]
+    //todo: deal with unsafe get
+    decode[List[DataModel]](data).toOption.get
 
 
   override def mimeType = "application/io.bigsense.sensedata+json"
