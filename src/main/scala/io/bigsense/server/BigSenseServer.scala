@@ -101,10 +101,6 @@ object BigSenseServer extends App {
     }
   }
 
-  log.info("Starting Server")
-  log.debug("Debug Test")
-  log.trace("Trace Test")
-
   try {
     config.options("server") match {
       case "tomcat" => new TomcatServer().startServer()
