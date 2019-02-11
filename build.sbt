@@ -32,27 +32,27 @@ buildInfoPackage := "io.bigsense"
 resolvers += "couchbase" at "http://files.couchbase.com/maven2/"
 
 libraryDependencies ++= Seq(
-    "org.springframework" % "spring-core" % "3.0.5.RELEASE",
+    "org.springframework" % "spring-core" % "5.1.4.RELEASE",
     "net.sourceforge.jtds" % "jtds" % "1.3.1",
     "com.jolbox" % "bonecp" % "0.8.0.RELEASE",
-    "org.scalaj" %% "scalaj-collection" % "1.6",
-    "ch.qos.logback" % "logback-classic" % "1.1.3",
-    "commons-codec" % "commons-codec" % "1.6",
-    "bouncycastle" % "bcprov-jdk15" % "140",
-    "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
-    "org.postgis" % "postgis-jdbc" % "1.3.3",
-    "mysql" % "mysql-connector-java" % "5.1.30",
-    "org.eclipse.jetty" % "jetty-server" % "9.1.4.v20140401",
-    "org.eclipse.jetty" % "jetty-servlet" % "9.1.4.v20140401",
-    "org.eclipse.jetty" % "jetty-webapp" % "9.1.4.v20140401",
-    "org.rogach" %% "scallop" % "0.9.5",
-    "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" ,
+    "org.scalaj" %% "scalaj-collection" % "1.6", //no in 2.12. Should be removed?
+    "ch.qos.logback" % "logback-classic" % "1.2.3",
+    "commons-codec" % "commons-codec" % "1.11",
+    "bouncycastle" % "bcprov-jdk16" % "140",
+    "org.postgresql" % "postgresql" % "42.2.5.jre7",
+    "net.postgis" % "postgis-jdbc" % "2.3.0",
+    "mysql" % "mysql-connector-java" % "8.0.15",
+    "org.eclipse.jetty" % "jetty-server" % "9.4.14.v20181114",
+    "org.eclipse.jetty" % "jetty-servlet" % "9.4.14.v20181114",
+    "org.eclipse.jetty" % "jetty-webapp" % "9.4.14.v20181114",
+    "org.rogach" %% "scallop" % "0.9.5", //Latest is 3.1.5 / There is a 2.12 version
+    "org.apache.tomcat.embed" % "tomcat-embed-core"         % "7.0.53" , // Version 9.0.16 fails to listen on socket
     "org.apache.tomcat.embed" % "tomcat-embed-logging-juli" % "7.0.53" ,
-    "org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "7.0.53" ,  //JSP (remove?)
-    "org.apache.commons" % "commons-compress" % "1.6",
-    "com.propensive" %% "rapture" % "2.0.0-M7",
-    "org.spire-math" %% "jawn-parser" % "0.9.0",
-    "org.flywaydb" % "flyway-core" % "4.0.3"
+    //"org.apache.tomcat.embed" % "tomcat-embed-jasper"       % "9.0.16" ,  //JSP (remove?)
+    "org.apache.commons" % "commons-compress" % "1.18",
+    "com.propensive" %% "rapture" % "2.0.0-M7", //2.0.0-M9 is 2.12
+    "org.typelevel" %% "jawn-parser" % "0.14.1", //there is a 2.12 version
+    "org.flywaydb" % "flyway-core" % "5.2.4"
 )
 
 licenses := Seq("GPL-3.0" -> url("http://www.gnu.org/licenses/gpl-3.0.html"))
