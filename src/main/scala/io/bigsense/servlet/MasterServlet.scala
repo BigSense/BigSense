@@ -1,6 +1,6 @@
 /**
- * 
- * 
+ *
+ *
  * <p>Copyright: Copyright (c) 2011</p>
  * <p>Company: BigSense</p>
  * @author Sumit Khanna <sumit@penguindreams.org>
@@ -14,7 +14,7 @@ import io.bigsense.spring.MySpring
 import io.bigsense.action._
 import org.slf4j.LoggerFactory
 import play.twirl.api.TxtFormat
-import scala.collection.JavaConversions.mapAsScalaMap
+import scala.collection.JavaConverters._
 import io.bigsense.format._
 import io.bigsense.util.HttpUtil
 import io.bigsense.model.DataModel
@@ -25,29 +25,29 @@ import io.bigsense.util.WebAppInfo
 
 class MasterServlet extends HttpServlet {
 
-  override def service(req : HSReq, resp: HSResp) = {    
-    
+  override def service(req : HSReq, resp: HSResp) = {
+
     val log = LoggerFactory.getLogger(this.getClass())
 
     def err(msg : String) = resp.getOutputStream.print(html.error.render(msg).toString)
 
-    try {      
+    try {
         //main entry point - bootstrapping
 
         //Setup basic hostname info for use downsteram
         WebAppInfo.contextPath =
           (if(Option[String](req.getHeader("X-Forwarded-Proto")).getOrElse("") == "https" ||
              req.isSecure()) "https" else "http") + "://" +
-	    		    req.getServerName + 
-	    		    (if (req.getServerPort != 80) ":%s".format(req.getServerPort()) else "")  +
-	    		    req.getContextPath() 
+              req.getServerName +
+              (if (req.getServerPort != 80) ":%s".format(req.getServerPort()) else "")  +
+              req.getContextPath()
 	      WebAppInfo.servletPath = WebAppInfo.contextPath + req.getServletPath()
-        
+
         //construct request object
         val aReq = new ActionRequest()
         aReq.method = req.getMethod()
         aReq.args = getPath(req)
-        
+
         //pull body and split into body and signature (if it exists)
         val dataParts = HttpUtil.pullBody(req).split("\n\n");
         if(dataParts.length >= 2) {
@@ -59,9 +59,8 @@ class MasterServlet extends HttpServlet {
         }
 
         //parameters
-        aReq.parameters = mapAsScalaMap(req.getParameterMap().asInstanceOf[java.util.Map[String,Array[Any]]]).toMap
-        
-        
+        aReq.parameters = req.getParameterMap().asInstanceOf[java.util.Map[String,Array[Any]]].asScala.toMap
+
         //Action
         MySpring.getAction(aReq.args(0)) match {
           case Some(action : ActionTrait) => {

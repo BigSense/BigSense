@@ -9,8 +9,7 @@ import io.bigsense.util.BulkBZip2DataLoader
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.flywaydb.core.Flyway
 import org.slf4j.LoggerFactory
-
-import scala.collection.JavaConversions.mapAsJavaMap
+import scala.collection.JavaConverters._
 
 /**
  * Created by sumit on 4/28/14.
@@ -51,7 +50,7 @@ object BigSenseServer extends App {
 
   if(config.params.key.isSupplied) {
 
-    val relayName : String = config.params.relayName.get match {
+    val relayName : String = config.params.relayName.toOption match {
       case Some(rn : String) => rn
       case None => {
         Exit.noRelayNameForKey()
@@ -59,20 +58,20 @@ object BigSenseServer extends App {
       }
     }
 
-    val cmd = config.params.key.get.getOrElse("")
+    val cmd = config.params.key.toOption.getOrElse("")
 
     val lines = cmd match {
       case "import" => scala.io.Source.stdin.getLines.mkString("\n")
       case _ => ""
     }
 
-    MySpring.commandLineSignatureManager.runCommand(cmd,relayName,lines,config.params.forceKey.get.getOrElse(false))
+    MySpring.commandLineSignatureManager.runCommand(cmd,relayName,lines,config.params.forceKey.toOption.getOrElse(false))
     Exit.clean()
   }
 
   if(config.params.bulkLoad.isSupplied) {
     //TODO migrations in their own def?
-    BulkBZip2DataLoader.load(config.params.bulkLoad(),config.params.chunkSize(),config.params.minYear.get)
+    BulkBZip2DataLoader.load(config.params.bulkLoad(),config.params.chunkSize(),config.params.minYear.toOption)
     Exit.clean()
   }
 
@@ -83,12 +82,13 @@ object BigSenseServer extends App {
 
   //database migrations
   try {
-    val migrations = new Flyway()
-    migrations.setLocations(s"classpath:io/bigsense/db/ddl/${config.options("dbms")}")
-    migrations.setBaselineOnMigrate(config.params.upgradeDb.isSupplied)
-    migrations.setPlaceholders(config.options)
-    migrations.setDataSource(MySpring.jdbcURL, config.options("dboUser"), config.options("dboPass"))
-    migrations.migrate()
+    Flyway.configure().
+      locations(s"classpath:io/bigsense/db/ddl/${config.options("dbms")}").
+      baselineOnMigrate(config.params.upgradeDb.isSupplied).
+      placeholders(config.options.asJava).
+      dataSource(MySpring.jdbcURL, config.options("dboUser"), config.options("dboPass")).
+      load().
+      migrate()
   }
   catch {
     case e:Exception => {
