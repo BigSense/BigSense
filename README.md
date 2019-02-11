@@ -168,5 +168,5 @@ curl -X POST localhost:8080/Sensor.sense.json --data '[
 
 You can then pull that data using the same webservice API:
 
-`curl -X POSTlocalhost:8080/Query/Latest/100.txt`
+`curl localhost:8080/Query/Latest/100.txt`
 
